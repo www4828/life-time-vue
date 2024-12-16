@@ -1,0 +1,34 @@
+/***
+流式布局
+****/
+@mixin flex-box($justify-content, $align-items) {
+    display: flex;
+    justify-content: $justify-content;
+    align-items: $align-items;
+}
+/***
+菜单选中的修饰图标
+****/
+@mixin menu-active-decorate($color){
+  background: url('@/assets/menu/menu-select.svg') var($color) no-repeat;
+    background-position: left center;
+    background-size: auto, 30px;
+}
+
+/***
+初始化主页面布局
+****/
+@mixin init-main-layout($height){
+  .sh3h-search-box { 
+    height: #{$height}px !important; 
+  } 
+  .sh3h-content-box {  
+    height: calc(100% - #{$height}px - 20px) !important; 
+  }
+}
+
+@mixin fontStyle($fontFamily, $fontSize, $color) {
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  color: $color;
+}

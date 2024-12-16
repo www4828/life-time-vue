@@ -1,0 +1,72 @@
+//div 阴影效果
+.sh3h-box-shadow {
+  background: var(--sh3h-theme-background-color);
+  box-shadow: 2px 0px 10px var(--sh3h-shadow-color),
+    0px 2px  10px var(--sh3h-shadow-color), -2px 0px 10px var(--sh3h-shadow-color),
+    0px 2px 10px var(--sh3h-shadow-color);
+}
+
+.sh3h-search-box {
+  // width: calc(100% - 10px);
+  width: 100%;
+  height: auto;
+  float: left;
+  padding: 10px 0;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  background-color: #fff;
+
+  .sh3h-search-lable {
+    width: 30%;
+    height: 100%;
+    line-height: 200%;
+    font-size: var(--el-font-size-base);
+    font-family: var(--sh3h-font-family-normal);
+    font-weight: 500;
+    float: left; 
+  }
+  .sh3h-search-input {
+    width: calc(70% - 10px);
+    height: 100%;
+    float: left;
+    margin: 0 0 0 10px;
+  } 
+  .el-row {
+    width: 100%;
+    height: 30px;
+    margin: 5px 0px 5px 0px;
+    flex-wrap: wrap;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .el-row:last-child {
+    margin-bottom: 0;
+  }
+  .el-col {
+    border-radius: 4px;
+    height: 100%;
+  }
+  .sh3h-info{
+    font-size:$font-size-12
+  }
+}
+.sh3h-content-box{ 
+  width: calc(100% - 10px);
+  height:calc(100% - 130px);
+  float: left;
+  margin: 5px 5px;
+
+}
+
+
+.highlight {
+  color: #f4692e !important;
+}
+.gray{
+  color: #767676 !important;
+}
+.normal{
+  color: #000000 !important;
+  font-weight: 700;
+}
+ 

@@ -1,0 +1,150 @@
+.treeRef {
+  background: none;
+  margin: 10px 0 10px 22px;
+  height: 100%;
+  overflow: auto;
+  flex: 1;
+  &.el-tree {
+    background: none;
+    margin: 10px 0 0 21px;
+    .el-tree-node__expand-icon {
+      width: fit-content;
+      svg {
+        display: none;
+      }
+    }
+  }
+  .dept-group-header-search .el-input {
+    margin: 22px 0 0 22px;
+    .el-input__icon {
+      line-height: 30px;
+    }
+  }
+
+  .el-tree-node__content {
+    height: 26px;
+    line-height: 26px;
+  }
+  .el-tree-node__content:hover {
+    //background-color: #3f8fe0;
+    background-color: #e9ecf0;
+  }
+  &.el-tree .el-tree-node.is-current > .el-tree-node__content {
+    background-color: rgba(57, 139, 222, 0.15);
+  }
+
+  .el-tree-node__label {
+    font-size: 12px;
+    font-family: SourceHanSansCN-Regular;
+  }
+
+  &.el-tree .el-tree-node__expand-icon.expanded {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg) !important;
+  }
+  .el-tree-node__expand-icon {
+    width: fit-content;
+    svg {
+      display: none;
+    }
+  }
+  //有子节点 且未展开
+  &.el-tree .el-tree-node__expand-icon:before {
+    background: url('@/assets/system/folder.png') no-repeat;
+    content: '';
+    display: block;
+    width: 13px;
+    height: 13px;
+    font-size: 13px;
+    background-size: 13px;
+  }
+  //有子节点 且已展开
+  &.el-tree .el-tree-node__expand-icon.expanded:before {
+    background: url('@/assets/system/folderOpen.png') no-repeat;
+    content: '';
+    display: block;
+    width: 13px;
+    height: 13px;
+    font-size: 13px;
+    background-size: 13px;
+  }
+  //没有子节点
+  &.el-tree .el-tree-node__expand-icon.is-leaf::before {
+    background: url('@/assets/system/file.png') no-repeat;
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    font-size: 9px;
+    background-size: 9px;
+  }
+}
+.custom-tree-node.first {
+  position: relative;
+}
+.custom-tree-node.dept {
+  position: relative;
+}
+.custom-tree-node.clas {
+  position: relative;
+}
+.el-tree-node.first
+    > .el-tree-node__content
+    > .el-tree-node__expand-icon::before {
+  // position: absolute;
+  background: url('@/assets/system/first.png') no-repeat center #f6f8fa;
+  content: '';
+  width: 15px;
+  height: 15px;
+  top: 6px;
+  left: -20px;
+}
+.el-tree-node.dept
+    > .el-tree-node__content
+    > .el-tree-node__expand-icon::before {
+  // position: absolute;
+  background: url('@/assets/system/dept.png') no-repeat center #f6f8fa;
+  content: '';
+  width: 15px;
+  height: 15px;
+  background-size: 15px;
+}
+
+.el-tree-node.person
+    > .el-tree-node__content
+    > .el-tree-node__expand-icon::before {
+  // position: absolute;
+  background: url('@/assets/system/person.png') no-repeat center #f6f8fa;
+  content: '';
+  width: 15px;
+  height: 15px;
+  background-size: 15px;
+}
+.el-tree-node.none
+    > .el-tree-node__content
+    > .el-tree-node__expand-icon::before {
+  // position: absolute;
+  background: none;
+  // content: '';
+  width: 0;
+  height: 0;
+  top: 6px;
+  left: -20px;
+}
+
+.header-search {
+  width: 100%;
+  display: flex;
+}
+.header-search .el-input {
+  margin: 22px 22px 0;
+
+  .el-input__icon {
+    line-height: 30px;
+  }
+}
+.split-line {
+  width: calc(100% - 30px);
+  margin: 15px 0 0 15px;
+  border-bottom: 1px solid #d3dbde;
+}

@@ -1,0 +1,55 @@
+.defaluts {
+  width: 100%;
+  height: 100%;
+  float: left;
+  .head-container {
+    width: 100%;
+    height: $headHeight;
+    float: left;
+    // background-color: var(--sh3h-head-background-color);
+    background: url("@/assets/layout/nav-bg.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .sidebar-container {
+    width: $sideBarWidth;
+    height: calc(100% - $headHeight);
+    float: left;
+    background-color: var(--sh3h-menu-background-color);
+    background-size: 100% 100%;
+    border-top-right-radius: 0;
+    transition: width 0.4s;
+    // box-shadow: 2px 0px 5px var(--sh3h-shadow-color);
+  }
+
+  .main-container {
+    width: calc(100% - #{$sideBarWidth});
+    height: calc(100% - $headHeight);
+    margin: 0 0 0 0;
+    float: left;
+    background-color: var(--sh3h-footer-background-color); 
+    box-sizing: border-box;
+    transition: width 0.4s;
+    &.fullScreen {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .openSidebar {
+    .main-container { 
+      transition: width 0.4s; 
+    }
+  }
+
+  .hideSidebar {
+    .sidebar-container {
+      width: $sideBarCloseWidth !important;
+      transition: width 0.4s;
+    }
+
+    .main-container {
+      transition: width 0.4;
+      width: calc(100% - #{$sideBarCloseWidth}) !important;
+    }
+  } 
+}

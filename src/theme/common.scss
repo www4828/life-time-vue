@@ -1,0 +1,50 @@
+.w_h_100 {
+  width: 100%;
+  height: 100%;
+  float: left;
+} 
+.div-flex-column {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.div-flex-row {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+} 
+.div-flex-wrap {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.div-flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.div-flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.div-flex-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.cur {
+  cursor: pointer;
+}
+
+input[type=file]{
+  display: none !important;
+}
