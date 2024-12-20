@@ -5,7 +5,6 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { store } from '@/store'
 import { useCode } from '@/hooks/useCode'
-import { useLock } from '@/hooks/useLock'
 import { RouteService } from '@/api/routesService'
 import { loadAppConfig } from '@/utils/loadJson'
 import { UserService } from '@/api/service/System/UserService'
@@ -212,9 +211,11 @@ export async function initRouter(token: string) {
   setFilterMenuAndCacheTagsViewRoutes()
 }
 //await initRouter();
-const whiteList = ['/caseDetail','/caseDetailXF', '/audioPlayer', '/oldCaseDetail', '/news', '/portal','/jumpPage','/wenjuan']
+const whiteList = ['/caseDetail','/caseDetailXF', '/audioPlayer', '/oldCaseDetail', '/portal','/jumpPage']
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
+  console.log(to);
+  
   if (to.meta.title) NProgress.start()
   const token = sessionStorage.getItem('token') || to.query.token as string
   if (to.path === '/login' && !token) {
@@ -243,8 +244,8 @@ router.beforeEach(async (to, from, next) => {
         next({ ...to, replace: true })
       } else {
         // console.log(to)
-        const { hasLockCase } = useLock()
-        hasLockCase()
+        // const { hasLockCase } = useLock()
+        // hasLockCase()
         next()
       }
     }

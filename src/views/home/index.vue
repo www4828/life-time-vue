@@ -1,7 +1,7 @@
 <template>
   <div class="home-container">
-    <Scrollbar v-if="!deptHomeUrl"> </Scrollbar>
-    <iframe :src="deptHomeUrl" v-else class="iframe" frameborder="0"></iframe>
+    <!-- <Scrollbar v-if="!deptHomeUrl"> </Scrollbar>
+    <iframe :src="deptHomeUrl" v-else class="iframe" frameborder="0"></iframe> -->
   </div>
 </template>
 
@@ -17,35 +17,7 @@ const deptHomeUrl = ref('')
 const departmentInfo = useDepartment()
 type Value = keyof typeof departmentInfo
 
-const init = () => {
-  let str = '',
-    type = departmentInfo.homeUrl.indexOf('webroot/webbi') > -1 ? '1' : '2'
-  userService.getSsoToken(type).then((ssoToken) => {
-    if (!departmentInfo.homeUrl.includes(`$`)) {
-      // 说明是个正常的url不需要填充逻辑
-      str = departmentInfo.homeUrl
-    } else {
-      // 说明需要填充
-      let [baseUlr, params] = departmentInfo.homeUrl.split('?')
-      const dealParams = qs.parse(params)
-      Object.entries(dealParams).forEach((value) => {
-        const [key, val] = value as string[]
-        if (val?.indexOf('$')! > -1) {
-          const valueReg = /\w+/
-          const currentValue = val.match(valueReg)![0] as Value
-          baseUlr += `&${key}=${departmentInfo[currentValue]}`
-        } else {
-          baseUlr += `&${key}=${val}`
-        }
-      })
-      str = baseUlr.replace('&', '?')
-    }
-    deptHomeUrl.value = str + `${str.includes('?') ? '&' : '?'}ssoToken=${ssoToken.data}${type === '1' ? '&entryType=5' : ''}`
-  })
-}
-if(departmentInfo.homeUrl){
-  init()
-}
+
 </script>
 <style lang="scss">
 .home-container {

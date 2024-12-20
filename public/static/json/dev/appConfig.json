@@ -1,7 +1,7 @@
 {
   "urls":{ 
     "iconUrl": "https://12319.shucm.cn/12319",
-    "sysUrl": "https://12319.shucm.cn/server_api/hotline-manager-server",
+    "sysUrl": "/sysUrl",
     "taskUrl": "https://12319.shucm.cn/server_api/hotline-task-server",
     "flowUrl": "https://12319.shucm.cn/server_api/hotline-flow-server",
     "gisIconUrl": "",

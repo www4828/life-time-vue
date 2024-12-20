@@ -140,7 +140,6 @@ import { LoginModel } from "@/api/model/loginModel";
 import { Response } from "@/api/interface";
 import { setRem } from "@/utils/rem";
 import { useCode } from "@/hooks/useCode";
-import { useLock } from "@/hooks/useLock";
 export default defineComponent({
   name: "loginNew",
   components: {},
@@ -234,7 +233,7 @@ export default defineComponent({
 
         // loading.value = false;
         let clientLoginModel: LoginModel = {
-          userName: state.ruleForm.userName,
+          userCode: state.ruleForm.userName,
           passWord: state.ruleForm.password,
         };
         clientServer
@@ -252,10 +251,10 @@ export default defineComponent({
                   // debugger
                   sessionStorage.setItem("token", data.token);
                   // 存储用户信息到浏览器缓存
-                  Session.set("userInfo", data);
-                  const { hasLockCase } = useLock();
-                  hasLockCase();
-                  useCode();
+                  Session.set("userInfo", data.userDetail);
+                  // const { hasLockCase } = useLock();
+                  // hasLockCase();
+                  // useCode();
                   if (route.query.redirect) {
                     router.push({
                       path: <string>route.query?.redirect,
@@ -414,7 +413,7 @@ input {
   align-items: center;
   width: 100%;
   height: 100%;
-  background: url("@/assets/login/newLogin_bg.png") no-repeat #dbdde4;
+  background: url("@/assets/login/newLogin_bg.jpg") no-repeat #dbdde4;
   background-size: 100% 100%;
 
   .login-box {

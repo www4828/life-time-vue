@@ -6,8 +6,8 @@
     width: 100%;
     height: $headHeight;
     float: left;
-    // background-color: var(--sh3h-head-background-color);
-    background: url("@/assets/layout/nav-bg.png") no-repeat;
+    background-color: var(--sh3h-head-background-color);
+    // background: url("@/assets/layout/nav-bg.png") no-repeat;
     background-size: 100% 100%;
   }
   .sidebar-container {

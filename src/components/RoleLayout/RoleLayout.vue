@@ -4,18 +4,10 @@
             <div class="search">
                 <slot name="search"></slot>
             </div>
-            <!-- <div class="button">
-                <slot name="button"></slot>
-            </div> -->
             <div class="table">
                 <slot name="table"></slot>
             </div>
         </div>
-        <!-- <div class="contentWrapper">
-            <div class="content">
-                <slot name="content"></slot>
-            </div>
-        </div> -->
     </div>
 </template>
 <style lang="scss" scoped>

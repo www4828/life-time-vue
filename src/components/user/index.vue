@@ -26,7 +26,6 @@
 <script lang="ts">
 import { useStore } from "@/store";
 import { Session } from "@/utils/storage";
-import { useLock } from "@/hooks/useLock";
 import { defineComponent, ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -60,13 +59,10 @@ export default defineComponent({
     let dialogVisible = ref(false);
     const store = useStore();
     const router = useRouter();
-    const { hasLockCase } = useLock();
     const onHandleCommandClick = (path: string) => {
       switch (path) {
         case "logout":
-          hasLockCase().then(() => {
-            logout();
-          });
+          logout();
           break;
         case "updatePassword":
           dialogVisible.value = true;

@@ -29,10 +29,7 @@
           <el-table-column prop="authorizedGrantTypes" align="center" label="客户端授权类型" min-width="35%" />
           <el-table-column prop="autoApprove" align="center" label="自动授权" min-width="10%">
             <template #default="scope">
-              <el-tag
-                  :type="scope.row.autoApprove == 'true' ? 'success' : 'danger'"
-                  effect="plain"
-                >
+              <el-tag :type="scope.row.autoApprove == 'true' ? 'success' : 'danger'" effect="plain" >
                   {{ scope.row.autoApprove == "true" ? "开启" : "未开启" }}
                 </el-tag>
             </template>
@@ -162,7 +159,7 @@ const resetPassword = (row:ClientModel)=>{
   ElMessageBox.prompt('', '请输入新的客户端密码', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
-    inputValidator: (value)=>{
+    inputValidator: (value:string)=>{
       if(value){
         return true
       }else{
@@ -171,7 +168,7 @@ const resetPassword = (row:ClientModel)=>{
     },
     inputErrorMessage: '必填',
   })
-    .then((value) => {
+    .then((value:any) => {
       console.log(value);
       
       clientSever.resetPassword(value.value,row.clientId).then(res=>{

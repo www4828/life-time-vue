@@ -18,8 +18,10 @@
                 <Screenfull />
             </div>
             <div class="info-item">
-                <User :name="userinfo.name!" :deptment="userinfo.departmentList.map((i: any) => i.departmentName).join(',')"
-                    :avatar="Icon" />
+                <!-- <User :name="userinfo.name!" :deptment="userinfo.departmentList.map((i: any) => i.departmentName).join(',')"
+                    :avatar="Icon" /> -->
+                    <User :name="userinfo.name!" :deptment="userinfo.departCode"
+                      :avatar="Icon" />
             </div>
         </div>
     </div>

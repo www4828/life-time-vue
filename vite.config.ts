@@ -54,10 +54,10 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
-        '/taskSmsUrl': {
-          target: 'http://47.97.163.17:8084',
+        '/sysUrl': {
+          target: 'http://8.155.10.223/lifetime-api/lifetime-manager-server',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/taskSmsUrl/, ''),
+          rewrite: (path) => path.replace(/^\/sysUrl/, ''),
         },
         '/mediaUrl': {
           target: 'https://cy.fengxian.gov.cn/file-service',

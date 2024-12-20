@@ -14,7 +14,7 @@ const themeConfigModule: Module<ThemeConfigState, RootStateTypes> = {
       isTagsView: true, //显示标签页
       isTagsViewIcon: true, //显示标签页图标
       isFooter: true, //显示底部系统信息
-      footerText: '©2022 上海三高计算机中心股份有限公司 版权所有',
+      footerText: '',
       isWarteMark: true, //显示水印(默认当前用户)
       animation: 'slide-right', //动态
       globalTitle: '后台集成管理系统', //系统标题
@@ -118,7 +118,7 @@ const themeConfigModule: Module<ThemeConfigState, RootStateTypes> = {
         },
         {
           name: '--sh3h-head-background-color',
-          value: '#0C1935',
+          value: '#2459A8',
           type: 'color',
           opacity: false,
           description: 'head背景颜色',

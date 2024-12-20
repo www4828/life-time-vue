@@ -6,15 +6,14 @@ import { Response } from '@/api/interface'
 import { useCode } from '@/hooks/useCode'
 import { useTheme } from '@/hooks/useTheme'
 import { cloneDeep, uniqueId } from 'lodash-es'
-import { useCaseNum } from '@/hooks/useCaseNum'
+
 import { useDepartment } from '@/hooks/useDepartment'
 import { UserService } from '@/api/service/System/UserService'
 import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { PermissionService } from '@/api/service/System/PermissionService'
 
 const iv = '1ci5crnda6ojzgtr',
-  key = 'f1e336ca53304ef788908ee6853e5c0e',
-  { getCaseNum } = await useCaseNum()
+  key = 'f1e336ca53304ef788908ee6853e5c0e'
 
 const permissionSever = new PermissionService()
 export enum NODE_CODE {
@@ -245,7 +244,7 @@ function calField (tree: any) {
   })
   return tree
 }
-function deepMenu(data: any, arr: any, parentId: string, totalMenus: any) {
+function deepMenu(data: any, arr: any, parentId: string) {
   for (let i = 0; i < data.length; i++) {
     const item = data[i]
     if (item.parentID === parentId) {
@@ -269,29 +268,21 @@ function deepMenu(data: any, arr: any, parentId: string, totalMenus: any) {
           isIframe: false,
           flowName: flowName,
           flag: flag, // 标识位 如果是0就不展示案件数字
-          nodeCode: nodeCode,
-          caseNum:
-            totalMenus.find(
-              (menu: any) =>
-                nodeCode === menu.nodeCode &&
-                menu.flowName === flowName &&
-                flag === '1'
-            )?.count || 0,
+          nodeCode: nodeCode
         },
         query: getQueryParams(url),
         permissionId: item.permissionID,
         parentId: item.parentID,
         children: [],
       })
-      deepMenu(item.childs, arr[i].children, item.permissionID, totalMenus)
+      deepMenu(item.childs, arr[i].children, item.permissionID)
     }
   }
 }
 export async function setCaseNum() {
   const menus = Session.get("menus")
   const result: any = []
-  const totalMenus = await getCaseNum()
-  deepMenu(menus, result, '1', totalMenus)
+  deepMenu(menus, result, '1')
   console.log(result)
   let data = calField(result)
   data.unshift({

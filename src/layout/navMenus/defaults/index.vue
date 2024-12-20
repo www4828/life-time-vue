@@ -83,10 +83,10 @@ export default defineComponent({
         deepCompareAndReplace(state.menuLists, data);
       });
     };
-    const timer = setInterval(getCaseNum, Number(1000 * 60 * 3));
-    onBeforeUnmount(() => {
-      clearInterval(timer);
-    });
+    // const timer = setInterval(getCaseNum, Number(1000 * 60 * 3));
+    // onBeforeUnmount(() => {
+    //   clearInterval(timer);
+    // });
     onBeforeMount(() => {
       (state.menuLists as any) = filterRoutesFun(store.state.routesList.routesList);
     });

@@ -74,19 +74,6 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/news',
-    name: 'news',
-    component: () => import('@/views/login/portal.vue'),
-    meta: {
-      title: 'message.staticRoutes.notFound',
-    },
-    beforeEnter: (to, from, next) => {
-      setRem()
-      useTheme()
-      next()
-    },
-  }, 
-  {
     path: '/portal',
     name: 'portal',
     component: () => import('@/views/login/portal.vue'),
@@ -126,16 +113,5 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     name: 'jumpPage',
     component: () => import('@/views/jumpPage/index.vue'),
     meta: {},
-  },
-  {
-    path: '/wenjuan',
-    name: 'wenjuan',
-    component: () => import('@/views/questionnaires/index.vue'),
-    meta: {},
-    beforeEnter: (to, from, next) => {
-      setRem()
-      useTheme()
-      next()
-    },
   }
 ]

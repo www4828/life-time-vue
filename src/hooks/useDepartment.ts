@@ -12,34 +12,37 @@ interface DepartmentList {
 }
 interface UserInfo {
   id: string
-  departmentList: DepartmentList[]
-  token: string
-  username: string
-  name: string
-  mobile: string
+  departmentList?: DepartmentList[]
+  "address": string
+  "avatar": string
+  "createUserName": string
+  "departCode": string
+  "departName": string
+  "email": string
+  "idCard": string
+  "mobile": string
+  "passWord": string
+  "remark": string
+  "sex": string,
+  "sort": string,
+  "status": string,
+  "userCode": string
+  "userName": string
+  "userNickName": string
+  "wx": string
 }
 export function useDepartment() {
-  const { departmentList, username, name, id, token, mobile }: UserInfo = JSON.parse(
-    sessionStorage.getItem('userInfo')!
-  )
-  const currentDepartmentCode = departmentList[0].departmentCode
-  const currentDepartmentCodeName = departmentList[0].departmentName
-  const currentDepartmentLevel = departmentList[0].departmentLevel
-  const contactNumber = departmentList[0].contactNumber
-  const homeUrl = departmentList[0].homeUrl
-  const parentDepartCode = departmentList[0].departmentParentCode
+  const { departCode, departName, userName, userCode, id, mobile }: UserInfo = JSON.parse(sessionStorage.getItem('userInfo')!)
+  const currentDepartmentCode = departCode
+  const currentDepartmentCodeName = departName
+  const currentDepartmentLevel = 0
   return {
-    departmentList,
-    username,
-    name,
+    userName,
+    userCode,
     currentDepartmentCode,
     currentDepartmentCodeName,
     currentDepartmentLevel,
-    parentDepartCode,
-    contactNumber,
     id,
-    token,
-    homeUrl,
     mobile
   }
 }
