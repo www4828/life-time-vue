@@ -77,6 +77,6 @@ watch(props, (newValue, oldValue) => {
   left: 10px;
 }
 ::v-deep(.el-input__inner) {
-  color: var(--sh3h-head-font-color) !important;
+  color: var(--lt-head-font-color) !important;
 }
 </style>

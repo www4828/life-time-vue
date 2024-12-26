@@ -1,23 +1,16 @@
 <template>
   <Layout>
-    <template #search>
-      <div class="header-search">
-        <el-input placeholder="请输入内容" :prefix-icon="Search" v-model="keywords">
-        </el-input>
-      </div>
-      <!--这是一个完美的分割线-->
-      <div class="split-line"></div>
-    </template>
     <template #tree>
-      <el-tree
+      <PermissionTree
         ref="treeRef"
-        :props="treeProps"
-        :data="treeData"
-        class="treeRef"
-        highlight-current
-        node-key="id"
-        :filter-node-method="filterNode"
-        @node-click="nodeClick"
+        @handleNodeClick="nodeClick"
+        :refresh="state.refresh"
+        @setRefresh="setRefresh" 
+        :treeJson="{
+          type: permissionSever,
+          name: 'name',
+          code: 'permissionCode',
+        }"
       />
     </template>
     <template #button>
@@ -25,29 +18,28 @@
       <el-button
         type="danger"
         @click="deletePermission"
-        :disabled="form.parentID === '-1'"
+        :disabled="detail.permission.parentId === '-1'"
         >删除</el-button
       >
     </template>
     <template #content>
       <el-form
         ref="authForm"
-        :model="form"
+        :model="detail.permission"
         label-position="left"
         label-width="140px"
         :rules="rules"
         inline
-        :disabled="form.parentID === '-1'"
       >
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="父级编码" prop="parentID">
-              <el-input v-model="form.parentID" disabled> </el-input>
+            <el-form-item label="父级编码" prop="parentId">
+              <el-input v-model="detail.permission.parentId" disabled> </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="权限类型" prop="type">
-              <el-select v-model="form.type" placeholder="权限类型">
+              <el-select v-model="detail.permission.type" placeholder="权限类型">
                 <el-option
                   v-for="item in roleOption"
                   :label="item.label"
@@ -58,27 +50,36 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="权限名称" prop="name">
-              <el-input v-model.trim="form.name" maxlength="20"></el-input>
+              <el-input v-model.trim="detail.permission.name" maxlength="20"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="环节编码" prop="nodeCode">
-              <el-input v-model.trim="form.nodeCode" maxlength="20"></el-input>
+            <el-form-item label="权限编码" prop="permissionId">
+              <el-input v-model.trim="detail.permission.permissionId" maxlength="20"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="权限地址" prop="url">
-              <el-input v-model.trim="form.url"></el-input>
+              <el-input v-model.trim="detail.permission.url"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="form.type === '1'">
+          <el-col :span="8" v-if="detail.permission.type == '2'">
+            <el-form-item label="标签" prop="tag">
+              <el-input v-model.trim="detail.permission.tag"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" v-if="detail.permission.type === '1'">
             <el-form-item label="图标" prop="icon">
-              <IconSelect @change="handleChange" :value="form.icon" class="w100" />
+              <IconSelect
+                @change="val=>detail.permission.icon = val"
+                :value="detail.permission.icon"
+                class="w100"
+              />
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="form.type === '1'">
+          <el-col :span="8" v-if="detail.permission.type === '1'">
             <el-form-item label="打开方式" prop="openType">
-              <el-select v-model="form.openType" placeholder="打开方式">
+              <el-select v-model="detail.permission.openType" placeholder="打开方式">
                 <el-option
                   v-for="item in openTypeOption"
                   :label="item.label"
@@ -90,7 +91,7 @@
           <el-col :span="8">
             <el-form-item label="排序" prop="sort">
               <el-input
-                v-model.trim="form.sort"
+                v-model.trim="detail.permission.sort"
                 maxlength="5"
                 @input="valChange"
               ></el-input>
@@ -99,20 +100,79 @@
           <el-col :span="8">
             <el-form-item label="是否启用" prop="status">
               <el-switch
-                v-model="form.status"
+                v-model="detail.permission.status"
                 :active-value="1"
                 :inactive-value="0"
               ></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input
-                v-model="form.remark"
+                v-model="detail.permission.remark"
                 :rows="2"
                 type="textarea"
                 placeholder="备注"
               />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24" v-if="detail.permission.type == '1'">
+            <el-form-item label="按钮权限">
+              <el-table border :data="detail.buttons">
+                <el-table-column prop="name" label="按钮名称" align="center">
+                  <template #default="scope">
+                    <el-input
+                      v-model="detail.buttons[scope.$index].name"
+                      style="width: 100%"
+                      placeholder="按钮名称"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="tag" label="标签" align="center">
+                  <template #default="scope">
+                    <el-input
+                      v-model="detail.buttons[scope.$index].tag"
+                      style="width: 100%"
+                      placeholder="标签"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column prop="remark" label="备注" align="center">
+                  <template #default="scope">
+                    <el-input
+                      v-model="detail.buttons[scope.$index].remark"
+                      style="width: 100%"
+                      placeholder="备注"
+                    />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作"
+                  align="center"
+                  class-name="setting"
+                >
+                  <template #default="scope">
+                    <el-button
+                      type="primary"
+                      :icon="Plus"
+                      circle
+                      size="small"
+                      @click="addDocument"
+                      v-if="
+                        scope.$index === detail.buttons.length - 1 &&
+                        detail.buttons.length < 5
+                      "
+                    />
+                    <el-button
+                      type="danger"
+                      :icon="Delete"
+                      circle
+                      size="small"
+                      @click="deleteDocument(scope)"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-form-item>
           </el-col>
         </el-row>
@@ -129,275 +189,216 @@
   </Layout>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch } from "vue";
-import { Search } from "@element-plus/icons-vue";
-import type { FormRules, FormInstance } from "element-plus";
-import { ElMessage, ElTree, ElMessageBox, ElForm } from "element-plus";
-import type Node from "element-plus/es/components/tree/src/model/node";
-import Layout from "@/components/Layout/Layout.vue";
-import IconSelect from "@/components/iconSelect/index.vue";
-import { PermissionModel } from "@/api/model/permissionModel";
-import { PermissionService } from "@/api/service/System/PermissionService";
-import { Response, SearchParamsModel } from "@/api/interface";
-import { SearchModel } from "@/api/model/baseModel";
-import { tranListTotreeList } from "@/utils/toTree";
-import { cloneDeep } from "lodash-es";
+import { ref, reactive, watch } from 'vue'
+import { Plus, Delete } from '@element-plus/icons-vue'
+import type { FormRules, FormInstance } from 'element-plus'
+import { ElMessage, ElTree, ElMessageBox, ElForm } from 'element-plus'
+import type Node from 'element-plus/es/components/tree/src/model/node'
+import Layout from '@/components/Layout/Layout.vue'
+import IconSelect from '@/components/iconSelect/index.vue'
+import { PermissionModel, PermissionButtonModel } from '@/api/model/permissionModel'
+import { PermissionService } from '@/api/service/System/PermissionService'
+import { Response, SearchParamsModel } from '@/api/interface'
+import { SearchModel } from '@/api/model/baseModel'
+// import PermissionTree from '@/businessComponent/tree/permissionTree/index.vue'
+import PermissionTree from '@/businessComponent/tree/index.vue'
+import { cloneDeep } from 'lodash-es'
 
 interface Tree extends PermissionModel {
-  children?: Tree[];
+  children?: Tree[]
 }
-const customNodeClass = (data: any, node: Node) => {
-  if (node.level === 1) {
-    return "first";
-  } else if (data.type === 2) {
-    return "dept";
-  }
-  return "";
-};
-const treeProps = {
-  label: "name",
-  children: "children",
-  class: customNodeClass,
-};
-const roleOption = [
-  { label: "菜单", value: "1" },
-  /*  { label: "按钮", value: "2" }, */
-];
-const openTypeOption = [
-  { label: "路由", value: 0 },
-  { label: "iframe打开", value: 1 },
-  { label: "弹框", value: 2 },
-  { label: "新窗口", value: 3 },
-];
-const treeRef = ref<InstanceType<typeof ElTree>>();
-const authForm = ref<InstanceType<typeof ElForm>>();
-const keywords = ref("");
-const parentId = ref("");
-const sourceData = ref<PermissionModel[]>([]);
-const treeData = ref<Tree[]>([]);
-const rules = reactive<FormRules>({
-  name: [{ required: true, message: "名称不能为空", trigger: "blur" }],
-  nodeCode: [{ required: true, message: "环节编码不能为空", trigger: "blur" }],
-  url: [{ required: true, message: "权限地址不能为空", trigger: "blur" }],
-});
+type FormRules = /*unresolved*/ any
 
-const searchModel = ref<SearchModel<PermissionModel>[]>([new SearchModel()]);
-const searchParamsModel = reactive(new SearchParamsModel<PermissionModel>());
-const permissionSever = new PermissionService();
-const form = reactive<PermissionModel>({
-  id: "",
-  parentID: "",
-  name: "",
-  url: "",
-  icon: "",
-  nodeCode: "",
-  remark: "",
-  status: 1,
-  type: "1",
-  tag: "",
-  openType: 0,
-  sort: 1,
-  permissionID: "",
-});
+const roleOption = [
+  { label: '目录', value: '0' },
+  { label: '菜单', value: '1' },
+  { label: '按钮', value: '2' },
+]
+const openTypeOption = [
+  { label: '路由', value: '0' },
+  { label: 'iframe打开', value: '1' },
+  { label: '弹框', value: '2' },
+  { label: '新窗口', value: '3' },
+]
+const state = reactive({
+  refresh: false,
+  action: '',
+  formData: {} as PermissionModel,
+  parentId: ''
+})
+const detail = reactive<PermissionButtonModel>({
+  buttons: [] as PermissionModel[],
+  permission: {} as PermissionModel  // show->展示 edit->编辑 add->增加
+})
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const authForm = ref<InstanceType<typeof ElForm>>()
+const keywords = ref('')
+const rules = reactive<InstanceType<typeof FormRules>>({
+  name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+  nodeCode: [{ required: true, message: '环节编码不能为空', trigger: 'blur' }],
+  url: [{ required: true, message: '权限地址不能为空', trigger: 'blur' }],
+  type: [{ required: true, message: '权限类型不能为空', trigger: 'change' }],
+  permissionId: [{ required: true, message: '权限编码不能为空', trigger: 'blur' }],
+})
+
+const permissionSever = new PermissionService()
+
 const nodeClick = (data: Tree) => {
-  form.id = data.id;
-  form.parentID = parentId.value = data.parentID;
-  form.name = data.name;
-  form.url = data.url;
-  form.icon = data.icon;
-  form.nodeCode = data.nodeCode;
-  form.remark = data.remark;
-  form.status = data.status;
-  form.type = data.type;
-  form.tag = data.tag;
-  form.openType = data.openType;
-  form.sort = data.sort;
-};
-const filterNode = (value: string, data: any): boolean => {
-  if (!value) return true;
-  return data.name.includes(value);
-};
+  state.parentId = data.code
+  state.action = 'edit'
+  permissionSever.find(data.code!).then((res) => {
+    if (res.code == 200 && res.data.permission) {
+      detail.permission = cloneDeep(res.data.permission)
+      if (res.data.buttons?.length > 0) {
+        detail.buttons = res.data.buttons
+      } else {
+        detail.buttons = [{
+          name: '',
+          tag: '',
+          remark: '',
+          type: '2',
+          parentId: detail.permission.permissionId,
+          sort: 1,
+          status: 1,
+        } as PermissionModel]
+      }
+    }
+  })
+}
+
 const valChange = (value: string) => {
-  form.sort = Number(value.replace(/\D/g, ""));
-};
+  detail.permission.sort = Number(value.replace(/\D/g, ''))
+}
 const addChildren = () => {
-  if (parentId.value === "") {
-    ElMessage.error("请选择节点后再添加！");
-    return;
+  if (state.parentId === '') {
+    ElMessage.error('请选择节点后再添加！')
+    return
   }
-  const id = treeRef.value!.getCurrentKey();
-  if (id === "-1") {
-    form.parentID = "1";
-  } else {
-    form.parentID =
-      sourceData.value.find((data: PermissionModel) => data.id === id)!.permissionID ||
-      "";
-  }
-  form.id = "";
-  form.name = "";
-  form.url = "";
-  form.icon = "";
-  form.nodeCode = "";
-  form.remark = "";
-  form.status = 1;
-  form.type = "1";
-  form.tag = "";
-  form.openType = 0;
-  form.sort = 1;
-};
-const handleChange = (val: string) => {
-  form.icon = val;
-};
+  state.action = 'add'
+  reset()
+}
+
 const reset = () => {
-  form.id = "";
-  form.parentID = "";
-  form.name = "";
-  form.url = "";
-  form.icon = "";
-  form.nodeCode = "";
-  form.remark = "";
-  form.status = 1;
-  form.type = "1";
-  form.tag = "";
-  form.openType = 0;
-  form.sort = 1;
-};
-const reload = () => {
-  reset();
-  getAll();
-};
+  detail.permission = {status: 1,sort: 1,parentId:state.parentId} as PermissionModel
+  detail.buttons = [{
+    name: '',
+    tag: '',
+    remark: '',
+    type: '2',
+    parentId: state.parentId,
+    sort: 1,
+    status: 1,
+  } as PermissionModel]
+}
+
 const cancel = () => {
-  reload();
-  authForm.value!.clearValidate();
-};
+  reset()
+  authForm.value!.clearValidate()
+}
 const deletePermission = () => {
-  if (form.parentID === "-1") {
-    ElMessage.error("根节点无法删除！");
-    return;
+  if (detail.permission.permissionId === '') {
+    ElMessage.error('请选择一个节点删除！')
+    return
   }
-  if (form.id === "") {
-    ElMessage.error("请选择一个节点删除！");
-    return;
-  }
-  const tree = treeRef.value;
-  const currentData = tree!.getCurrentNode();
-  if (currentData.children.length > 0) {
-    ElMessage.error("请先删除子节点!");
-    return;
-  }
-  ElMessageBox.confirm("确定要删除吗？", "删除", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+  ElMessageBox.confirm('确定要删除吗？', '删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
     .then(() => {
-      permissionSever.delete(form.id!).then((res: Response) => {
+      permissionSever.delete(detail.permission.permissionId!).then((res: Response) => {
         if (res.code === 200) {
-          ElMessage.success("删除成功!");
-          tree!.remove(currentData);
+          ElMessage.success('删除成功!')
+          state.action = 'del'
+          state.refresh = true
+          reset()
         } else {
-          ElMessage.error(res.message);
+          ElMessage.error(res.message)
         }
-      });
+      })
     })
-    .finally(() => {
-      reset();
-    });
-};
-const getAll = () => {
-  searchParamsModel.searchParams = searchModel.value;
-  searchParamsModel.pageParams.pageSize = -1;
-  permissionSever.list(searchParamsModel).then((res: Response) => {
-    if (res.code === 200) {
-      const { results } = res.data;
-      sourceData.value = results;
-      const childrenData = tranListTotreeList(
-        cloneDeep(res.data.results),
-        "parentID",
-        "permissionID"
-      ).sort((a: PermissionModel, b: PermissionModel) => a.sort - b.sort);
-      treeData.value = [
-        {
-          id: "-1",
-          parentID: "-1",
-          name: "权限管理",
-          url: "",
-          icon: "",
-          nodeCode: "",
-          remark: "",
-          status: 1,
-          type: "0",
-          tag: "",
-          openType: 0,
-          sort: 1,
-          children: childrenData,
-          permissionID: "",
-        },
-      ];
-    } else {
-      ElMessage.error(res.message);
-    }
-  });
-};
-const deepSetValue = (data: Tree[], form: PermissionModel): void => {
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-    if (item.id === treeRef.value!.getCurrentKey()) {
-      item.name = form.name;
-      item.url = form.url;
-      item.icon = form.icon;
-      item.nodeCode = form.nodeCode;
-      item.openType = form.openType;
-      item.sort = form.sort;
-    } else {
-      const children = deepSetValue(item.children!, form);
-      if (children!) {
-        return children;
-      }
-    }
-  }
-};
+}
+
 const save = () => {
-  const tree = treeRef.value;
-  if (form.id === "") {
-    permissionSever.save(form).then((res: Response) => {
+  let buttons = detail.buttons.filter(i=>i.name)
+  
+  if (detail.permission.id) {
+    permissionSever.updateWithButton({
+      permission: detail.permission,
+      buttons
+    }).then((res: Response) => {
       if (res.code === 200) {
-        ElMessage.success("新增成功!");
-        form.id = res.data.id;
-        sourceData.value.push(res.data);
-        tree!.append({ ...form, children: [] }, tree!.getCurrentKey());
+        ElMessage.success('修改成功!')
+        state.formData = detail.permission
+        state.refresh = true
       } else {
-        ElMessage.error(res.message);
+        ElMessage.error(res.message)
       }
-    });
+    })
   } else {
-    permissionSever.update(form).then((res: Response) => {
+    permissionSever.saveWithButton({
+      permission: detail.permission,
+      buttons
+    }).then((res: Response) => {
       if (res.code === 200) {
-        ElMessage.success("修改成功!");
-        deepSetValue(treeData.value, form);
+        ElMessage.success('新增成功!')
+        state.formData = detail.permission
+        state.refresh = true
       } else {
-        ElMessage.error(res.message);
+        ElMessage.error(res.message)
       }
-    });
+    })
   }
-};
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate((valid, fields) => {
+}
+const submitForm = async (formEl: InstanceType<typeof FormInstance>) => {
+  if (!formEl) return
+  await formEl.validate((valid: boolean) => {
     if (valid) {
-      save();
-    } else {
-      console.log("error submit!", fields);
+      save()
     }
-  });
-};
-getAll();
+  })
+}
+
+const setRefresh = ()=>{
+  state.refresh =  false
+  state.action = ''
+  state.formData = {} as PermissionModel
+}
+
+const addDocument = () => {
+  detail.buttons.push({
+    name: '',
+    tag: '',
+    remark: '',
+    type: '2',
+    parentId: detail.permission.permissionId,
+    sort: 1,
+    status: 1,
+  } as PermissionModel)
+}
+const deleteDocument = (scope: any) => {
+  if(detail.buttons.length > 1){
+    detail.buttons = detail.buttons.filter(
+      (item, index) => index !== scope.$index
+    )
+  }else{
+    detail.buttons = [{
+      name: '',
+      tag: '',
+      remark: '',
+      type: '2',
+      parentId: state.parentId,
+      sort: 1,
+      status: 1,
+    } as PermissionModel]
+  }
+}
 watch(
   () => keywords.value,
   (keywords) => {
-    treeRef.value!.filter(keywords);
+    treeRef.value!.filter(keywords)
   }
-);
+)
 </script>
 
 <style lang="scss" scoped>
@@ -409,6 +410,7 @@ watch(
 }
 
 ::v-deep(.el-form) {
+  width: 100%;
   .el-form-item {
     display: flex;
     flex-direction: column;
@@ -422,12 +424,12 @@ watch(
 }
 
 .treeRef {
-  background-color: var(--sh3h-tree-background-color);
+  background-color: var(--lt-tree-background-color);
 }
 
 ::v-deep(.el-tree-node__expand-icon:before) {
-  background: url("@/assets/system/first.png") no-repeat;
-  content: "";
+  background: url('@/assets/system/first.png') no-repeat;
+  content: '';
   display: block;
   width: 13px;
   height: 13px;

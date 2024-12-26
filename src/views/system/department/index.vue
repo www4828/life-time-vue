@@ -9,7 +9,11 @@
         :action="state.action"
         :new="state.newDepartment"
         @setRefresh="setRefresh" 
-        @getTree="(val:any)=> state.deptList=val"
+        :treeJson="{
+          type: departmentServer,
+          name: 'departmentName',
+          code: 'departmentCode',
+        }"
       />
     </template>
     <template #button>
@@ -36,13 +40,18 @@
           :deptList="state.deptList"
         />
         <RoleTree
+          ref="roleTreeRef"
+          show-checkbox
+          :treeJson="{ type: roleServer }"
+        />
+        <!-- <RoleTree
           :departmentCode="state.departmentCode"
           :submit="state.submit"
           @onSubmit="onSubmit"
           :action="state.action"
           :new="state.newDepartment"
           @caseEntry="caseEntry"
-        />
+        /> -->
       </div>
     </template>
     <template #bottom>
@@ -53,8 +62,9 @@
 <script lang="ts" setup>
 import { reactive, unref, ref, watch } from 'vue'
 import DeptForm from './components/DeptForm.vue'
-import DepartmentTree from '@/businessComponent/tree/departmentTree/index.vue'
-import RoleTree from '@/businessComponent/tree/roleTree/roleTree.vue'
+// import DepartmentTree from '@/businessComponent/tree/departmentTree/index.vue'
+import DepartmentTree from '@/businessComponent/tree/index.vue'
+import RoleTree from '@/businessComponent/tree/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { DepartmentModel } from '@/api/model/departmentModel'
 import { DepartmentService } from '@/api/service/System/DepartmentService'
@@ -62,8 +72,10 @@ import { Response, SearchParamsModel } from '@/api/interface'
 import { SearchModel } from '@/api/model/baseModel'
 import Layout from '@/components/Layout/Layout.vue'
 import { cloneDeep, debounce } from 'lodash-es'
+import { RoleService } from "@/api/service/System/RoleService";
 
 const departmentServer = new DepartmentService()
+const roleServer = new RoleService()
 
 const state = reactive({
   filterText: '',
@@ -91,18 +103,32 @@ const state = reactive({
 const getDeptDetail = (departmentCode: string) => {
   state.loading = state.submitLoading = true
   state.text = '加载中...'
-  departmentServer.getByDepartmentCode(departmentCode).then((res) => {
+  departmentServer.list({
+    "pageParams": {
+      "pageIndex": 0,
+      "pageSize": -1
+    },
+    "searchParams": [
+      {
+        "key": "departmentCode",
+        "match": "eq",
+        "value": departmentCode
+      }
+    ]
+  }).then((res) => {
     state.action = 'edit'
     state.loading = state.submitLoading = false
     state.text = '正在提交数据，请稍后...'
-    state.detail = res.data
+    state.detail = res.data.results[0]
   })
 }
 const handleNodeClick = (node: any) => {
+  console.log(node);
+  
   state.currentNode = node
   state.action = 'edit'
-  if (node.departmentCode) {
-    state.departmentCode = node.departmentCode
+  if (node.code) {
+    state.departmentCode = node.code
     
     if (state.action == 'add' && !state.newDepartment) {
       ElMessageBox.confirm(
@@ -112,10 +138,10 @@ const handleNodeClick = (node: any) => {
         '提示'
       ).then(() => {
         state.detail = {} as DepartmentModel
-        getDeptDetail(node.departmentCode)
+        getDeptDetail(node.code)
       })
     } else {
-      getDeptDetail(node.departmentCode)
+      getDeptDetail(node.code)
     }
   }
 }
@@ -220,7 +246,7 @@ const submitHandle = ()=>{
   display: flex;
   .dept-add-box {
     width: 70%;
-    border-right: 1px solid var(--sh3h-tree-border-color);
+    border-right: 1px solid var(--lt-tree-border-color);
   }
   .tree_container {
     width: 30%;

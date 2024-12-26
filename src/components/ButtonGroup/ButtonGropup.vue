@@ -76,7 +76,7 @@ const clickDropdown = (command: string) => {
 .sh3h-dropdown-menu {
   width: 120px;
   background-color: var(--el-color-primary);
-  color: var(--sh3h-head-font-color);
+  color: var(--lt-head-font-color);
   border-bottom: 1px solid #fff;
 }
 
@@ -87,7 +87,7 @@ const clickDropdown = (command: string) => {
   justify-content: center;
   margin: 0;
   font-size: $font-size-14;
-  color: var(--sh3h-head-font-color);
+  color: var(--lt-ad-font-color);
   cursor: pointer;
   outline: 0;
 }
@@ -118,7 +118,7 @@ const clickDropdown = (command: string) => {
   height: 30px;
   line-height: 30px;
   font-size: $font-size-14;
-  color: var(--sh3h-head-font-color);
+  color: var(--lt-ad-font-color);
   background-color: var(--el-color-primary);
   text-align: center;
   cursor: pointer;

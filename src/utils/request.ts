@@ -3,6 +3,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { Session } from '@/utils/storage'
 import { loadAppConfig } from '@/utils/loadJson'
 import { Response } from '@/api/interface'
+import { useRouter } from "vue-router";
 
 type AuthType = 'Bearer' | 'Token'
 const {
@@ -58,6 +59,7 @@ class Service {
         // 对响应数据做点什么
 
         const res:Response = response.data
+        const router = useRouter();
         if (res.code && res.code !== 0) {
           // `token` 过期或者账号已在别处登录
           if (res.code === 401 || res.code === 4001) {
@@ -76,15 +78,19 @@ class Service {
       (error) => {
         // console.log(error.response)
         // 对响应错误做点什么
+        const router = useRouter();
         if (error.message.indexOf('timeout') != -1) {
           ElMessage.error('网络超时')
         } else if (error.message == 'Network Error') {
           ElMessage.error('网络连接错误')
-        } else if(error.response.status === 401){
+        } 
+        else if(error.response.status === 401){
           sessionStorage.clear()
           ElMessage.error('你已被登出，请重新登录')
-          location.href = '/'
-        } else {
+          // location.href = '/'
+          router.push({ path: '/login' });
+        } 
+        else {
           if (error.response.data) ElMessage.error(error.response.data.message || error.response.data.error)
           else ElMessage.error('接口路径找不到')
         }

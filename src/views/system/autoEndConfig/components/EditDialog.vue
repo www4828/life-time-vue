@@ -75,7 +75,7 @@ const data = reactive({
 })
 const dataForm = ref(ElForm)
 
-const rules = reactive<FormRules>({
+const rules = reactive<InstanceType<typeof FormRules>>({
   clientSecret:  [{ required: true, message: "密码不能为空", trigger: "blur" }]
 });
 

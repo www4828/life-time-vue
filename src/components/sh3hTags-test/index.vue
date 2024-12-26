@@ -65,11 +65,11 @@ $borderRadius: 22px;
     }
     &:before {
         top: 0;
-        background:var(--sh3h-theme-background-color);
+        background:var(--lt-theme-background-color);
     }
     &:after {
         bottom: 0;
-        background: var(--sh3h-theme-color-light-1);
+        background: var(--lt-eme-color-light-1);
     }
     .tab-list {
         display: block;
@@ -90,17 +90,17 @@ $borderRadius: 22px;
             .tab-item.left {
                 border-bottom-right-radius: $borderRadius;
                 border-top-right-radius: 0;
-                background:var(--sh3h-theme-background-color);
+                background:var(--lt-eme-background-color);
                 .text {
-                    color:  var(--sh3h-theme-color-light-1);                    
+                    color:  var(--lt-eme-color-light-1);                    
                 }
             }
             .tab-item.right {
                 border-top-left-radius: $borderRadius;
-                background: var(--sh3h-theme-color-light-1);
+                background: var(--lt-eme-color-light-1);
                 border-bottom-left-radius: 0;
                 .text {
-                    color:  var(--sh3h-theme-background-color); 
+                    color:  var(--lt-eme-background-color); 
                 }
             }
         }
@@ -117,18 +117,18 @@ $borderRadius: 22px;
             transform: skewX(-10deg);
             line-height: 40px;
             font-size:var(--el-font-size-base);
-            font-family:var(--sh3h-font-family-medium) ;
+            font-family:var(--lt-nt-family-medium) ;
             text-align: center;
             user-select: none;
         }
         &.left {
-            background: var(--sh3h-theme-color-light-1);
-            color: var(--sh3h-theme-background-color); 
+            background: var(--lt-eme-color-light-1);
+            color: var(--lt-eme-background-color); 
             border-top-right-radius: $borderRadius;
         }
         &.right {
-            background:var(--sh3h-theme-background-color);
-            color: var(--sh3h-theme-color-light-1);
+            background:var(--lt-eme-background-color);
+            color: var(--lt-eme-color-light-1);
             border-bottom-left-radius: $borderRadius;
         }
     }
@@ -138,7 +138,7 @@ $borderRadius: 22px;
   width: 100%;
   height: calc(100% - 40px);
   float: left;
-  background: var(--sh3h-theme-background-color);
+  background: var(--lt-eme-background-color);
   margin: 0 0 0 0;
 }
 

@@ -15,7 +15,7 @@
         :data="data.list"
         :props="defaultProps"
         @node-click="handleNodeClick"
-        node-key="code"
+        node-key="id"
         :filter-node-method="filterNode"
         ref="treeRef"
         highlight-current
@@ -35,8 +35,9 @@ import type Node from 'element-plus/es/components/tree/src/model/node'
 import { DepartmentModel } from '@/api/model/departmentModel'
 import { DepartmentService } from '@/api/service/System/DepartmentService'
 import { Session } from '@/utils/storage'
+import { PermissionService } from "@/api/service/System/PermissionService";
 
-const departmentServer = new DepartmentService()
+const permissionServer = new PermissionService()
 const treeRef: any = ref(null)
 const emits = defineEmits(['handleNodeClick', 'setRefresh', 'getTree'])
 const props = defineProps({
@@ -81,22 +82,15 @@ const handleNodeClick = (node: any) => {
 }
 // 读取全部
 const loadData = () => {
-  let { departmentList } = Session.get('userInfo')
   data.list = []
-  departmentServer
+  permissionServer
     .tree({
       pageParams: {
         pageIndex: 0,
         pageSize: -1,
         total: 0,
       },
-      searchParams: [
-        {
-          key: 'departmentCode',
-          match: 'eq',
-          value: '',
-        },
-      ],
+      searchParams: [],
     })
     .then((res) => {
       data.list = res.data;

@@ -88,7 +88,7 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     float: left;
-    color: var(--sh3h-head-font-color);
+    color: var(--lt-head-font-color);
 
     .login-box {
         width: auto;

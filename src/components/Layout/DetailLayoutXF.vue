@@ -109,16 +109,16 @@ $rightWidth: 400px;
     .tab {
       position: relative;
       @include fontStyle(
-        var(--sh3h-font-family-medium),
+        var(--lt-font-family-medium),
         $font-size-18,
-        var(--sh3h-label-form-color)
+        var(--lt-bel-form-color)
       );
       font-weight: bold;
       margin-right: 20px;
       cursor: pointer;
 
       &.active {
-        color: var(--sh3h-menu-active-font-color);
+        color: var(--lt-nu-active-font-color);
 
         &::before {
           position: absolute;
@@ -129,7 +129,7 @@ $rightWidth: 400px;
           width: 40px;
           height: 2px;
           border-radius: 5px;
-          background-color: var(--sh3h-menu-active-font-color);
+          background-color: var(--lt-nu-active-font-color);
         }
       }
     }
@@ -160,7 +160,7 @@ $rightWidth: 400px;
         }
 
         .baseInfo {
-          background-color: var(--sh3h-workTicket-background-color);
+          background-color: var(--lt-rkTicket-background-color);
           padding: $padding;
           margin-right: $marginB;
           margin-bottom: $marginB;
@@ -177,7 +177,7 @@ $rightWidth: 400px;
           flex: 1;
           // height: 0;
           // height: calc(100% - 350px - 50px);
-          background-color: var(--sh3h-workTicket-background-color);
+          background-color: var(--lt-rkTicket-background-color);
           padding: $padding;
           margin-right: $marginB;
         }
@@ -191,7 +191,7 @@ $rightWidth: 400px;
         margin-top: -20px;
         margin-right: 10px;
         padding-right: 10px;
-        background-color: var(--sh3h-workTicket-background-color);
+        background-color: var(--lt-rkTicket-background-color);
       }
     }
 
@@ -204,7 +204,7 @@ $rightWidth: 400px;
       box-sizing: border-box;
 
       .processSlotWrapper {
-        background-color: var(--sh3h-workTicket-background-color);
+        background-color: var(--lt-rkTicket-background-color);
         padding: 5px 10px;
         box-sizing: border-box;
         height: 50%;
@@ -218,7 +218,7 @@ $rightWidth: 400px;
         // margin-bottom: 10px;
         padding: 5px 10px;
         box-sizing: border-box;
-        background-color: var(--sh3h-workTicket-background-color);
+        background-color: var(--lt-rkTicket-background-color);
         flex: 1;
 
         & > div {

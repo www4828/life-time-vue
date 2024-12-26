@@ -2,7 +2,7 @@
   <div class="tree_container">
     <template v-if="!props.show">
       <div class="rolePool">
-        部门可选择的角色池
+        角色池
       </div>
       <div class="header-search">
         <el-input
@@ -70,7 +70,7 @@ const data = reactive({
 })
 
 const customNodeClass = (data: any, node: Node) => {
-  if (node.data.rolename) {
+  if (node.data.roleName) {
     return 'none'
   }
   if (node.level == 1) {
@@ -81,7 +81,7 @@ const customNodeClass = (data: any, node: Node) => {
   return 'dept'
 }
 const defaultProps = {
-  label: 'rolename',
+  label: 'roleName',
   value: 'roleId',
   class: customNodeClass,
 }
@@ -89,7 +89,7 @@ const defaultProps = {
 // 搜索
 const filterNode = (value: string, data: RoleModel) => {
   if (!value) return true
-  return data.rolename.includes(value)
+  return data.roleName.includes(value)
 }
 
 const handleCheckChange = (node: any, check: any) => {
@@ -97,7 +97,7 @@ const handleCheckChange = (node: any, check: any) => {
     ElMessage.error('请选择部门后设置角色')
     roletreeRef.value.setCheckedNodes([])
   }else{
-    if(node.rolename === '工单录入'){
+    if(node.roleName === '工单录入'){
       emits('caseEntry',check)
     }
   }
@@ -181,7 +181,7 @@ watch(()=>props.roleList, (val) => {
     top: -15px;
     text-align: center;
     box-sizing: border-box;
-    color: var(--sh3h-tree-color);
+    color: var(--lt-tree-color);
   }
 }
 </style>

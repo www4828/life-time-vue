@@ -97,7 +97,7 @@ export default defineComponent({
   width: 15px;
   height: 15px;
   float: left;
-  fill: var(--sh3h-menu-font-color);
+  fill: var(--lt-menu-font-color);
   @include flex-box(center, center);
   margin-right: 5px;
   .icon {

@@ -1,10 +1,15 @@
 import { BaseModel } from '@/api/model/baseModel'
 
 export class RoleModel extends BaseModel {
-    "roleId": string
-    "rolename": string
     "sort": number
+    "status": number
     "remark": string
-    "status": number|string
-    "permissionId": string | number
+    "roleCode": string
+    "roleName": string
+    "roleParentCode": string
+    "roleType": string
+    "dataDepts": string
+    "dataScope": string
+    "dataUsers": string
+    "permissions": string
 }

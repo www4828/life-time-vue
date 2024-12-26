@@ -6,9 +6,9 @@
               <el-form-item label="系统标题:">
                   <el-input v-model="getThemeConfig.globalTitle" />
               </el-form-item>
-              <!-- <el-form-item label="系统子标题:">
+              <el-form-item label="系统子标题:">
                   <el-input v-model="getThemeConfig.globalViceTitle" />
-              </el-form-item>-->
+              </el-form-item>
               <el-form-item label="系统布局:">
                   <el-select v-model="getThemeConfig.layout">
                       <el-option label="默认" value="defaults" />
@@ -17,7 +17,7 @@
               </el-form-item>
               <el-form-item label="开启系统Logo:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isShowLogo" />
+                      <el-switch v-model="getThemeConfig.isShowLogo"   />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="动画方式:">
@@ -29,35 +29,40 @@
               </el-form-item>
               <el-form-item label="开启水印:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isWarteMark" />
+                      <el-switch v-model="getThemeConfig.isWarteMark"   />
                   </el-radio-group>
               </el-form-item>
               <el-divider content-position="left">菜单设置</el-divider>
               <el-form-item label="开启菜单图标:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isMenuIcon" />
+                      <el-switch v-model="getThemeConfig.isMenuIcon"   />
+                  </el-radio-group>
+              </el-form-item>
+              <el-form-item label="展开/收起左侧菜单点击:">
+                  <el-radio-group>
+                      <el-switch v-model="getThemeConfig.isCollapse"   />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="开启菜单手风琴:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isUniqueOpened" />
+                      <el-switch v-model="getThemeConfig.isUniqueOpened"   />
                   </el-radio-group>
               </el-form-item>
               <el-divider content-position="left">面包屑设置</el-divider>
               <el-form-item label="开启面包屑:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isBreadCrumb" />
+                      <el-switch v-model="getThemeConfig.isBreadCrumb"   />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="开启面包屑图标:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isBreadCrumbIcon"  :disabled="!getThemeConfig.isBreadCrumb"/>
+                      <el-switch v-model="getThemeConfig.isBreadCrumbIcon"  :disabled="!getThemeConfig.isBreadCrumb"  />
                   </el-radio-group>
               </el-form-item>
               <el-divider content-position="left">标签设置</el-divider>
               <el-form-item label="开启标签:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isTagsView" />
+                      <el-switch v-model="getThemeConfig.isTagsView"   />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="标签样式:">
@@ -68,23 +73,23 @@
               </el-form-item>
               <el-form-item label="开启标签图标:" >
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isTagsViewIcon"  :disabled="!getThemeConfig.isTagsView"/>
+                      <el-switch v-model="getThemeConfig.isTagsViewIcon"  :disabled="!getThemeConfig.isTagsView"  />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="开启标签缓存:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isCacheTagsView" :disabled="!getThemeConfig.isTagsView"/>
+                      <el-switch v-model="getThemeConfig.isCacheTagsView" :disabled="!getThemeConfig.isTagsView"  />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="开启标签拖拽:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isSortableTagsView" :disabled="!getThemeConfig.isTagsView" />
+                      <el-switch v-model="getThemeConfig.isSortableTagsView" :disabled="!getThemeConfig.isTagsView"   />
                   </el-radio-group>
               </el-form-item>
               <el-divider content-position="left">底部设置</el-divider>
               <el-form-item label="开启底部:">
                   <el-radio-group>
-                      <el-switch v-model="getThemeConfig.isFooter" />
+                      <el-switch v-model="getThemeConfig.isFooter"   />
                   </el-radio-group>
               </el-form-item>
               <el-form-item label="底部信息:">
@@ -92,34 +97,38 @@
               </el-form-item> 
           </el-form>
         </Scrollbar>
-        <el-button type="primary" >保存</el-button>
+        <el-button type="primary" @click="saveHandle" >保存</el-button>
     </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, reactive, computed } from "vue"
 import Scrollbar from "@/components/scrollbar/index.vue";
 import { useStore } from "@/store";
+import { ThemeService } from "@/api/service/System/ThemeService";
+import { ThemeConfigModel } from "@/api/model/themeModel";
+import { ElMessage } from "element-plus";
+import { cloneDeep } from "lodash-es";
 
-export default defineComponent({
-    name: "Setting",
-    components: {
-        Scrollbar
-    },
-    setup() {
-        const store = useStore(); 
-        const getThemeConfig = computed(() => {
-            return store.state.themeConfig.themeConfig;
-        });
-        const onSubmit = () => {
-            console.log('submit!')
-        }
-        return { 
-            getThemeConfig,
-            onSubmit
-
-        }
-    }
+const store = useStore(); 
+const themeService = new ThemeService()
+const getThemeConfig = computed(() => {
+    return store.state.themeConfig.themeConfig;
 });
+
+const saveHandle = () => {
+  let config = cloneDeep(store.state.themeConfig.themeConfig),
+  themeConfig = {} as ThemeConfigModel
+  for(let key in config){
+    themeConfig[key] = typeof config[key] === 'boolean' ? config[key].toString() : config[key]
+  }
+  
+  themeService.updateThemeConfig(themeConfig).then(res=>{
+    ElMessage({
+      message: res.message,
+      type: res.code == 200 ? "success" : "error",
+    });
+  })
+}
 </script>
 <style scoped lang="scss">
 .setting-layout-container {

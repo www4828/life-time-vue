@@ -180,9 +180,9 @@ const commandClick = (command: string, row: AutoEndConfigModel) => {
 }
 
 .sh3h-search-box {
-  background-color: var(--sh3h-tree-background-color);
+  background-color: var(--lt-tree-background-color);
   margin: 0;
-  // border: 1px solid var(--sh3h-tree-border-color);
+  // border: 1px solid var(--lt-tree-border-color);
 }
 
 ::v-deep(.button) {

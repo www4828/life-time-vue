@@ -43,8 +43,8 @@ export default defineComponent({
 	width: 100%;
     height: $footer-height;
     float: left;
-	background: var(--sh3h-footer-background-color); 
-    box-shadow: -1px -1px 5px var(--sh3h-shadow-color);
+	background: var(--lt-footer-background-color); 
+    box-shadow: -1px -1px 5px var(--lt-adow-color);
     @include flex-box(center,center);
     
 	&-warp { 
@@ -52,7 +52,7 @@ export default defineComponent({
         height: 100%;
         line-height:$footer-height ;
         float: left;
-		color: var(--sh3h-footer-font-color);
+		color: var(--lt-oter-font-color);
         font-size: $font-size-14;
         font-family: SourceHanSansCN-Medium; 
 		animation: error-num 1s ease-in-out;

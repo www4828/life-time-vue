@@ -17,15 +17,15 @@ $padding10: 10px;
 $leftWidth: 445px;
 
 .color {
-    border: 1px solid var(--sh3h-tree-border-color);
-    background-color: var(--sh3h-tree-background-color);
+    border: 1px solid var(--lt-tree-border-color);
+    background-color: var(--lt-tree-background-color);
 }
 
 .Layout {
     display: flex;
     width: 100%;
     height: 100%;
-    background-color: var(--sh3h-breadcrumb-background-color);
+    background-color: var(--lt-breadcrumb-background-color);
     padding: $margin;
     box-sizing: border-box;
 
@@ -51,7 +51,7 @@ $leftWidth: 445px;
             // overflow-y: hidden;
             // margin: $padding;
             // padding-top: $margin;
-            // border-top: 1px solid var(--sh3h-tree-border-color);
+            // border-top: 1px solid var(--lt-tree-border-color);
         }
 
         // .button {
@@ -76,11 +76,11 @@ $leftWidth: 445px;
 ::v-deep(.el-table th.el-table__cell) {
     -webkit-user-select: none;
     user-select: none;
-    //background-color: var(--sh3h-background-color);
+    //background-color: var(--lt-ckground-color);
 }
 
 ::v-deep(.el-table thead) {
-    color: var(--sh3h-theme-color);
+    color: var(--lt-eme-color);
 }
 </style>
   

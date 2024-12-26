@@ -200,6 +200,8 @@ export async function initRouter(token: string) {
 
   // 添加动态路由
   await setAddRoute()
+  await store.dispatch('themeConfig/setThemeConfig')
+  await store.dispatch('themeConfig/setColorList')
   // 缓存字典表
   // await store.dispatch('dictionary/setCodeList')
   // 缓存用户

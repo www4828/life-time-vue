@@ -160,7 +160,7 @@ export default defineComponent({
       float: left;
       font-size: $font-size-14;
       font-family: SourceHanSansCN-Medium;
-      color: var(--sh3h-breadcrumb-font-color);
+      color: var(--lt-breadcrumb-font-color);
       @include flex-box(center, center);
     }
   }
@@ -182,7 +182,7 @@ export default defineComponent({
         width: 15px;
         height: 15px;
         float: left;
-        fill: var(--sh3h-breadcrumb-active-font-color);
+        fill: var(--lt-eadcrumb-active-font-color);
       }
     }
 
@@ -192,7 +192,7 @@ export default defineComponent({
       float: left;
       font-size: $font-size-14;
       font-family: SourceHanSansCN-Medium;
-      color: var(--sh3h-breadcrumb-active-font-color);
+      color: var(--lt-eadcrumb-active-font-color);
       @include flex-box(center, center);
     }
   }

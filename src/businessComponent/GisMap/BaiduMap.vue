@@ -187,7 +187,7 @@ onUnmounted(() => {
     margin-bottom: 10px;
     cursor: pointer;
     &.active {
-      color: var(--sh3h-workTicket-background);
+      color: var(--lt-workTicket-background);
       font-weight: bold;
     }
   }

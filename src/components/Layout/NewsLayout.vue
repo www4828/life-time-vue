@@ -44,7 +44,7 @@ $firstOneWidth: 1050px;
 .NewsLayout {
     display: flex;
     flex-direction: column;
-    // background-color: var(--sh3h-breadcrumb-background-color);
+    // background-color: var(--lt-breadcrumb-background-color);
     width: 100%;
     height: 100%;
     box-sizing: border-box;

@@ -6,7 +6,7 @@
     width: 100%;
     height: $headHeight;
     float: left;
-    background-color: var(--sh3h-head-background-color);
+    background-color: var(--lt-head-background-color);
     // background: url("@/assets/layout/nav-bg.png") no-repeat;
     background-size: 100% 100%;
   }
@@ -14,11 +14,11 @@
     width: $sideBarWidth;
     height: calc(100% - $headHeight);
     float: left;
-    background-color: var(--sh3h-menu-background-color);
+    background-color: var(--lt-menu-background-color);
     background-size: 100% 100%;
     border-top-right-radius: 0;
     transition: width 0.4s;
-    // box-shadow: 2px 0px 5px var(--sh3h-shadow-color);
+    // box-shadow: 2px 0px 5px var(--lt-shadow-color);
   }
 
   .main-container {
@@ -26,7 +26,7 @@
     height: calc(100% - $headHeight);
     margin: 0 0 0 0;
     float: left;
-    background-color: var(--sh3h-footer-background-color); 
+    background-color: var(--lt-footer-background-color); 
     box-sizing: border-box;
     transition: width 0.4s;
     &.fullScreen {

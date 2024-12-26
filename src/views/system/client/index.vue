@@ -75,7 +75,7 @@ const tableData = reactive({
     { name: "编辑" },
     { name: "修改密码" },
     { name: "删除",id:'' }
-  ] as Array<ButtonInfoModel>,
+  ] as Array<any>,
 });
 let editform = reactive({}) as ClientModel;
 
@@ -197,9 +197,9 @@ const commandClick = (commandClick: string, row: ClientModel) => {
 }
 
 .sh3h-search-box {
-  background-color: var(--sh3h-tree-background-color);
+  background-color: var(--lt-tree-background-color);
   margin: 0;
-  // border: 1px solid var(--sh3h-tree-border-color);
+  // border: 1px solid var(--lt-tree-border-color);
 }
 
 ::v-deep(.button) {

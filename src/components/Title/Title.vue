@@ -28,9 +28,9 @@ const props = withDefaults(defineProps<{ title?: string; align?: Align }>(), {
   height: 20px;
   align-items: center;
   @include fontStyle(
-    var(--sh3h-font-family-medium),
+    var(--lt-font-family-medium),
     $font-size-18,
-    var(--sh3h-theme-color)
+    var(--lt-eme-color)
   );
   font-weight: bold;
   margin-bottom: 10px;

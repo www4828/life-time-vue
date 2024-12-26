@@ -21,7 +21,10 @@ export class RoleService implements RoleInterface {
     return this.request.put(this.baseUlr + `/${T.id}`, T)
   }
   list(searchParams: SearchParamsModel<RoleModel>): Promise<Response> {
-    return this.request.post(this.baseUlr + `/searchList`, searchParams)
+    return this.request.post(this.baseUlr + `/search`, searchParams)
+  }
+  tree(searchParams: SearchParamsModel<RoleModel>): Promise<Response> {
+    return this.request.post(this.baseUlr + `/tree`, searchParams)
   }
   delete(id: string): Promise<Response> {
     return this.request.delete(this.baseUlr + `/${id}`)

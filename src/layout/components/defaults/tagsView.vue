@@ -643,7 +643,7 @@ export default defineComponent({
     height: $tagsView-height;
     display: flex;
     align-items: center;
-    color: var(--sh3h-tags-font-color);
+    color: var(--lt-tags-font-color);
     font-size: $font-size-14;
     font-family: SourceHanSansCN-Medium;
     white-space: nowrap;
@@ -656,9 +656,9 @@ export default defineComponent({
       align-items: center;
       padding: 0 $tagPadding;
       margin-right: 2px;
-      background-color: var(--sh3h-tags-color);
+      background-color: var(--lt-tags-color);
       background-size: 100% 100%;
-      color: var(--sh3h-head-font-color);
+      color: var(--lt-head-font-color);
       transform: skewX(-15deg);
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
@@ -686,8 +686,8 @@ export default defineComponent({
         line-height: 18px;
         right: -10px;
         &:hover {
-          color: var(--sh3h-head-font-color);
-          background-color: var(--sh3h-tags-font-color);
+          color: var(--lt-head-font-color);
+          background-color: var(--lt-tags-font-color);
         }
       }
       .layout-icon-active {
@@ -698,9 +698,9 @@ export default defineComponent({
       }
     }
     .is-active {
-      color: var(--sh3h-tags-active-font-color);
-      background: var(--sh3h-head-font-color);
-      border-color: var(--sh3h-tags-active-background-color);
+      color: var(--lt-tags-active-font-color);
+      background: var(--lt-head-font-color);
+      border-color: var(--lt-tags-active-background-color);
       transition: border-color 3s ease;
       i,
       span {

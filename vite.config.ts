@@ -63,11 +63,6 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           target: 'https://cy.fengxian.gov.cn/file-service',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/mediaUrl/, ''),
-        },
-        '/sms': {
-          target: 'https://12319.shucm.cn/gateway-server/hotline-sms-service',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/sms/, ''),
         }
       },
     },

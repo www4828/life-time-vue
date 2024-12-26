@@ -249,9 +249,10 @@ export default defineComponent({
                 try {
                   // 存储 token 到浏览器缓存
                   // debugger
-                  sessionStorage.setItem("token", data.token);
+                  sessionStorage.setItem("token", data.authToken.access_token);
                   // 存储用户信息到浏览器缓存
                   Session.set("userInfo", data.userDetail);
+                  Session.set("authToken", data.authToken);
                   // const { hasLockCase } = useLock();
                   // hasLockCase();
                   // useCode();

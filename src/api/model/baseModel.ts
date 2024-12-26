@@ -10,6 +10,14 @@ export class BaseModel {
   modifierId?: string
   createUser?: string
 }
+export class TreeModel {
+  "code": string
+  "name": string
+  "child": string
+  "type"?: string
+  "note"?: string
+  "id": string
+}
 export type Match =
   | 'like'
   | 'eq'

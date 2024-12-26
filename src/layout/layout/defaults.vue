@@ -56,8 +56,8 @@ export default defineComponent({
       store.dispatch("themeConfig/toggleSideBar");
     };
     const onWartermarkChange = () => {
-      let { name } = useDepartment();
-      getThemeConfig.value.isWarteMark ? Watermark.set(name) : Watermark.del();
+      let { userCode } = useDepartment();
+      getThemeConfig.value.isWarteMark ? Watermark.set(userCode) : Watermark.del();
     };
     const isTagsViewFull = computed(
       () => !store.state.tagsViewRoutes.isTagsViewCurrenFull
@@ -89,6 +89,6 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   float: left;
-  background-color: var(--sh3h-background-color);
+  background-color: var(--lt-background-color);
 }
 </style>

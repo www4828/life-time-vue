@@ -11,10 +11,8 @@ export class DepartmentService implements DepartmentInterface {
   protected path: string = "departmentRole"
   protected userurl: string = 'userDepartment'
   private request
-  private request2
   constructor() {
     this.request = new RequestService('sysUrl').service!
-    this.request2 = new RequestService('flowUrl').service!
   }
   find(id: string): Promise<Response> {
     return this.request.get(this.baseUlr + `/${id}`)
@@ -29,13 +27,13 @@ export class DepartmentService implements DepartmentInterface {
     return this.request.put(this.baseUlr + `/${T.id}`, T)
   }
   list(searchParams: SearchParamsModel<DepartmentModel>): Promise<Response> {
-    return this.request.post(this.baseUlr + `/searchList`, searchParams)
+    return this.request.post(this.baseUlr + `/search`, searchParams)
   }
   delete(id: string): Promise<Response> {
     return this.request.delete( this.baseUlr + `/${id}`)
   }
-  tree(departmentParentCode: string, flag: boolean = true): Promise<Response> {
-    return this.request.get(this.baseUlr + `/tree?departmentParentCode=${departmentParentCode}&flag=${flag}`)
+  tree(searchParams: SearchParamsModel<DepartmentModel>): Promise<Response> {
+    return this.request.post(this.baseUlr + `/tree`, searchParams)
   }
   getCodeIsUsed(departmentCode: string): Promise<Response> {
     return this.request.get(this.baseUlr + `/departmentCode?departmentCode=${departmentCode}`)
@@ -81,9 +79,5 @@ export class DepartmentService implements DepartmentInterface {
   // 部门用户
   findDeptUser(departmentCode: string): Promise<Response> {
     return this.request.get(this.userurl + `/departmentCode?departmentCode=${departmentCode}`)
-  }
-  // 部门标签
-  dictionaryType(): Promise<Response> {
-    return this.request2.get(`/reflect/type?dictionaryType=2&parentCode=unit&typeCode=unit&typeLevel=1`)
   }
 }

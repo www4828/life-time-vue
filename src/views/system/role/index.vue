@@ -1,428 +1,392 @@
 <template>
-  <div class="wrapper">
-    <!-- <el-button @click="change">测试</el-button> -->
-    <RoleLayout>
-      <template #search>
-        <div class="sh3h-search-box div-flex-column">
-          <el-row>
-            <el-col :span="4">
-              <span class="sh3h-search-lable ">角色名称:</span>
-              <el-input class="sh3h-search-input"  v-model.trim="searchModel[0].value" />
-            </el-col>
-            <el-col :span="5">
-              <span class="sh3h-search-lable div-flex-right">是否启用:</span>
-              <el-select class="sh3h-search-input" v-model="searchModel[1].value" placeholder="请选择">
-                <el-option label="请选择" value />
-                <el-option label="启用" :value="1" />
-                <el-option label="停用" :value="0" />
+  <Layout>
+    <template #tree>
+      <Tree
+        ref="treeRef"
+        @handleNodeClick="nodeClick"
+        :refresh="state.refresh"
+        :new="state.formData"
+        @setRefresh="setRefresh" 
+        :treeJson="{
+          type: roleSever,
+          name: 'roleName',
+          code: 'roleCode',
+        }"
+      />
+    </template>
+    <template #button>
+      <el-button type="primary" @click="addChildren">新增下级</el-button>
+      <el-button
+        type="danger"
+        @click="deletePermission"
+        >删除</el-button
+      >
+    </template>
+    <template #content>
+      <el-form
+        ref="authForm"
+        :model="state.formData"
+        label-position="left"
+        label-width="140px"
+        :rules="rules"
+        inline
+        class="role-form"
+      >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="父级编码" prop="roleParentCode">
+              <el-input v-model="state.formData.roleParentCode" disabled> </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色编码" prop="roleCode">
+              <el-input v-model.trim="state.formData.roleCode" :disabled="state.mode === 'edit' " ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色类型" prop="roleType">
+              <el-select v-model="state.formData.roleType" placeholder="角色类型">
+                <el-option
+                  v-for="item in roleOption"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
-            </el-col>
-            <el-col :span="11"></el-col>
-            <el-col :span="4" class="div-flex-right">
-              <el-button type="primary" :icon="Search" @click="searchHandle">搜索</el-button>
-              <el-button type="primary" :icon="Plus" @click="add" class="save">增加</el-button>
-            </el-col>
-          </el-row>
-        </div>
-      </template>
-      <!-- <template #button>
-       
-        <el-button type="warning" @click="edit" class="save">修改</el-button>
-        <el-button type="danger" @click="remove" class="save">删除</el-button>
-      </template> -->
-      <template #table>
-        <!-- background: '#f2f7ff', -->
-        <!-- @row-click="tableCheck" highlight-current-row -->
-        <el-table :data="tableData.roleData" style="width:100%" height="100%"
-          :header-cell-style="{ 'text-align': 'center', }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column prop="rolename" label="角色名称" min-width="10%" />
-          <el-table-column prop="rolePer" label="角色权限" show-overflow-tooltip min-width="60%" />
-          <el-table-column prop="status" label="是否启用" min-width="5%">
-            <template #default="scope">
-              <el-tag v-if="scope.row.status" type="success">启用</el-tag>
-              <el-tag v-else type="danger">停用</el-tag>
-              <!-- <el-switch v-model="scope.row.status" disabled :active-value="1" :inactive-value="0" /> -->
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" min-width="15%">
-            <template #default="scope">
-              <ButtonGropup :row="scope.row" :list="tableData.buttonList" @dropdownClick="editHandle"
-                @commandClick="commandClick" />
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
-
-    </RoleLayout>
-
-    <EditDialog v-if="dialogState.EditDialog" :dialogVisible="dialogState.EditDialog" @close="editCloseDialog"
-      :editform="editform" :title="dialogState.titleName" :perData="treeData" :rolePerData="tableData.rolePerTreeDatas"
-      @save="dialogSave">
-    </EditDialog>
-    <!-- <Dialog v-if="dialog.Dialog" :dialogVisible="dialog.Dialog" :form="dialog.form" :tableData="dialog.tableData" :formType="dialog.type">
-    </Dialog> -->
-  </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="角色名称" prop="roleName">
+              <el-input v-model.trim="state.formData.roleName" maxlength="20"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="数据权限" prop="dataScope">
+              <el-select v-model="state.formData.dataScope" placeholder="数据权限">
+                <el-option
+                  v-for="item in dataScopes"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="state.formData.dataScope === '2' " >
+            <el-form-item label="自定义数据权限" prop="status" >
+              <el-switch
+                v-model="state.dataScope"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="用户"
+                inactive-text="部门"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="state.formData.dataScope === '2' && !state.dataScope ">
+            <el-form-item label="数据权限（部门）" prop="status">
+              <el-tree-select
+                v-model="state.formData.dataDepts"
+                :data="state.departmentList"
+                multiple
+                :render-after-expand="false"
+                node-key="code"
+                :props="{
+                    children: 'child',
+                    label: 'name',
+                    value: 'code',
+                }"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" v-if="state.formData.dataScope === '2' && state.dataScope ">
+            <el-form-item label="数据权限（用户）" prop="status" >
+              <el-input v-model.trim="state.formData.roleName" maxlength="20"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input
+                v-model.trim="state.formData.sort"
+                maxlength="5"
+                @input="valChange"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否启用" prop="status">
+              <el-switch
+                v-model="state.formData.status"
+                :active-value="1"
+                :inactive-value="0"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input
+                v-model="state.formData.remark"
+                :rows="2"
+                type="textarea"
+                placeholder="备注"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div class="permission-tree">
+        <Tree
+          ref="permissionTreeRef"
+          show-checkbox
+          :disabled="state.formData.roleType != '1' "
+          :checked="state.formData.permissions?.split(',')"
+          check-strictly
+          :treeJson="{
+            type: permissionSever,
+            name: 'name',
+            code: 'permissionCode',
+          }"
+        />
+      </div>
+    </template>
+    <template #bottom>
+      <div class="btnGroup">
+        <el-button type="success" @click="submitForm(authForm)" class="save"
+          >保存</el-button
+        >
+        <el-button @click="cancel" class="cancel">取消</el-button>
+      </div>
+    </template>
+  </Layout>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, toRefs, nextTick } from "vue";
-import { Search, Plus, Setting, RefreshLeft } from "@element-plus/icons-vue";
-import { ElMessage, ElMessageBox, ElTree, ElForm } from "element-plus";
-import EditDialog from "./components/EditDialog.vue";
-import RoleLayout from "@/components/RoleLayout/RoleLayout.vue";
-import { RoleModel } from "@/api/model/roleModel";
-import { PermissionModel } from "@/api/model/permissionModel";
+import { ref, reactive, watch } from 'vue'
+import { Plus, Delete } from '@element-plus/icons-vue'
+import type { FormRules, FormInstance } from 'element-plus'
+import { ElMessage, ElTree, ElMessageBox, ElForm } from 'element-plus'
+import type Node from 'element-plus/es/components/tree/src/model/node'
+import Layout from '@/components/Layout/Layout.vue'
+import IconSelect from '@/components/iconSelect/index.vue'
+import { RoleModel } from '@/api/model/roleModel'
 import { RoleService } from "@/api/service/System/RoleService";
-import { PermissionService } from "@/api/service/System/PermissionService";
-import { Response, SearchParamsModel } from "@/api/interface";
-import { SearchModel } from "@/api/model/baseModel";
-import { tranListTotreeList } from "@/utils/toTree";
-import { cloneDeep } from "lodash-es";
-import ButtonGropup from '@/components/ButtonGroup/ButtonGropup.vue'
+import { Response, SearchParamsModel } from '@/api/interface'
+import Tree from '@/businessComponent/tree/index.vue'
+import { cloneDeep } from 'lodash-es'
+import { TreeModel } from '@/api/model/baseModel'
+import { PermissionService } from '@/api/service/System/PermissionService'
+import { DepartmentService } from '@/api/service/System/DepartmentService'
 
-// import Dialog from "./components/dialog.vue";
-// const dialog = reactive({
-//   Dialog: false as boolean,
-//   form:{
-//     name:"1"
-//   },
-//   tableData:[
-//     {name:'1'}
-//   ],
-//   // type:"甄别"
-//   type:"先联"
-// });
-// const change = () => {
-//   dialog.Dialog = true
-// }
+type FormRules = /*unresolved*/ any
 
-// 角色
-const searchParamsModel = reactive(new SearchParamsModel<RoleModel>());
-const roleSever = new RoleService();
+const roleOption = [
+  { label: '目录', value: '0' },
+  { label: '角色', value: '1' }
+]
+const dataScopes = [
+  { label: '所有', value: '1' },
+  { label: '自定义', value: '2' },
+  { label: '本部门', value: '3' },
+  { label: '本部门及以下', value: '4' },
+  { label: '仅本人', value: '5' }
+]
 
-//权限
-const sourceData = ref<PermissionModel[]>([]);
-const searchPerModel = ref<SearchModel<PermissionModel>[]>([new SearchModel()]);
-const searchPerParamsModel = reactive(new SearchParamsModel<PermissionModel>());
-const permissionSever = new PermissionService();
+const state = reactive({
+  refresh: false,
+  formData: {} as RoleModel,
+  roleParentCode: '',
+  departmentList: [],
+  mode: '',
+  dataScope: 0 // 0-> 部门 1->用户
+})
 
-// 角色权限
-const searchRolePerModel = reactive(new SearchParamsModel<RoleModel>());
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const permissionTreeRef =  ref<InstanceType<typeof ElTree>>()
+const authForm = ref<InstanceType<typeof ElForm>>()
+const keywords = ref('')
+const rules = reactive<InstanceType<typeof FormRules>>({
+  roleParentCode: [{ required: true, message: '不能为空', trigger: 'blur' }],
+  roleCode: [{ required: true, message: '不能为空', trigger: 'blur' }],
+  roleName: [{ required: true, message: '不能为空', trigger: 'blur' }],
+  roleType: [{ required: true, message: '请选择', trigger: 'change' }],
+})
 
-//
-const tableData = reactive({
-  roleData: [] as Array<any>,
-  rolePerTreeData: [] as Array<any>,
-  rolePerTreeDatas: [] as Array<any>,
-  buttonList: [
-    { name: "修改", id: "" },
-    { name: "删除", id: "" }
-  ],
-});
-const editform = reactive({
-  roleId: "",
-  rolename: "",
-  sort: 0,
-  remark: "",
-  status: 1,
-  id: "",
-  permissionId: "",
-  permissionList: [],
-});
+const roleSever = new RoleService()
+const permissionSever = new PermissionService()
+const departmentSever = new DepartmentService()
 
-// 角色
-const searchModel = ref<SearchModel<RoleModel>[]>([
-  {
-    key: "rolename",
-    value: '',
-    match: "like",
-  },
-  {
-    key: "status",
-    value: '',
-    match: "like",
-  },
-  {
-    key: "sort",
-    value: 'sort',
-    match: "orderByDesc",
-  },
-]);
-const getAll = () => {
-  searchParamsModel.searchParams = searchModel.value;
-  searchParamsModel.pageParams.pageSize = -1;
-  roleSever.list(searchParamsModel).then((res: Response) => {
-    if (res.code === 200) {
-      const { results } = res.data;
-      results.forEach((item: any) => {
-        var arr = item.permissionVos.map((itemI: any) => {
-          var childArr = itemI.childs.map((items: any) => {
-            return items.name
-          })
-          return itemI.name + '(' + childArr.join('、') + ')'
-        })
-        item.rolePer = arr.join(',')
-      })
-      tableData.roleData = results;
-      console.log('results', results)
-    } else {
-      ElMessage.error(res.message);
-    }
-  });
-};
-getAll();
-const searchHandle = () => {
-  getAll();
-};
-const tableCheck = (row: any) => {
-  editform.roleId = row.roleId;
-  editform.rolename = row.rolename;
-  editform.sort = row.sort;
-  editform.remark = row.remark;
-  editform.status = row.status;
-  editform.id = row.id;
-  rolePerTree(row.roleId);
-};
-
-// 弹框
-const dialogState = reactive({
-  titleName: "" as string,
-  EditDialog: false as boolean,
-  QXDialog: false as boolean,
-});
-const add = () => {
-  dialogState.EditDialog = true;
-  dialogState.titleName = "添加";
-  editform.roleId = "";
-  editform.rolename = "";
-  editform.sort = 0;
-  editform.remark = "";
-  editform.status = 1;
-  editform.id = "";
-};
-const editCloseDialog = () => {
-  dialogState.EditDialog = false;
-};
-const edit = () => {
-  if (editform.id) {
-    dialogState.EditDialog = true;
-    dialogState.titleName = "修改";
-    console.log('props.rolePerData', tableData.rolePerTreeDatas)
-  } else {
-    ElMessage.info("请选择需要修改的角色");
-  }
-};
-const editHandle = (row: any) => {
-  editform.roleId = row.roleId;
-  editform.rolename = row.rolename;
-  editform.sort = row.sort;
-  editform.remark = row.remark;
-  editform.status = row.status;
-  editform.id = row.id;
-  searchRolePerModel.searchParams = [
-    {
-      key: "roleId",
-      value: row.roleId,
-      match: "eq",
+const nodeClick = (data: TreeModel) => {
+  state.roleParentCode = data.code
+  state.mode = 'edit'
+  roleSever.list({
+    "pageParams": {
+      "pageIndex": 0,
+      "pageSize": -1
     },
-  ];
-  searchRolePerModel.pageParams.pageSize = -1;
-  roleSever.listPer(searchRolePerModel).then((res: Response) => {
-    if (res.code === 200) {
-      const { results } = res.data;
-      if (results.length > 0) {
-        tableData.rolePerTreeDatas = results;
-        editform.permissionList = results.map((item: any) => {
-          return item.permissionId
-        })
-      } else {
-        tableData.rolePerTreeDatas = []
-        editform.permissionList = []
+    "searchParams": [
+      {
+        "key": "roleCode",
+        "match": "eq",
+        "value": data.code
       }
-      dialogState.EditDialog = true;
-      dialogState.titleName = "修改";
+    ]
+  }).then((res) => {
+    if (res.code == 200) {
+      state.formData = cloneDeep(res.data.results[0])
     }
-  });
+  })
 }
-const commandClick = (command: string, row: any) => {
-  ElMessageBox.confirm("确定要删除吗？", "删除", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
+
+const getDeptList = ()=>{
+  departmentSever.tree({
+    "pageParams": {
+      "pageIndex": 0,
+      "pageSize": -1
+    },
+    "searchParams": []
+  }).then(res=>{
+    state.departmentList = res.data
+  })
+}
+getDeptList()
+const valChange = (value: string) => {
+  state.formData.sort = Number(value.replace(/\D/g, ''))
+}
+const addChildren = () => {
+  if (state.roleParentCode === '') {
+    ElMessage.error('请选择节点后再添加！')
+    return
+  }
+  state.mode = 'add'
+  reset()
+}
+
+const reset = () => {
+  state.formData = {status: 1,sort: 1,roleParentCode:state.roleParentCode} as RoleModel
+}
+
+const cancel = () => {
+  reset()
+  authForm.value!.clearValidate()
+}
+const deletePermission = () => {
+  if (state.formData.id === '') {
+    ElMessage.error('请选择一个节点删除！')
+    return
+  }
+  ElMessageBox.confirm('确定要删除吗？', '删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
   })
     .then(() => {
-      roleSever.delete(row.id!).then((res: Response) => {
+      roleSever.delete(state.formData.id!).then((res: Response) => {
         if (res.code === 200) {
-          roleSever.deleteRolePer(row.roleId).then((reponse: Response) => {
-            if (reponse.code === 200) {
-              ElMessage.success(reponse.message);
-              getAll();
-            }
-          });
+          ElMessage.success('删除成功!')
+          state.refresh = true
+          reset()
         } else {
-          ElMessage.error(res.message);
+          ElMessage.error(res.message)
         }
-      });
-    })
-    .catch(() => {
-      ElMessage({
-        type: "info",
-        message: "取消！",
-      });
-    });
-}
-const dialogSave = (type: string, data: any) => {
-  // console.log('type', type)
-  // console.log('form', form)
-  roleSever.save(editform).then((res: Response) => {
-    if (res.code === 200) {
-      ElMessage.success(res.message);
-      getAll();
-      editCloseDialog();
-    } else {
-      ElMessage.error(res.message);
-    }
-  });
-};
-const remove = () => {
-  if (editform.id) {
-    ElMessageBox.confirm("确定要删除吗？", "删除", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    })
-      .then(() => {
-        roleSever.delete(editform.id!).then((res: Response) => {
-          if (res.code === 200) {
-            roleSever.deleteRolePer(editform.roleId).then((reponse: Response) => {
-              if (reponse.code === 200) {
-                ElMessage.success(reponse.message);
-                getAll();
-              }
-            });
-          } else {
-            ElMessage.error(res.message);
-          }
-        });
       })
-      .catch(() => {
-        ElMessage({
-          type: "info",
-          message: "取消！",
-        });
-      });
-  } else {
-    ElMessage.info("请选择需要删除的角色");
-  }
-};
-const deepAddDisabled = function (data: Tree[]) {
-  const result: Tree[] = []
-  data.forEach(tree => {
-    if (tree.children && tree.children.length > 0) {
-      tree.disabled = true;
-      result.push(tree)
-    } else {
-      tree.disabled = false;
-      result.push(tree)
-    }
-    // else {
-    //   const children = deepAddDisabled(tree.children!)
-    //   if (children!) {
-    //     return children
-    //   }
-    // }
-  })
-  return result
+    })
 }
-// 权限
-const getPerAll = () => {
-  searchPerParamsModel.searchParams = searchPerModel.value;
-  searchPerParamsModel.pageParams.pageSize = -1;
-  permissionSever.list(searchPerParamsModel).then((res: Response) => {
-    if (res.code === 200) {
-      const { results } = res.data;
-      sourceData.value = results;
-      
-      const childrenData = tranListTotreeList(
-        cloneDeep(res.data.results),
-        "parentID",
-        "permissionID"
-      ).sort((a: PermissionModel, b: PermissionModel) => a.sort - b.sort)
-      treeData.value = [
-        {
-          id: "-1",
-          parentID: "-1",
-          name: "权限管理",
-          url: "",
-          icon: "",
-          nodeCode: "",
-          remark: "",
-          status: 0,
-          type: "",
-          tag: "",
-          openType: 0,
-          disabled: true,
-          sort: 1,
-          children: deepAddDisabled(childrenData),
-          permissionID: "",
-        },
-      ];
-      console.log(treeData.value)
-    } else {
-      ElMessage.error(res.message);
-    }
-  });
-};
-getPerAll();
 
-// 角色权限
-const defaultProps = {
-  label: "name",
-  children: "children"
-};
-const treeData = ref<Tree[]>([]);
-interface Tree extends PermissionModel {
-  children?: Tree[];
-}
-const treeRef: any = ref();
-const rolePerTree = (id: string) => {
-  searchRolePerModel.searchParams = [
-    {
-      key: "roleId",
-      value: id,
-      match: "eq",
-    },
-  ];
-  searchRolePerModel.pageParams.pageSize = -1;
-  roleSever.listPer(searchRolePerModel).then((res: Response) => {
-    if (res.code === 200) {
-      const { results } = res.data;
-      if (results.length > 0) {
-        tableData.rolePerTreeDatas = results;
+
+const save = () => {
+  state.formData.permissions = permissionTreeRef.value?.getCheckedKeys().join(',')
+  if (state.formData.id) {
+    roleSever.update(state.formData).then((res: Response) => {
+      if (res.code === 200) {
+        ElMessage.success('修改成功!')
+        state.refresh = true
+      } else {
+        ElMessage.error(res.message)
       }
-    } else {
-      ElMessage.error(res.message);
+    })
+  } else {
+    roleSever.save(state.formData).then((res: Response) => {
+      if (res.code === 200) {
+        ElMessage.success('新增成功!')
+        state.refresh = true
+      } else {
+        ElMessage.error(res.message)
+      }
+    })
+  }
+}
+const submitForm = async (formEl: InstanceType<typeof FormInstance>) => {
+  if (!formEl) return
+  await formEl.validate((valid: boolean) => {
+    if (valid) {
+      save()
     }
-  });
-};
+  })
+}
+
+const setRefresh = ()=>{
+  state.refresh =  false
+  // state.formData = {} as RoleModel
+}
+
+watch(
+  () => keywords.value,
+  (keywords) => {
+    treeRef.value!.filter(keywords)
+  }
+)
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
+.w100,
+.tree-menu,
+::v-deep(.el-form-item__content),
+::v-deep(.el-select) {
   width: 100%;
+}
+
+::v-deep(.el-form) {
+  width: 65%;
   height: 100%;
+  padding-right: 15px;
+  float: left;
+  box-sizing: border-box;
+  border-right: 1px solid #ccc;
+  .el-form-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 }
 
-.sh3h-search-box {
-  background-color: var(--sh3h-tree-background-color);
-  margin: 0;
-  // border: 1px solid var(--sh3h-tree-border-color);
+.btnGroup {
+  display: flex;
+  justify-content: flex-end;
 }
 
-::v-deep(.button) {
-  margin: 0 !important;
+.treeRef {
+  background-color: var(--lt-tree-background-color);
 }
 
-::v-deep(.el-dropdown-menu__item) {
-  width: 100% !important;
+::v-deep(.el-tree-node__expand-icon:before) {
+  background: url('@/assets/system/first.png') no-repeat;
+  content: '';
+  display: block;
+  width: 13px;
+  height: 13px;
+  font-size: 13px;
+  background-size: 13px;
+}
+
+::v-deep(.el-tree-node__expand-icon) {
+  width: fit-content;
+
+  svg {
+    display: none;
+  }
+}
+.permission-tree{
+  width: 35%;
+  float: right;
+  // margin-top: -60px;
+  box-sizing: border-box;
+  height: 100%;
 }
 </style>

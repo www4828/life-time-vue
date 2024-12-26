@@ -5,7 +5,6 @@
         <el-input placeholder="请输入内容" :prefix-icon="Search" v-model="keywords">
         </el-input>
       </div>
-      <!--这是一个完美的分割线-->
       <div class="split-line"></div>
     </template>
     <template #tree>
@@ -16,7 +15,7 @@
           :data="treeData"
           class="treeRef"
           highlight-current
-          node-key="id"
+          node-key="code"
           :filter-node-method="filterNode"
           @node-click="nodeClick"
         />
@@ -33,12 +32,8 @@
           <el-col :span="5"> </el-col>
           <el-col :span="5"> </el-col>
           <el-col :span="4" class="div-flex-right">
-            <el-button type="primary" :icon="Search" @click="searchHandle"
-              >搜索</el-button
-            >
-            <el-button type="primary" :disabled="isCanAdd" :icon="Plus" @click="add"
-              >添加</el-button
-            >
+            <el-button type="primary" :icon="Search" @click="searchHandle">搜索</el-button>
+            <el-button type="primary" :icon="Plus" @click="add">添加</el-button>
           </el-col>
         </el-row>
       </div>
@@ -47,14 +42,11 @@
           <el-table :data="data.tableData" style="width: 100%" height="100%">
             <el-table-column prop="codeValue" align="center" label="字典编号" />
             <el-table-column prop="codeName" align="center" label="字典名称" />
-            <el-table-column prop="status" align="center" label="是否启用">
+            <el-table-column prop="status" align="center" label="状态">
               <template #default="scope">
-                <el-tag
-                  :type="scope.row.status == '1' ? 'success' : 'danger'"
-                  effect="plain"
-                >
-                  {{ scope.row.status == "1" ? "启用" : "停用" }}
-                </el-tag>
+                <el-tag type="success" v-if="scope.row.status == 1"> 启用</el-tag>
+                <el-tag type="danger" v-else-if="String(scope.row.status) === '0'">停用</el-tag>
+                <el-tag type="warning" v-else>禁止删除</el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="codeType" align="center" label="类型编号" />
@@ -107,7 +99,8 @@ import { SearchModel } from "@/api/model/baseModel";
 import { CodeModel, CodeTreeModel } from "@/api/model/codeModel";
 import { CodeService } from "@/api/service/System/CodeService";
 import Dialog from "./components/dialog.vue";
-import { useCode } from "@/hooks/useCode";
+import CodeTree from '@/businessComponent/tree/index.vue'
+import { cloneDeep } from "lodash-es";
 interface PageInfo {
   currentPage: number;
   pageSize: number;
@@ -118,51 +111,37 @@ interface Tree extends CodeTreeModel {
 const customNodeClass = (data: any, node: Node) => {
   if (node.level === 1) {
     return "first";
-  } else if (data.type === 2) {
+  } else if (!data.child) {
     return "dept";
   }
   return "";
 };
 
 const treeProps = {
-  label: "codeName",
-  children: "childs",
+  label: "name",
+  children: "child",
   class: customNodeClass,
 };
-const isCanAdd = ref(false);
 const treeRef = ref<InstanceType<typeof ElTree>>();
 const treeData = ref<CodeTreeModel[]>([]);
-const treeInfo: any = reactive({
-  id: "",
-  codeType: "",
-  codeParent: "",
-  dictionaryType: "",
-});
+
 const keywords = ref("");
 const data = reactive({
   tableData: [] as Array<CodeTreeModel>,
   showFlag: false,
   dialogVisible: false,
   dialogStatus: "添加",
-  formData: {
-    id: "",
-    name: "",
-    parentCode: "",
-    typeCode: "",
-    code: "",
-    codeId: "",
-    status: 1,
-    sort: 1,
-  } as CodeModel,
+  treeInfo: {} as CodeTreeModel,
+  formData: {} as CodeModel,
 });
 const searchModel = ref<SearchModel<CodeModel>[]>([
   {
-    key: "name",
+    key: "codeName",
     value: "",
     match: "like",
   },
   {
-    key: "parentCode",
+    key: "codeParent",
     value: "",
     match: "eq",
   },
@@ -172,49 +151,39 @@ const searchModel = ref<SearchModel<CodeModel>[]>([
     match: "orderByAsc",
   },
 ]);
-const PARENT_CODE = "-1";
+const PARENT_CODE = "0";
 const TYPE_CODE = ref("");
 const searchParamsModel = reactive(new SearchParamsModel<CodeModel>());
 const codeService = new CodeService();
-const nodeClick = (data: CodeTreeModel) => {
-  searchModel.value[1].value = data.codeValue;
-  TYPE_CODE.value = data.codeType;
-  treeInfo.id = data.id!;
-  treeInfo.codeParent = data.codeValue;
-  treeInfo.codeType = data.codeType;
-  treeInfo.dictionaryType = data.dictionaryType;
-  isCanAdd.value = false;
-  if (treeInfo.id === "1") {
-    isCanAdd.value = true;
-  }
-  if (Array.isArray(data.childs) && data.childs!.length > 0) {
+const nodeClick = (node: CodeTreeModel) => {
+  searchModel.value[1].value = node.code === PARENT_CODE ? '' : node.code ;
+  TYPE_CODE.value = node.type;
+  data.treeInfo = cloneDeep(node)
+
+  if (Array.isArray(node.child) && node.child!.length > 0) {
     getAll();
+  }else{
+    data.tableData = []
   }
 };
 const getCodeAgain = () => {
   sessionStorage.removeItem("allCode");
-  useCode();
+  // useCode();
 };
-const showDialog = (row: CodeTreeModel) => {
+const showDialog = (row: CodeModel) => {
   if (row.id) {
     data.dialogStatus = "修改";
-    data.formData.codeId = treeInfo.id || "1";
-    data.formData.id = row.id;
-    data.formData.name = row.codeName;
-    data.formData.code = row.codeValue;
-    data.formData.typeCode = row.codeType;
-    data.formData.parentCode = row.codeParent;
-    data.formData.sort = row.sort;
-    data.formData.status = row.status;
+    data.formData = cloneDeep(row)
   } else {
-    data.formData.name = "";
-    data.formData.code = "";
+    data.formData.codeName = "";
+    data.formData.codeValue = "";
     data.formData.sort = 1;
     data.formData.status = 1;
-    data.formData.codeId = treeInfo.id || "1";
-    data.formData.parentCode = treeInfo.codeParent || PARENT_CODE;
-    data.formData.typeCode = treeInfo.codeType || PARENT_CODE;
+    data.formData.codeParent = data.treeInfo.code || PARENT_CODE;
+    data.formData.codeType = data.treeInfo.type || PARENT_CODE;
   }
+  console.log(data.formData);
+  
   data.formData.firstParam = row.firstParam;
   data.formData.secondParam = row.secondParam;
   data.formData.thirdParam = row.thirdParam;
@@ -236,7 +205,11 @@ const deleteHandle = (id: string, deleteData: CodeModel) => {
         if (res.code === 200) {
           searchHandle();
           getCodeAgain();
-          treeRef.value!.remove(deleteData);
+          treeRef.value!.remove({
+            code: deleteData.codeValue,
+            name: deleteData.codeName,
+            type: deleteData.codeType,
+          });
         }
       });
     })
@@ -257,10 +230,7 @@ const filterNode = (value: string, data: any): boolean => {
 };
 // 新增
 const saveHandle = (params: CodeModel) => {
-  params.dictionaryType = treeInfo.dictionaryType;
-  if (params.parentCode === PARENT_CODE) {
-    params.typeCode = params.code;
-  }
+  params.codeType = params.codeType === PARENT_CODE ? params.codeValue : params.codeType 
   codeService.save(params).then((res: Response) => {
     ElMessage({
       message: res.message,
@@ -269,58 +239,31 @@ const saveHandle = (params: CodeModel) => {
     if (res.code === 200) {
       params.id = res.data.id;
       const tree = {
-        id: res.data.id,
-        codeName: res.data.name,
-        codeParent: res.data.parentCode,
-        codeType: res.data.typeCode,
-        codeId: res.data.id,
-        codeValue: res.data.code,
-        childs: [],
-        status: res.data.status,
-        nextCode: res.data.nextCode,
-        firstParam: res.data.firstParam,
-        secondParam: res.data.secondParam,
-        thirdParam: res.data.thirdParam,
-        fourthParam: res.data.fourthParam,
+        name: params.codeName,
+        type: params.codeType,
+        code: res.data.codeValue,
+        child: []
       };
-      getCodeAgain();
+      // getCodeAgain();
       searchHandle();
       closeDialog();
-      treeRef.value!.append({ ...tree, childs: [] }, treeInfo.id);
+      treeRef.value!.append({ ...tree, childs: [] }, data.treeInfo.code);
       treeData.value.forEach((tree) => {
-        if (tree.id === res.data.id) {
-          tree.childs!.push({
-            id: res.data.id,
-            codeName: res.data.name,
-            codeParent: res.data.parentCode,
-            codeType: res.data.typeCode,
-            codeId: res.data.id,
-            codeValue: res.data.code,
-            childs: [],
-            status: res.data.status,
-            nextCode: res.data.nextCode,
-            firstParam: res.data.firstParam,
-            secondParam: res.data.secondParam,
-            thirdParam: res.data.thirdParam,
-            fourthParam: res.data.fourthParam,
+        if (tree.code === params.codeParent) {
+          tree.child!.push({
+            name: params.codeName,
+            type: params.codeType,
+            code: params.codeValue,
+            child: []
           });
         } else {
-          tree.childs!.forEach((child) => {
+          tree.child!.forEach((child) => {
             if (child.id === res.data.id) {
-              child.childs!.push({
-                id: res.data.id,
-                codeName: res.data.name,
-                codeParent: res.data.parentCode,
-                codeType: res.data.typeCode,
-                codeId: res.data.id,
-                codeValue: res.data.code,
-                childs: [],
-                status: res.data.status,
-                nextCode: res.data.nextCode,
-                firstParam: res.data.firstParam,
-                secondParam: res.data.secondParam,
-                thirdParam: res.data.thirdParam,
-                fourthParam: res.data.fourthParam,
+              child.child!.push({
+                name: params.codeName,
+                type: params.codeType,
+                code: params.codeValue,
+                child: []
               });
             }
           });
@@ -329,21 +272,20 @@ const saveHandle = (params: CodeModel) => {
     }
   });
 };
-const deepSetValue = (data: CodeTreeModel[], name: string, id: string): void => {
+const deepSetValue = (data: CodeTreeModel[], name: string, code: string): void => {
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
-    if (item.id === id) {
-      item.codeName = name;
+    if (item.code === code) {
+      item.name = name;
     } else {
-      if (item.childs && item.childs.length > 0) {
-        deepSetValue(item.childs!, name, id);
+      if (item.child && item.child.length > 0) {
+        deepSetValue(item.child!, name, code);
       }
     }
   }
 };
 // 更新
 const updateHandle = (params: CodeModel) => {
-  params.dictionaryType = treeInfo.dictionaryType;
   codeService.update(params).then((res: Response) => {
     ElMessage({
       message: res.message,
@@ -353,7 +295,7 @@ const updateHandle = (params: CodeModel) => {
       closeDialog();
       searchHandle();
       getCodeAgain();
-      deepSetValue(treeData.value, params.name, params.id!);
+      deepSetValue(treeData.value, params.codeName, params.codeValue);
     }
   });
 };
@@ -362,25 +304,10 @@ const updateHandle = (params: CodeModel) => {
 const closeDialog = () => {
   data.showFlag = false;
   data.dialogStatus = "添加";
-  data.formData = {
-    id: "",
-    name: "",
-    codeNote: "",
-    parentCode: "",
-    typeCode: "",
-    code: "",
-    codeId: "",
-    status: 1,
-    sort: 1,
-    codeClass: "",
-    firstParam: "",
-    secondParam: "",
-    thirdParam: "",
-    fourthParam: "",
-  } as CodeModel;
+  data.formData = {} as CodeModel;
 };
 const add = () => {
-  if (treeInfo.id === "") {
+  if (data.treeInfo.code === "") {
     ElMessage.error("请先选择节点！");
     return;
   }
@@ -390,10 +317,8 @@ const add = () => {
     codeParent: "",
     codeType: "",
     codeValue: "",
-    codeId: "",
     status: 1,
     sort: 1,
-    nextCode: "",
     firstParam: "",
     secondParam: "",
     thirdParam: "",
@@ -406,23 +331,20 @@ const paginationChange = (pageInfo: PageInfo) => {
   getAll();
 };
 const getTree = () => {
-  codeService.getTree().then((res: Response) => {
+  codeService.getTree({
+    pageParams: {
+      pageIndex: 0,
+      pageSize: -1
+    },
+    searchParams: []
+  }).then((res: Response) => {
     if (res.code == 200) {
       treeData.value = [
         {
-          codeName: "字典分类",
-          codeParent: PARENT_CODE,
-          codeType: "",
-          codeValue: PARENT_CODE,
-          codeId: "1",
-          id: "1",
-          childs: res.data,
-          status: 1,
-          nextCode: "",
-          firstParam: "",
-          secondParam: "",
-          thirdParam: "",
-          fourthParam: "",
+          name: "字典分类",
+          type: PARENT_CODE,
+          code: PARENT_CODE,
+          child: res.data
         },
       ];
     } else {
@@ -432,16 +354,16 @@ const getTree = () => {
 };
 const getAll = () => {
   searchParamsModel.searchParams = searchModel.value;
-  if (searchModel.value[1].value !== PARENT_CODE) {
-    searchParamsModel.searchParams = [
-      ...searchModel.value,
-      {
-        key: "typeCode",
-        value: TYPE_CODE.value,
-        match: "eq",
-      },
-    ];
-  }
+  // if (searchModel.value[1].value !== PARENT_CODE) {
+  //   searchParamsModel.searchParams = [
+  //     ...searchModel.value,
+  //     {
+  //       key: "codeType",
+  //       value: TYPE_CODE.value,
+  //       match: "eq",
+  //     },
+  //   ];
+  // }
   codeService.list(searchParamsModel).then((res: Response) => {
     if (res.code == 200) {
       const { results, pageInfo } = res.data;
@@ -463,7 +385,7 @@ watch(
 
 <style lang="scss" scoped>
 .sh3h-search-box {
-  background-color: var(--sh3h-tree-background-color);
+  background-color: var(--lt-tree-background-color);
   // background: rgb(242, 242, 242);
 }
 

@@ -72,11 +72,13 @@ class Service {
           ElMessage.error('网络超时')
         } else if (error.message == 'Network Error') {
           ElMessage.error('网络连接错误')
-        } else if(error.response.status === 401){
+        } 
+        else if(error.response.status === 401){
           sessionStorage.clear()
           ElMessage.error('你已被登出，请重新登录')
           location.href = '/'
-        } else {
+        } 
+        else {
           if (error.response.data) ElMessage.error(error.response.data.message || error.response.data.error)
           else ElMessage.error('接口路径找不到')
         }

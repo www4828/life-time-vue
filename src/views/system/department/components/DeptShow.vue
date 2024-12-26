@@ -116,7 +116,7 @@ watch(
     width: 140px;
     text-align: right;
     display: inline-block;
-    color: var(--sh3h-label-form-color);
+    color: var(--lt-label-form-color);
   }
   .value {
     color: #414951;

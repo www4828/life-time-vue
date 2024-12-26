@@ -46,13 +46,13 @@ export default defineComponent({
         width: 20px;
         height: 20px;
         float: left;
-        fill: var(--sh3h-head-font-color);
+        fill: var(--lt-head-font-color);
     }
     .fullscreen-exit {
         width: 23px;
         height: 23px;
         float: left;
-        fill: var(--sh3h-head-font-color);
+        fill: var(--lt-ad-font-color);
     }
 }
 </style>

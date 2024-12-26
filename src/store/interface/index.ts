@@ -1,32 +1,12 @@
 import { RouteRecordRaw } from 'vue-router'
+import { ThemeConfigModel, ColorModel } from "@/api/model/themeModel";
 export interface RoutesListState {
   routesList: RouteRecordRaw[]
 }
 
 export interface ThemeConfigState {
-  themeConfig: {
-    footerText: string //底部文字
-    isMenuIcon: boolean //显示菜单按钮
-    isUniqueOpened: boolean //是否只保持一个子菜单的展开
-    tagsStyle: string //标签样式
-    isShowLogo: boolean //显示logo
-    isBreadCrumb: boolean //显示面包屑
-    isBreadCrumbIcon: boolean //显示面包屑图标
-    isTagsView: boolean //显示标签页
-    isTagsViewIcon: boolean //显示标签页图标
-    isFooter: boolean //显示底部系统信息
-    isWarteMark: boolean //显示水印(默认当前用户)
-    animation: string //动画方式
-    globalTitle: string //系统标题
-    globalViceTitle: string //系统副标题
-    layout: string //布局样式
-    isCollapse: boolean
-    isShareTagsView: boolean
-    isCacheTagsView: boolean
-    isSortableTagsView: boolean
-    colorList: StyleState[]
-    globalComponentSize: number
-  }
+  themeConfig: ThemeConfigModel,
+  colorList: Array<ColorModel>
 }
 
 export interface UserInfosState {

@@ -1,39 +1,27 @@
 import { BaseModel } from '@/api/model/baseModel'
 
 export class CodeModel extends BaseModel {
-  "name": string
-  "parentCode": string
-  "parentCodeName"?: string
-  "typeCode": string
-  "code": string
-  "status"?: number
-  "sort"?: number
-  "codeId"?: string
-  "childs"?: CodeModel[]
-  "nextCode"?: string
-  "firstParam": string
-  "secondParam": string
-  "thirdParam": string
-  "fourthParam": string
-  "typeLevel"?: number
-  "dictionaryType"?:string
-  "departmentName"?:string
-  "disposeLimitName"?:string
-}
-
-export class CodeTreeModel extends BaseModel {
+  "codeClass"?: string
   "codeName": string
+  "codeNote"?: string
   "codeParent": string
   "codeType": string
   "codeValue": string
-  "sort"?: number
-  "codeId"?: string
-  "childs"?: CodeTreeModel[]
-  "status": number
-  "nextCode"?: string
-  "firstParam": string
-  "secondParam": string
-  "thirdParam": string
-  "fourthParam": string
-  "dictionaryType"?:string
+  "departCode"?: string
+  "departName"?: string
+  "firstParam"?: string
+  "fourthParam"?: string
+  "secondParam"?: string
+  "remark"?: string
+  "sort"?: string | number
+  "status"?:string | number
+  "thirdParam"?: string
+}
+
+export class CodeTreeModel extends BaseModel {
+  "code": string
+  "name": string
+  "type": string
+  "note"?: string
+  "child"?: Array<CodeTreeModel>
 }

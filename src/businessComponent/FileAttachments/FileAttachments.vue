@@ -511,9 +511,9 @@ defineExpose({
       text-align: center;
       line-height: 1.8;
       @include fontStyle(
-        var(--sh3h-font-family-medium),
+        var(--lt-font-family-medium),
         $font-size-14,
-        var(--sh3h-tips-color)
+        var(--lt-ps-color)
       );
     }
   }
@@ -523,11 +523,11 @@ defineExpose({
     padding: 3px 0;
     margin-bottom: 5px;
     @include fontStyle(
-      var(--sh3h-font-family-medium),
+      var(--lt-nt-family-medium),
       $font-size-14,
-      var(--sh3h-attachment-color)
+      var(--lt-tachment-color)
     );
-    background-color: var(--sh3h-attachment-background-color);
+    background-color: var(--lt-tachment-background-color);
     font-weight: bold;
     line-height: 2;
 
@@ -542,7 +542,7 @@ defineExpose({
       outline: 0;
 
       .icon {
-        color: var(--sh3h-label-form-color);
+        color: var(--lt-bel-form-color);
         margin-right: 5px;
 
         svg:focus {

@@ -88,11 +88,11 @@ import EditDialog from "./components/dialog.vue";
 import ButtonGropup from '@/components/ButtonGroup/ButtonGropup.vue'
 
 const searchModel = ref<SearchModel<UserModel>[]>([{
-  key: 'username',
+  key: 'userCode',
   value: '',
   match: 'like'
 }, {
-  key: 'name',
+  key: 'userName',
   value: '',
   match: 'like'
 }, {
@@ -248,7 +248,7 @@ const paginationChange = (msg: any) => {
 }
 
 .sh3h-search-box {
-  background-color: var(--sh3h-tree-background-color);
+  background-color: var(--lt-tree-background-color);
   // background: rgb(242, 242, 242);
 }
 

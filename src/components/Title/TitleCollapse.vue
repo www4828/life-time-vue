@@ -43,8 +43,8 @@ const activeNames = ref(["1"]);
   }
 }
 ::v-deep(.el-collapse-item__arrow) {
-  color: var(--sh3h-menu-active-font-color);
-  border: 1px solid var(--sh3h-menu-active-font-color);
+  color: var(--lt-menu-active-font-color);
+  border: 1px solid var(--lt-nu-active-font-color);
   padding: 2px;
   border-radius: 50%;
   &.el-icon {
@@ -57,9 +57,9 @@ const activeNames = ref(["1"]);
   justify-content: space-between;
   height: 20px;
   @include fontStyle(
-    var(--sh3h-font-family-medium),
+    var(--lt-nt-family-medium),
     $font-size-18,
-    var(--sh3h-theme-color)
+    var(--lt-eme-color)
   );
   font-weight: bold;
   // margin-bottom: 20px;

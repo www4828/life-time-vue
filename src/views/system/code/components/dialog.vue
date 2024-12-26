@@ -14,24 +14,24 @@
       label-width="35%"
       :rules="rules"
     >
-      <el-form-item label="字典编号：" prop="code">
+      <el-form-item label="字典编号：" prop="codeValue">
         <el-input
-          v-model="props.formData.code"
+          v-model="props.formData.codeValue"
           placeholder="字典编号"
-          />
-          <!-- :disabled="props.dialogStatus === '添加' ? false : true" -->
+          :disabled="props.dialogStatus === '修改' "
+        />
         </el-form-item>
-      <el-form-item label="字典名称：" prop="name">
-        <el-input v-model="props.formData.name" placeholder="字典名称" />
+      <el-form-item label="字典名称：" prop="codeName">
+        <el-input v-model="props.formData.codeName" placeholder="字典名称" />
       </el-form-item>
       <el-form-item label="类型编号：" prop="codeParent">
         <el-tree-select
-          v-model="props.formData.codeId"
+          v-model="props.formData.codeParent"
           :data="props.treeData"
           :props="treeProps"
           ref="treeRef"
           check-strictly
-          node-key="id"
+          node-key="code"
           :render-after-expand="false"
           @node-click="nodeClick"
         />
@@ -51,12 +51,12 @@
       <el-form-item label="预留参数四">
         <el-input v-model="props.formData.fourthParam" placeholder="预留参数四" />
       </el-form-item>
-      <el-form-item label="是否启用：" prop="status">
-        <el-switch
-          v-model="props.formData.status"
-          :active-value="1"
-          :inactive-value="0"
-        />
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="props.formData.status" placeholder="状态">
+          <el-option label="启用" :value="1"/>
+          <el-option label="禁用" :value="0"/>
+          <el-option label="禁止删除" :value="-1"/>
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -68,16 +68,17 @@
   </el-dialog>
 </template>
 <script scoped lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import { ElForm, ElTree } from "element-plus";
 import type { FormRules } from "element-plus";
 import { CodeModel, CodeTreeModel } from "@/api/model/codeModel";
 import type Node from "element-plus/es/components/tree/src/model/node";
 
+type FormRules = /*unresolved*/ any
 const treeProps = {
-  label: "codeName",
-  value: "id",
-  children: "childs",
+  label: "name",
+  value: "code",
+  children: "child",
 };
 const emits = defineEmits(["closeDialog", "update", "save"]);
 const props = defineProps<{
@@ -89,9 +90,9 @@ const props = defineProps<{
 const dataForm = ref<InstanceType<typeof ElForm>>();
 const treeRef = ref<InstanceType<typeof ElTree>>();
 const rules = reactive<FormRules>({
-  code: [{ required: true, message: "字典编号不能为空", trigger: "blur" }],
-  name: [{ required: true, message: "字典名称不能为空", trigger: "blur" }],
-  codeId: [{ required: true, message: "请选择类型编号", trigger: "change" }],
+  codeValue: [{ required: true, message: "字典编号不能为空", trigger: "blur" }],
+  codeName: [{ required: true, message: "字典名称不能为空", trigger: "blur" }],
+  codeParent: [{ required: true, message: "请选择类型编号", trigger: "change" }],
 });
 /* const getParentCode = (data: Tree[], id: string) => {
   let codeParent = "";
@@ -113,8 +114,8 @@ const rules = reactive<FormRules>({
   return codeParent;
 }; */
 const nodeClick = (tree: CodeTreeModel, node: Node) => {
-    props.formData.typeCode = tree.codeType || "";
-    props.formData.parentCode = tree.codeValue || "";
+    props.formData.codeType = tree.type || "";
+    props.formData.codeParent = tree.code || "";
 };
 const createData = () => {
   dataForm.value!.validate(async (valid: any) => {
@@ -125,6 +126,11 @@ const createData = () => {
     }
   });
 };
+watch(()=>props.formData,()=>{
+  console.log(props.formData);
+  
+})
+
 </script>
 <style lang="scss">
 .option-box {

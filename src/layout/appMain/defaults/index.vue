@@ -69,8 +69,8 @@ export default defineComponent({
         width: 100%;
         height: $breadcrumb-height;
         float: left;
-        background-color: var(--sh3h-breadcrumb-background-color);
-        box-shadow: -2px 2px 5px var(--sh3h-shadow-color);
+        background-color: var(--lt-breadcrumb-background-color);
+        box-shadow: -2px 2px 5px var(--lt-adow-color);
     }
     .tagsView {
         width: 100%;

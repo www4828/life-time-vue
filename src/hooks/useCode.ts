@@ -165,13 +165,6 @@ export function useCode() {
 
     return  reactions.find(({ codeValue }) => codeValue === deptCode)?.childs!
   }
-  const getEventSource = (deptCode: string): Promise<CodeModel[]> => {
-    return codeService.getEventSource(deptCode).then(res => {
-      if (res.code === 200) {
-        return res.data
-      }
-    })
-  }
   getAllCode()
   return {
     knottyFinishTypes,
@@ -231,7 +224,6 @@ export function useCode() {
     backSource,
     emergencyIsSolved,
     getName,
-    getXFSelectOpt,
-    getEventSource
+    getXFSelectOpt
   }
 }

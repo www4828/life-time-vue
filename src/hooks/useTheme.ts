@@ -7,8 +7,11 @@ export function useTheme() {
   const getThemeConfig = computed(() => {
     return store.state.themeConfig.themeConfig
   })
+  const getThemeColorList = computed(() => {
+    return store.state.themeConfig.colorList
+  })
   const overrideElement = () => {
-    let colorList = getThemeConfig.value.colorList
+    let colorList = getThemeColorList.value
     colorList?.forEach((item: StyleState) => {
       document.documentElement.style.setProperty(`${item.name}`, item.value)
       if (item.type === 'color' && item.opacity) {
@@ -16,6 +19,7 @@ export function useTheme() {
         initDarkColor(item.name, item.value)
       }
     })
+    
     const html = document.getElementsByTagName('html')[0]
     const styles = html.getAttribute('style')
     sessionStorage.setItem('styles', styles!)
@@ -43,5 +47,6 @@ export function useTheme() {
   })
   return {
     getThemeConfig,
+    getThemeColorList
   }
 }

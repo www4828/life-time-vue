@@ -34,7 +34,7 @@ import Title from '@/components/Title/Title.vue';
     margin-bottom: 10px;
     
     &-title{
-      @include fontStyle(var(--sh3h-font-family-medium), $font-size-14,  var(--sh3h-theme-color));
+      @include fontStyle(var(--lt-font-family-medium), $font-size-14,  var(--lt-theme-color));
       margin-bottom: 10px;
     }
   }
@@ -54,11 +54,11 @@ import Title from '@/components/Title/Title.vue';
       // border: 0;
       // background-color: #fff;
       // padding: 10px 25px;
-      // color: var(--sh3h-tags-active-font-color);
+      // color: var(--lt-gs-active-font-color);
     }
     }
     &-title{
-      @include fontStyle(var(--sh3h-font-family-medium), $font-size-14,  var(--sh3h-theme-color));
+      @include fontStyle(var(--lt-nt-family-medium), $font-size-14,  var(----lt-e-color));
       margin-right: 20px;
     }
     
@@ -77,7 +77,7 @@ import Title from '@/components/Title/Title.vue';
     // height: 60px;
     border: 0px solid blue;
     box-sizing: border-box;
-    background-color: var(--sh3h-tree-background-color);
+    background-color: var(--lt-tree-background-color);
     padding: 5px 0;
     // background-color: #fff
   }
@@ -85,9 +85,9 @@ import Title from '@/components/Title/Title.vue';
 ::v-deep(.el-table th.el-table__cell) {
   -webkit-user-select: none;
   user-select: none;
-  //background-color: var(--sh3h-background-color);
+  //background-color: var(--lt-ckground-color);
 }
 ::v-deep(.el-table thead ){
-  color: var(--sh3h-theme-color); 
+  color: var(--lt-eme-color); 
 }
 </style>

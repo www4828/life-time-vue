@@ -111,7 +111,7 @@ export default defineComponent({
     height: 20px;
     margin: 0 10px 0 0;
     float: left;
-    fill: var(--sh3h-menu-active-font-color);
+    fill: var(--lt-menu-active-font-color);
 
     .icon {
       width: 100%;

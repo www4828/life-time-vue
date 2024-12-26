@@ -108,19 +108,19 @@ const handleCurrentChange = (val: number) => {
   width: 100px;
 }
 ::v-deep(.el-select .el-input .el-select__caret.el-icon) {
-  color: var(--sh3h-theme-color);
+  color: var(--lt-theme-color);
 }
 ::v-deep(.el-input__inner) {
-  color: var(--sh3h-theme-color, var(--el-text-color-regular));
+  color: var(--lt-eme-color, var(--el-text-color-regular));
   font-size: var(--el-font-size-base);
-  font-family: var(--sh3h-font-family-medium);
+  font-family: var(--lt-nt-family-medium);
 }
 .p_l_10 {
   padding-left: 10px;
 }
 .sh3h-text {
-  color: var(--sh3h-theme-color);
+  color: var(--lt-eme-color);
   font-size: var(--el-font-size-base);
-  font-family: var(--sh3h-font-family-medium);
+  font-family: var(--lt-nt-family-medium);
 }
 </style>

@@ -129,16 +129,16 @@ const paginationChange = (pageInfo: PageInfo) => {
     height: 100%;
 }
 .sh3h-search-box {
-    background-color: var(--sh3h-tree-background-color);
+    background-color: var(--lt-tree-background-color);
     margin: 0;
 
-    // border: 1px solid var(--sh3h-tree-border-color);
+    // border: 1px solid var(--lt-tree-border-color);
     .search-lable {
         width: 160px;
         height: 100%;
         line-height: 200%;
         font-size: var(--el-font-size-base);
-        font-family: var(--sh3h-font-family-normal);
+        font-family: var(--lt-nt-family-normal);
         font-weight: 500;
         float: left;
     }

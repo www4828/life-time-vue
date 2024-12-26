@@ -66,7 +66,7 @@
             placeholder="请输入部门标识"
           ></el-input>
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           label="部门分组"
           prop="departmentGroup"
           v-if="state.form.departmentLevel == 2"
@@ -79,7 +79,7 @@
               :value="item.codeValue"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="部门全称" prop="departmentShortName">
           <el-input
             v-model="state.form.departmentShortName"
@@ -107,86 +107,9 @@
             placeholder="请输入排序"
           ></el-input>
         </el-form-item>
-        <el-form-item label="所属区县" prop="district">
-          <el-select v-model="state.form.distract" placeholder="请选择">
-            <el-option
-              v-for="item in districtTypes"
-              :key="item.codeValue"
-              :label="item.codeName"
-              :value="item.codeValue"
-            ></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="是否启用" prop="sort">
           <el-switch v-model="state.form.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
-        <el-form-item label="是否接口部门" prop="isInterface">
-          <el-switch
-            v-model="state.form.isInterface"
-            active-value="1"
-            inactive-value="0"
-          />
-        </el-form-item>
-        <template v-if="state.form.isInterface == '1'">
-          <el-form-item label="接口地址" prop="interfaceUrl">
-            <el-input
-              v-model.trim="state.form.interfaceUrl"
-              placeholder="接口地址"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="认证地址" prop="checkUrl">
-            <el-input
-              v-model.trim="state.form.checkUrl"
-              placeholder="认证地址"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="认证用户" prop="checkUsername">
-            <el-input
-              v-model.trim="state.form.checkUsername"
-              placeholder="认证用户"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="认证密码" prop="checkPassword">
-            <el-input
-              v-model.trim="state.form.checkPassword"
-              placeholder="认证密码"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="原多媒体地址" prop="attachment">
-            <el-input
-              v-model.trim="state.form.attachment"
-              placeholder="原多媒体地址"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="代理后地址" prop="proxyURl">
-            <el-input
-              v-model.trim="state.form.proxyURl"
-              placeholder="代理后地址"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="认证类型" prop="checkType">
-            <el-select v-model="state.form.checkType" placeholder="请选择">
-              <el-option
-                v-for="item in authTypes"
-                :key="item.codeValue"
-                :label="item.codeName"
-                :value="item.codeValue"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="客户端用户" prop="clientUsername">
-            <el-input
-              v-model.trim="state.form.clientUsername"
-              placeholder="客户端用户"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="客户端密码" prop="clientPassword">
-            <el-input
-              v-model.trim="state.form.clientPassword"
-              placeholder="客户端密码"
-            ></el-input>
-          </el-form-item>
-        </template>
         <br />
       </el-form>
     </el-scrollbar>
@@ -194,12 +117,12 @@
 </template>
 <script lang="ts" setup>
 import { isEqual } from "lodash-es";
-import { useCode } from "@/hooks/useCode";
+// import { useCode } from "@/hooks/useCode";
 import { reactive, ref, watch } from "vue";
 import { DepartmentModel } from "@/api/model/departmentModel";
 import { DepartmentService } from "@/api/service/System/DepartmentService";
 
-const { districtTypes, groupTypes, authTypes } = useCode();
+// const { districtTypes, groupTypes, authTypes } = useCode();
 const departmentServer = new DepartmentService();
 const deptParentTree: any = ref(null);
 const deptform: any = ref(null);
@@ -300,9 +223,9 @@ const deptParentChange = (val: any) => {
 };
 // loadDeptList()
 const getDictionaryType = () => {
-  departmentServer.dictionaryType().then((res) => {
-    state.dictionaryType = res.data;
-  });
+  // departmentServer.dictionaryType().then((res) => {
+  //   state.dictionaryType = res.data;
+  // });
 };
 getDictionaryType();
 
@@ -416,7 +339,7 @@ watch(
     }
 
     ::v-deep(.el-form-item__label) {
-      color: var(--sh3h-label-form-color);
+      color: var(--lt-label-form-color);
     }
 
     ::v-deep(.el-input) {

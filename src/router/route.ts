@@ -61,32 +61,6 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/oldCaseDetail',
-    name: 'oldCaseDetail',
-    component: () => import('@/views/OldCaseDetail/OldCaseDetail.vue'),
-    meta: {
-      title: '原始工单',
-    },
-    beforeEnter: (to, from, next) => {
-      setRem()
-      useTheme()
-      next()
-    },
-  },
-  {
-    path: '/portal',
-    name: 'portal',
-    component: () => import('@/views/login/portal.vue'),
-    meta: {
-      title: 'message.staticRoutes.notFound',
-    },
-    beforeEnter: (to, from, next) => {
-      setRem()
-      useTheme()
-      next()
-    },
-  }, 
-  {
     path: '/404',
     name: 'notFound',
     component: () => import('@/views/error/404.vue'),
