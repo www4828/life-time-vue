@@ -1,5 +1,6 @@
 export class BaseModel {
   id?: string
+  department?:string
   createTime?: string
   createTime_start?: string
   createTime_end?: string
