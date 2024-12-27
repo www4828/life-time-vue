@@ -15,6 +15,7 @@ export class DepartmentModel extends BaseModel {
   "sort": number | string
   "roleList": any
   "disabled"?: boolean
+  "departmentRoles": string
   [key:string]:any
 }
 

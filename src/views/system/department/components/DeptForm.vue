@@ -45,6 +45,20 @@
             disabled
           ></el-input>
         </el-form-item>
+        <el-form-item label="部门类型" prop="departmentTag">
+          <el-select
+            v-model="state.form.departmentType"
+            placeholder="请选择"
+            filterable
+          >
+            <el-option
+              v-for="item in types.deptTypes"
+              :key="item.codeValue"
+              :label="item.codeName"
+              :value="item.codeNote"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="部门标签" prop="departmentTag">
           <el-select
             v-model="state.form.departmentTags"
@@ -52,12 +66,12 @@
             filterable
             multiple
           >
-            <el-option
-              v-for="item in state.dictionaryType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.code"
-            ></el-option>
+            <!-- <el-option
+              v-for="item in types.deptTypes"
+              :key="item.codeValue"
+              :label="item.codeName"
+              :value="item.codeNote"
+            ></el-option> -->
           </el-select>
         </el-form-item>
         <el-form-item label="部门首页" prop="homeUrl">
@@ -128,6 +142,7 @@ import { isEqual } from "lodash-es";
 import { reactive, ref, watch } from "vue";
 import { DepartmentModel } from "@/api/model/departmentModel";
 import { DepartmentService } from "@/api/service/System/DepartmentService";
+import { useCode } from "@/hooks/useCode";
 
 // const { districtTypes, groupTypes, authTypes } = useCode();
 const departmentServer = new DepartmentService();
@@ -148,6 +163,7 @@ const props = withDefaults(
     tagFlag: false,
   }
 );
+const { types } = useCode()
 const checkCode = (rule: any, value: any, callback: any) => {
   if (value) {
     let reg = /^\w+$/;

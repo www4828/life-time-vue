@@ -3,7 +3,7 @@
         <div class="login-box">
             <div class="logo" v-show="getThemeConfig.isShowLogo"></div>
             <div class="title">{{ getThemeConfig.globalTitle }}</div>
-            <!-- <div class="department">新虹街道防疫办</div> -->
+            <div class="department">{{ getThemeConfig.globalViceTitle }}</div>
         </div>
 
         <div class="info-box">

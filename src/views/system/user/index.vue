@@ -111,6 +111,7 @@ const state = reactive({
   tableData: [] as any,
   buttonList: [
     { name: "修改" },
+    { name: "设置部门" },
     { name: "停用",id:0 },
     { name: "启用",id:1 },
     { name: "删除" },
@@ -191,6 +192,9 @@ const commandClick = (command: string, row: any) => {
   switch (command) {
     case '删除':
       doDel(row.id)
+      break;
+    case '设置部门':
+      
       break;
     case '停用':
       updateUserInfo({id:row.id,status: 0})

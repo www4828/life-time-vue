@@ -42,6 +42,8 @@
         <RoleTree
           ref="roleTreeRef"
           show-checkbox
+          check-strictly
+          :checked="state.form.permissions?.split(',')"
           :treeJson="{ type: roleServer }"
         />
       </div>
@@ -67,7 +69,7 @@ import { RoleService } from "@/api/service/System/RoleService";
 
 const departmentServer = new DepartmentService()
 const roleServer = new RoleService()
-
+const roleTreeRef = ref()
 const state = reactive({
   filterText: '',
   action: '', // show->展示 edit->编辑 add->增加
@@ -147,7 +149,6 @@ const addHandle = () => {
     // state.detail.departmentCode = '0'
     // state.detail.departmentLevel = 0
   }
-  console.log(state.detail.departmentCode,state.action);
 }
 
 const doDel = () => {
@@ -202,6 +203,7 @@ const doDel = () => {
 // }
 
 const save = () => {
+  state.form.departmentRoles = roleTreeRef.value?.getCheckedKeys().join(',')
   if (state.form.id) {
     departmentServer.update(state.form).then((res: Response) => {
       if (res.code === 200) {

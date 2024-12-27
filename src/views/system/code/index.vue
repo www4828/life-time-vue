@@ -1,15 +1,27 @@
 <template>
   <Layout class="code">
-    <template #search>
+    <!-- <template #search>
       <div class="header-search">
         <el-input placeholder="请输入内容" :prefix-icon="Search" v-model="keywords">
         </el-input>
       </div>
       <div class="split-line"></div>
-    </template>
+    </template> -->
     <template #tree>
       <div class="tree">
-        <el-tree
+        <CodeTree
+          @handleNodeClick="nodeClick"
+          :refresh="data.refresh"
+          :action="data.action"
+          :new="data.formData"
+          @setRefresh="setRefresh" 
+          :treeJson="{
+            type: codeService,
+            name: 'codeName',
+            code: 'codeValue',
+          }"
+        />
+        <!-- <el-tree
           ref="treeRef"
           :props="treeProps"
           :data="treeData"
@@ -18,7 +30,7 @@
           node-key="code"
           :filter-node-method="filterNode"
           @node-click="nodeClick"
-        />
+        /> -->
       </div>
     </template>
     <template #content>
@@ -133,6 +145,8 @@ const data = reactive({
   dialogStatus: "添加",
   treeInfo: {} as CodeTreeModel,
   formData: {} as CodeModel,
+  refresh: false,
+  action: ''
 });
 const searchModel = ref<SearchModel<CodeModel>[]>([
   {
@@ -155,8 +169,14 @@ const PARENT_CODE = "0";
 const TYPE_CODE = ref("");
 const searchParamsModel = reactive(new SearchParamsModel<CodeModel>());
 const codeService = new CodeService();
+
+const setRefresh = ()=>{
+  data.refresh = false
+  data.action = 'edit'
+}
 const nodeClick = (node: CodeTreeModel) => {
-  searchModel.value[1].value = node.code === PARENT_CODE ? '' : node.code ;
+  console.log();
+  searchModel.value[1].value = node.code
   TYPE_CODE.value = node.type;
   data.treeInfo = cloneDeep(node)
 
@@ -180,8 +200,8 @@ const showDialog = (row: CodeModel) => {
     data.formData.sort = 1;
     data.formData.status = 1;
     data.formData.dataType = 1;
-    data.formData.codeParent = data.treeInfo.code || PARENT_CODE;
-    data.formData.codeType = data.treeInfo.type || PARENT_CODE;
+    data.formData.codeParent = data.treeInfo.code;
+    data.formData.codeType = data.treeInfo.type;
   }
   
   data.formData.firstParam = row.firstParam;
@@ -205,11 +225,12 @@ const deleteHandle = (id: string, deleteData: CodeModel) => {
         if (res.code === 200) {
           searchHandle();
           getCodeAgain();
-          treeRef.value!.remove({
-            code: deleteData.codeValue,
-            name: deleteData.codeName,
-            type: deleteData.codeType,
-          });
+          data.refresh = true
+          // treeRef.value!.remove({
+          //   code: deleteData.codeValue,
+          //   name: deleteData.codeName,
+          //   type: deleteData.codeType,
+          // });
         }
       });
     })
@@ -230,45 +251,44 @@ const filterNode = (value: string, data: any): boolean => {
 };
 // 新增
 const saveHandle = (params: CodeModel) => {
-  params.codeType = params.codeType === PARENT_CODE ? params.codeValue : params.codeType 
   codeService.save(params).then((res: Response) => {
     ElMessage({
       message: res.message,
       type: res.code == 200 ? "success" : "error",
     });
     if (res.code === 200) {
-      params.id = res.data.id;
-      const tree = {
-        name: params.codeName,
-        type: params.codeType,
-        code: res.data.codeValue,
-        child: []
-      };
-      // getCodeAgain();
+      // params.id = res.data.id;
+      // const tree = {
+      //   name: params.codeName,
+      //   type: params.codeType,
+      //   code: res.data.codeValue,
+      //   child: []
+      // };
+      data.refresh = true
       searchHandle();
       closeDialog();
-      treeRef.value!.append({ ...tree, childs: [] }, data.treeInfo.code);
-      treeData.value.forEach((tree) => {
-        if (tree.code === params.codeParent) {
-          tree.child!.push({
-            name: params.codeName,
-            type: params.codeType,
-            code: params.codeValue,
-            child: []
-          });
-        } else {
-          tree.child!.forEach((child) => {
-            if (child.id === res.data.id) {
-              child.child!.push({
-                name: params.codeName,
-                type: params.codeType,
-                code: params.codeValue,
-                child: []
-              });
-            }
-          });
-        }
-      });
+      // treeRef.value!.append({ ...tree, childs: [] }, data.treeInfo.code);
+      // treeData.value.forEach((tree) => {
+      //   if (tree.code === params.codeParent) {
+      //     tree.child!.push({
+      //       name: params.codeName,
+      //       type: params.codeType,
+      //       code: params.codeValue,
+      //       child: []
+      //     });
+      //   } else {
+      //     tree.child!.forEach((child) => {
+      //       if (child.id === res.data.id) {
+      //         child.child!.push({
+      //           name: params.codeName,
+      //           type: params.codeType,
+      //           code: params.codeValue,
+      //           child: []
+      //         });
+      //       }
+      //     });
+      //   }
+      // });
     }
   });
 };
@@ -292,10 +312,11 @@ const updateHandle = (params: CodeModel) => {
       type: res.code == 200 ? "success" : "error",
     });
     if (res.code === 200) {
+      data.refresh = true
       closeDialog();
       searchHandle();
-      getCodeAgain();
-      deepSetValue(treeData.value, params.codeName, params.codeValue);
+      // getCodeAgain();
+      // deepSetValue(treeData.value, params.codeName, params.codeValue);
     }
   });
 };
@@ -314,7 +335,7 @@ const add = () => {
   showDialog({
     id: "",
     codeName: "",
-    codeParent: "",
+    codeParent: data.treeInfo.code,
     codeType: "",
     codeValue: "",
     status: 1,
@@ -348,16 +369,6 @@ const getTree = () => {
 };
 const getAll = () => {
   searchParamsModel.searchParams = searchModel.value;
-  // if (searchModel.value[1].value !== PARENT_CODE) {
-  //   searchParamsModel.searchParams = [
-  //     ...searchModel.value,
-  //     {
-  //       key: "codeType",
-  //       value: TYPE_CODE.value,
-  //       match: "eq",
-  //     },
-  //   ];
-  // }
   codeService.list(searchParamsModel).then((res: Response) => {
     if (res.code == 200) {
       const { results, pageInfo } = res.data;

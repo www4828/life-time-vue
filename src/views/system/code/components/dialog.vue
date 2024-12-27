@@ -24,7 +24,7 @@
       <el-form-item label="字典名称：" prop="codeName">
         <el-input v-model="props.formData.codeName" placeholder="字典名称" />
       </el-form-item>
-      <el-form-item label="类型编号：" prop="codeParent">
+      <el-form-item label="所属上级：" prop="codeParent">
         <el-tree-select
           v-model="props.formData.codeParent"
           :data="props.treeData"
@@ -35,6 +35,15 @@
           :render-after-expand="false"
           @node-click="nodeClick"
         />
+      </el-form-item>
+      <el-form-item label="字典类型：" prop="codeType" >
+        <el-input v-model="props.formData.codeType" placeholder="类型" :disabled="props.dialogStatus === '修改'" />
+      </el-form-item>
+      <el-form-item label="数据类型" prop="dataType">
+        <el-select v-model="props.formData.dataType" >
+          <el-option label="正常" :value="1" />
+          <el-option label="不可删除" :value="-1" />
+        </el-select>
       </el-form-item>
       <el-form-item label="排序：" prop="sort">
         <el-input v-model="props.formData.sort" placeholder="排序" />
@@ -56,12 +65,6 @@
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-switch v-model="props.formData.status" :active-value="1" :inactive-value="0" />
-      </el-form-item>
-      <el-form-item label="数据类型" prop="dataType">
-        <el-select v-model="props.formData.dataType" >
-          <el-option label="正常" :value="1" />
-          <el-option label="不可删除" :value="-1" />
-        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>

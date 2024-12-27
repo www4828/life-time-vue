@@ -7,11 +7,7 @@ import { cloneDeep } from 'lodash-es'
 export function useCode() {
   const codeService = new CodeService()
   const codes = ref<CodeModel[]>([])
-  const types = reactive({
-    systemLayoutTypes: [] as CodeModel[],
-    tagStyleTypes: [] as CodeModel[],
-    animationTypes: [] as CodeModel[],
-  })
+  const types = reactive<any>({})
   const getCodesByType = (type: string): CodeModel[] => {
     const allCodes = cloneDeep(codes.value)
     return allCodes?.filter((code) => code.codeParent == type)
@@ -21,6 +17,7 @@ export function useCode() {
     types.systemLayoutTypes = getCodesByType('1100')
     types.tagStyleTypes = getCodesByType('1200')
     types.animationTypes = getCodesByType('1300')
+    types.deptTypes = getCodesByType('2100')
   }
   const getAllCode = () => {
     if (Session.get('allCode')) {

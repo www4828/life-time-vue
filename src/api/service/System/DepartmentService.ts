@@ -24,7 +24,7 @@ export class DepartmentService implements DepartmentInterface {
     return this.request.post(this.baseUlr + `/saveOrUpdate`, permission)
   }
   update(T: DepartmentModel): Promise<Response> {
-    return this.request.put(this.baseUlr + `/${T.id}`, T)
+    return this.request.put(this.baseUlr + `/${T.departmentCode}`, T)
   }
   list(searchParams: SearchParamsModel<DepartmentModel>): Promise<Response> {
     return this.request.post(this.baseUlr + `/search`, searchParams)
