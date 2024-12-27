@@ -37,29 +37,7 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     meta: {
       title: '登录',
     },
-  },
-  {
-    path: '/caseDetail',
-    name: 'caseDetail',
-    component: () => import('@/views/CaseDetail/CaseDetail.vue'),
-    meta: {
-      title: '案件详情',
-    },
-    beforeEnter: (to, from, next) => {
-      beforeStyleSet(to, next)
-    },
-  },
-  {
-    path: '/caseDetailXF',
-    name: 'caseDetailXF',
-    component: () => import('@/views/CaseDetail/CaseDetailXF.vue'),
-    meta: {
-      title: '案件详情',
-    },
-    beforeEnter: (to, from, next) => {
-      beforeStyleSet(to, next)
-    },
-  },
+  }, 
   {
     path: '/404',
     name: 'notFound',
