@@ -11,9 +11,9 @@
                 <Link />
             </div>
         </div>
-        <!-- <div class="footer" v-if="getThemeConfig.isFooter">
+        <div class="footer" v-if="getThemeConfig.isFooter">
             <Footer />
-        </div> -->
+        </div>
     </div>
 </template>
 <script lang="ts">
