@@ -169,8 +169,8 @@ watch(state, (val) => {
 watch(
   () => props.checked,
   (val) => {
-    treeRef.value.setCheckedKeys(val)
     nextTick(()=>{
+      
       treeRef.value.setCheckedKeys(val)
       val && (state.expandedList = val)
     })

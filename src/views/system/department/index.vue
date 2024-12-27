@@ -38,12 +38,14 @@
           @changeAction="state.action === 'edit'"
           @changeSubmit="state.submit=false"
           :deptList="state.deptList"
+          @changeType="val=>state.detail.departmentType=val"
         />
         <RoleTree
           ref="roleTreeRef"
           show-checkbox
+          :disabled="state.detail.departmentType != '1'"
           check-strictly
-          :checked="state.form.permissions?.split(',')"
+          :checked="state.detail.departmentRoles?.split(',')"
           :treeJson="{ type: roleServer }"
         />
       </div>
@@ -116,6 +118,8 @@ const getDeptDetail = (departmentCode: string) => {
   })
 }
 const handleNodeClick = (node: any) => {
+  console.log();
+  
   state.currentNode = node
   state.action = 'edit'
   getDeptDetail(node.code)

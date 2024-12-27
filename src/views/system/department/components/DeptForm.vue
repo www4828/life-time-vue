@@ -50,6 +50,7 @@
             v-model="state.form.departmentType"
             placeholder="请选择"
             filterable
+            @change="emits('changeType',state.form.departmentType)"
           >
             <el-option
               v-for="item in types.deptTypes"
@@ -199,7 +200,7 @@ const rules = reactive({
     { required: true, message: "请选择左侧部门为上级部门", trigger: "blur" },
   ],
 });
-const emits = defineEmits(["changeAction", "onSubmit", "changeSubmit"]);
+const emits = defineEmits(["changeAction", "onSubmit", "changeSubmit", "changeType"]);
 
 const treeProps = {
   label: "departmentName",
