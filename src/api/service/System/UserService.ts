@@ -6,23 +6,26 @@ export interface userInterface extends BaseInterface<UserModel> {}
 
 export class UserService implements userInterface {
   protected baseUlr: string = 'user'
-  protected url: string = 'userRole'
-  protected path: string = 'userDepartment'
+  protected url: string = 'user/role'
+  protected path: string = 'user/department'
   private request
   constructor() {
     this.request = new RequestService('sysUrl').service!
   }
-  find(id: string): Promise<Response> {
-    return this.request.get(this.baseUlr + `${id}`)
-  }
+  // save(uer: UserModel): Promise<Response> {
+  //   return this.request.post(this.baseUlr, uer)
+  // }
   save(uer: UserModel): Promise<Response> {
-    return this.request.post(this.baseUlr, uer)
+    return this.request.post(this.baseUlr + `/${uer.departmentCode}`, uer)
   }
   update(T: UserModel): Promise<Response> {
-    return this.request.put(this.baseUlr + `/${T.id}`, T)
+    return this.request.put(this.baseUlr + `/${T.userCode}`, T)
+  } 
+  listUserDept(departmentCode:string,searchParams: SearchParamsModel<UserModel>): Promise<Response> {
+    return this.request.post(`/user/search/${departmentCode}`,searchParams)
   }
   list(searchParams: SearchParamsModel<UserModel>): Promise<Response> {
-    return this.request.post(this.baseUlr + `/searchList`, searchParams)
+    return this.request.post(`/user/search`,searchParams)
   }
   delete(id: string): Promise<Response> {
     return this.request.delete(this.baseUlr + `/${id}`)
@@ -31,24 +34,24 @@ export class UserService implements userInterface {
     return this.request.post(this.baseUlr + `/getUserByToken`)
   }
   // 用户角色
-  listUserRole(searchParams: SearchParamsModel<UserModel>): Promise<Response> {
-    return this.request.post(this.url + `/searchList`, searchParams)
+  getUserRole(userCode: string,deptCode: string): Promise<Response> {
+    return this.request.get(this.url + `/${userCode}/${deptCode}`)
   }
-  saveUserRole(user: UserModel): Promise<Response> {
+  saveUserRole(user: UserModel[]): Promise<Response> {
+    return this.request.post(this.url, user)
+  }
+  saveUserRoleFull(user: UserModel[]): Promise<Response> {
     return this.request.post(this.url, user)
   }
   deleteUserRole(id: string): Promise<Response> {
     return this.request.delete(this.url + `/${id}`)
   }
-  saveOrUpdate(user: UserModel): Promise<Response> {
-    return this.request.post(this.url + `/saveOrUpdate`, user)
-  }
 
   // 用户部门
-  listUserDept(departmentCode:string,searchParams: SearchParamsModel<UserModel>): Promise<Response> {
-    return this.request.post(this.path + `/searchUserList/${departmentCode}`,searchParams)
+  getUserDept(userCode:string): Promise<Response> {
+    return this.request.get(this.path + '/' + userCode)
   }
-  saveUserDept(user: UserModel): Promise<Response> {
+  saveUserDept(user: UserModel[]): Promise<Response> {
     return this.request.post(this.path, user)
   }
   deleteUserDept(id: string): Promise<Response> {

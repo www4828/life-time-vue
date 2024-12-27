@@ -32,7 +32,7 @@ interface UserInfo {
   "wx": string
 }
 export function useDepartment() {
-  const { departCode, departName, userName, userCode, id, mobile }: UserInfo = JSON.parse(sessionStorage.getItem('userInfo')!)
+  const { departCode, departName, userName, userCode, id, mobile }: UserInfo = JSON.parse(sessionStorage.getItem('departments')!)
   const currentDepartmentCode = departCode
   const currentDepartmentCodeName = departName
   const currentDepartmentLevel = 0

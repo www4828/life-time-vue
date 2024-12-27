@@ -6,6 +6,7 @@ export class UserModel extends BaseModel{
   "createUserName": string
   "departCode": string
   "departName": string
+  "departmentCode": string
   "email": string
   "idCard": string
   "mobile": string
@@ -15,6 +16,8 @@ export class UserModel extends BaseModel{
   "sort": string
   "status": number
   "userCode": string
+  "roleCode": string
+  "roleDept": string
   "userName": string
   "userNickName": string
   "wx": string

@@ -274,6 +274,7 @@
       padding: 20px 0 50px;
       overflow: hidden;
       justify-content: space-between;
+      
 
       .left {
         width: 70%;
@@ -281,6 +282,20 @@
         position: relative;
         margin: 0 10px;
         box-sizing: border-box;
+      }
+      &.user-content{
+        padding-bottom: 0;
+        .header-search{
+          .el-input{
+            margin: 0;
+          }
+        }
+        .split-line,.left{
+          border: 0;
+        }
+        .right{
+          border-right: 1px dashed var(--lt-tree-border-color);
+        }
       }
 
       .right {

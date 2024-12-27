@@ -1,6 +1,6 @@
 <template>
   <div class="tree_container">
-    <div class="header-search">
+    <div class="header-search" v-if="props.showSearch">
       <el-input
         placeholder="请输入内容"
         :prefix-icon="Search"
@@ -8,7 +8,7 @@
       />
     </div>
     <!--这是一个完美的分割线-->
-    <div class="split-line"></div>
+    <div class="split-line" v-if="props.showSearch"></div>
     <div class="tree">
       <el-tree
         :empty-text="state.emptyText"
@@ -42,17 +42,23 @@ import { cloneDeep } from 'lodash-es'
 
 const treeRef: any = ref(null)
 const emits = defineEmits(['handleNodeClick', 'setRefresh', 'getTree'])
-const props = defineProps({
-  action: String,
-  checkbox: Boolean,
-  checked: Array<string>,
-  refresh: Boolean,
-  new: Object,
-  treeJson: Object,
-  showCheckbox: Boolean,
-  disabled: Boolean,
-  checkStrictly: Boolean
-})
+const props = withDefaults(
+  defineProps<{
+    action?: string,
+    checkbox?: boolean,
+    checked?: Array<string>,
+    refresh?: boolean,
+    new?: any,
+    treeJson: any,
+    showCheckbox?: boolean,
+    showSearch?: boolean,
+    disabled?: boolean,
+    checkStrictly?: boolean
+  }>(),
+  {
+    showSearch: true
+  }
+);
 
 const state = reactive({
   list: [] as TreeModel[],
@@ -150,15 +156,6 @@ const loadData = () => {
   }
 }
 loadData()
-// 设置选中
-const setCheckedNodes = () => {
-  if (props.checked) {
-    nextTick(()=>{
-      treeRef.value.setCheckedKeys(props.checked)
-    })
-  }
-}
-
 
 watch(state, (val) => {
   treeRef.value?.filter(val.filterText)
@@ -170,7 +167,6 @@ watch(
   () => props.checked,
   (val) => {
     nextTick(()=>{
-      
       treeRef.value.setCheckedKeys(val)
       val && (state.expandedList = val)
     })

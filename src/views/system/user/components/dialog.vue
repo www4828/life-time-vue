@@ -5,11 +5,17 @@
       <div class="left">
         <div class="title">基础信息</div>
         <el-form ref="form" :model="props.editform" :rules="editRules" label-position="right" :inline="true" class="form">
-          <el-form-item label="用户名:" prop="username">
-            <el-input v-model.trim="props.editform.username" placeholder="用户名" :disabled="title === '修改'"></el-input>
+          <el-form-item label="用户名:" prop="userCode">
+            <el-input v-model.trim="props.editform.userCode" placeholder="用户名" :disabled="title === '修改'"></el-input>
           </el-form-item>
-          <el-form-item label="姓名:" prop="name">
-            <el-input v-model.trim="props.editform.name" placeholder="姓名"></el-input>
+          <el-form-item label="姓名:" prop="userName">
+            <el-input v-model.trim="props.editform.userName" placeholder="姓名"></el-input>
+          </el-form-item>
+          <el-form-item label="密码:" prop="passWord" v-if="title == '添加' " >
+            <el-input v-model.trim="props.editform.passWord" placeholder="密码" show-password></el-input>
+          </el-form-item>
+          <el-form-item label="昵称:" prop="userNickName">
+            <el-input v-model.trim="props.editform.userNickName" placeholder="昵称"></el-input>
           </el-form-item>
           <el-form-item label="部门:" prop="departmentCode">
             <el-tree-select 
@@ -17,9 +23,12 @@
               v-model="props.editform.departmentCode" 
               :data="state.deptList"
               :render-after-expand="false" 
-              :props="treeProps" 
-              node-key="departmentCode" 
-              value-key="departmentCode"
+              :props="{
+                  children: 'child',
+                  label: 'name',
+                  value: 'code',
+              }" 
+              node-key="code" 
               check-strictly 
               ref="deptParentTree" 
               check-on-click-node 
@@ -33,8 +42,8 @@
           </el-form-item>
           <el-form-item label="性别:" prop="sex">
             <el-radio-group v-model="props.editform.sex">
-              <el-radio :label="1">男</el-radio>
               <el-radio :label="0">女</el-radio>
+              <el-radio :label="1">男</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="邮箱:" prop="email">
@@ -53,31 +62,34 @@
       </div>
       <div class="right">
         <div class="title">用户角色设置</div>
-        <RoleTree 
-          show user 
-          :departmentCode="props.editform.departmentCode" 
-          :submit="state.submit" 
-          @onSubmit="onSubmit" 
-          :roleList="state.roleList" 
+        <RoleTree
+          :showSearch="false"
+          ref="roleTreeRef"
+          show-checkbox
+          :checked="state.checkdeList"
+          :treeJson="{ type: roleServer }"
         />
       </div>
     </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="state.submit = true"> 确定 </el-button>
+        <el-button type="primary" @click="onSubmit"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import type { FormRules } from "element-plus";
-import RoleTree from '@/businessComponent/tree/roleTree/roleTree.vue'
-import { DepartmentService } from "@/api/service/System/DepartmentService";
+import RoleTree from '@/businessComponent/tree/index.vue'
 import { verifyPhone } from '@/utils/toolsValidate'
 import { UserService } from '@/api/service/System/UserService'
 import { useCode } from '@/hooks/useCode'
+import { RoleService } from "@/api/service/System/RoleService";
+import { DepartmentService } from "@/api/service/System/DepartmentService";
+import { UserModel } from "@/api/model/userModel";
+import { Session } from "@/utils/storage";
 
 const validateMobile = (rule: any, value: any, callback: any) => {
   if (verifyPhone(value)) {
@@ -87,96 +99,99 @@ const validateMobile = (rule: any, value: any, callback: any) => {
   }
 }
 const editRules = reactive<InstanceType<typeof FormRules>>({
-  username: [{ required: true, message: "请输入", trigger: "blur"}],
-  name: [{ required: true, message: "请输入", trigger: "blur" }],
+  userCode: [{ required: true, message: "请输入", trigger: "blur"}],
+  userName: [{ required: true, message: "请输入", trigger: "blur" }],
+  passWord: [{ required: true, message: "请输入", trigger: "blur" }],
   mobile: [{ required: true, trigger: "blur", validator: validateMobile, }],
-  idCard: [
-    { required: true, message: "请输入", trigger: "blur" },
-    { min: 18, max: 18, message: '身份证为18位数', trigger: 'blur' }
-  ],
+  // idCard: [
+  //   { required: true, message: "请输入", trigger: "blur" },
+  //   { min: 18, max: 18, message: '身份证为18位数', trigger: 'blur' }
+  // ],
   departmentCode: [{ required: true, trigger: 'blur', message: '请选择部门' }],
 });
-interface Props {
-  dialogVisible?: boolean;
-  editform?: any;
-  title: string
-}
-const treeProps = {
-  label: 'departmentName',
-  value: 'departmentCode',
-  children: 'childs',
-}
 
 const form: any = ref(null)
-const departmentService = new DepartmentService()
+const roleTreeRef = ref()
+const roleServer = new RoleService()
 const userServer = new UserService()
-const props = withDefaults(defineProps<Props>(), {
-  dialogVisible: false,
-  editform: {
-    roleId: "",
-    rolename: "",
-    sort: 0,
-    remark: "",
-    status: 0,
-  },
+const departmentService = new DepartmentService()
+const props = withDefaults(defineProps<{
+  dialogVisible: boolean;
+  editform: UserModel;
+  title: string
+}>(), {
+  dialogVisible: false
 });
 const emit = defineEmits(["close", "save"]);
 const state = reactive({
   deptList: [] as any,
   submit: false,
-  roleList: [] as any
+  checkdeList:  [] as string[],
+  roleList: [] as UserModel[]
 })
 
-const { departmentList } = JSON.parse(sessionStorage.getItem('userInfo')!)
-
 const loadDeptList = () => {
-  departmentService.tree(departmentList[0].departmentParentCode).then((res) => {
+  departmentService.tree({
+        pageParams: {
+          pageIndex: 0,
+          pageSize: -1,
+        },
+        searchParams: [],
+      }).then((res) => {
     state.deptList = res.data
   })
 }
 loadDeptList()
 const loadUserRole = () => {
-  userServer.listUserRole({
-    "pageParams": {
-      "pageIndex": 1,
-      "pageSize": -1,
-      "total": 0
-    },
-    "searchParams": [
-      {
-        "key": "userName",
-        "match": "eq",
-        "value": props.editform.username
-      }
-    ]
-  }).then(res=>{
-    state.roleList = res.data.results
+  userServer.getUserRole(props.editform.userCode,Session.get('activeDept')).then(res=>{
+    state.checkdeList = res.data?.map((i:any)=>i.roleCode)
+    state.roleList = res.data
   })
 }
-props.title === '修改' && loadUserRole()
 
-const save = (obj: any) => {
-  emit('save', props.title, obj)
+// props.title === '修改' && loadUserRole()
+
+const save = () => {
+  let list =  roleTreeRef.value?.getCheckedKeys() as string[],
+  roleList = [] as UserModel[]
+  list.forEach(role=>{
+    if(state.checkdeList.indexOf(role) > -1){
+      let index = state.checkdeList.indexOf(role)
+      roleList.push(state.roleList[index])
+    }else{
+      roleList.push({
+        roleCode: role,
+        roleDept: Session.get('activeDept'),
+        userCode: props.editform.userCode
+      } as UserModel)
+    }
+  })
+  console.log(roleList);
+  
+  emit('save',roleList)
   handleClose();
 };
 
 const onSubmit = (flag: any, list: any,checkList:any) => {
 
-  let obj = {} as any
-  Object.keys(props.editform).forEach(key => {
-    obj[key] = props.editform[key]
-  })
-  flag.type === 'tree' && (obj.roleList = checkList)
+  // let obj = {} as any
+  // Object.keys(props.editform).forEach(key => {
+  //   obj[key] = props.editform[key]
+  // })
+  // flag.type === 'tree' && (obj.roleList = checkList)
   form.value.validate((valid: any, fields: any) => {
     if (valid) {
-      save(obj)
-    } else {
-      state.submit = false
+      save()
     }
   })
 }
 const handleClose = () => {
   emit("close", false);
 };
+watch(()=>props.editform,(val)=>{
+  val.userCode && loadUserRole()
+},{
+  immediate: true
+})
 </script>
 <style lang="scss" scoped></style>

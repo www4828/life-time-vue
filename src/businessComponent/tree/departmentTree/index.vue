@@ -7,7 +7,6 @@
         v-model="data.filterText"
       />
     </div>
-    <!--这是一个完美的分割线-->
     <div class="split-line"></div>
     <div class="tree">
       <el-tree
@@ -23,28 +22,36 @@
         expand-on-click-node
         :default-expanded-keys="data.expanded"
         check-on-click-node
-      />
+      >
+        <template #default="{ node, data }">
+          <span class="custom-tree-node">
+            <span>{{ node.label }}</span>
+            <el-link
+              v-if="data.type == '1' && props.checked?.indexOf(data.code) === -1 "
+              type="primary"
+              @click="append(data)"
+              :underline="false"
+              :icon="CirclePlus"
+            ></el-link>
+          </span>
+        </template>
+      </el-tree>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, watch } from 'vue'
-import { Search, Edit, Delete } from '@element-plus/icons-vue'
+import { CirclePlus, Search } from '@element-plus/icons-vue'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 import { DepartmentModel } from '@/api/model/departmentModel'
 import { DepartmentService } from '@/api/service/System/DepartmentService'
-import { Session } from '@/utils/storage'
 
 const departmentServer = new DepartmentService()
 const treeRef: any = ref(null)
-const emits = defineEmits(['handleNodeClick', 'setRefresh', 'getTree'])
+const emits = defineEmits(['handleNodeClick', 'append', 'getTree'])
 const props = defineProps({
-  action: String,
-  checkbox: Boolean,
   checked: Array,
-  refresh: Boolean,
-  new: Object,
 })
 const data = reactive({
   list: [] as any,
@@ -81,7 +88,6 @@ const handleNodeClick = (node: any) => {
 }
 // 读取全部
 const loadData = () => {
-  let { departmentList } = Session.get('userInfo')
   data.list = []
   departmentServer
     .tree({
@@ -90,53 +96,18 @@ const loadData = () => {
         pageSize: -1,
         total: 0,
       },
-      searchParams: [
-        {
-          key: 'departmentCode',
-          match: 'eq',
-          value: '',
-        },
-      ],
+      searchParams: [],
     })
     .then((res) => {
-      data.list = res.data;
+      data.list = res.data
       data.expanded = [data.list[0].code]
     })
     .catch(() => (data.emptyText = '暂无数据'))
 }
 loadData()
-// 设置选中
-const setCheckedNodes = () => {
-  if (props.checked) {
-    treeRef.value.setCheckedNodes(props.checked, false)
-  }
-}
-// 操作部门树
-const setTree = () => {
-  switch (props.action) {
-    case 'add':
-      treeRef.value!.append(
-        { 
-          name: props.new?.departmentName, 
-          code: props.new?.departmentCode, 
-          type: props.new?.departmentType,
-          child: [] 
-        },
-        treeRef.value!.getCurrentKey()
-      )
-      treeRef.value!.setCurrentKey(props.new?.departmentCode, true)
-      data.node = treeRef.value!.getCurrentNode()
-      emits('handleNodeClick', data.node)
-      break
-    case 'edit':
-      data.node.name = props.new?.departmentName
-      break
-    case 'del':
-      treeRef.value!.remove(data.node)
-    case 'done':
-      break
-  }
-  emits('setRefresh', false)
+
+const append = (data: any) => {
+  emits('append', data)
 }
 
 watch(data, (val) => {
@@ -145,18 +116,6 @@ watch(data, (val) => {
     ? '加载中...'
     : '暂无数据'
 })
-watch(
-  () => props.checked,
-  (val) => {
-    val && setCheckedNodes
-  }
-)
-watch(
-  () => props.refresh,
-  (val) => {
-    val && setTree()
-  }
-)
 </script>
 
 <style lang="scss" scoped>
@@ -164,6 +123,14 @@ watch(
   height: 100%;
   .tree {
     height: calc(100% - 70px);
+  }
+  .custom-tree-node {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    .el-link {
+      font-size: 18px;
+    }
   }
 }
 </style>

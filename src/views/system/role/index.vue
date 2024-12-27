@@ -138,7 +138,6 @@
           show-checkbox
           :disabled="state.formData.roleType != '1' "
           :checked="state.formData.permissions?.split(',')"
-          check-strictly
           :treeJson="{
             type: permissionSever,
             name: 'name',

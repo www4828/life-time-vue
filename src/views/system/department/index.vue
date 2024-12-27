@@ -1,14 +1,16 @@
 <template>
-  <Layout v-loading="state.submitLoading"
+  <Layout
+    v-loading="state.submitLoading"
     element-loading-background="rgba(255,255,255,0.3)"
-    :element-loading-text="state.text">
+    :element-loading-text="state.text"
+  >
     <template #tree>
       <DepartmentTree
         @handleNodeClick="handleNodeClick"
         :refresh="state.refresh"
         :action="state.action"
         :new="state.newDepartment"
-        @setRefresh="setRefresh" 
+        @setRefresh="setRefresh"
         :treeJson="{
           type: departmentServer,
           name: 'departmentName',
@@ -17,13 +19,19 @@
       />
     </template>
     <template #button>
-      <el-button type="primary" @click="addHandle" :disabled="state.loading || state.action == 'add'"
+      <el-button
+        type="primary"
+        @click="addHandle"
+        :disabled="state.loading || state.action == 'add'"
         >新增</el-button
       >
-      <el-button type="danger" @click="doDel" :disabled="(state.action == 'add')"
+      <el-button type="danger" @click="doDel" :disabled="state.action == 'add'"
         >删除</el-button
       >
-      <el-button type="warning" @click="state.action = 'edit'" v-if="state.action == 'add'"
+      <el-button
+        type="warning"
+        @click="state.action = 'edit'"
+        v-if="state.action == 'add'"
         >取消</el-button
       >
     </template>
@@ -33,25 +41,28 @@
           :formData="state.detail"
           :action="state.action"
           :submit="state.submit"
-          @onSubmit="onSubmit"
+          @onSubmit="save"
           :tagFlag="state.tagFlag"
           @changeAction="state.action === 'edit'"
-          @changeSubmit="state.submit=false"
+          @changeSubmit="state.submit = false"
           :deptList="state.deptList"
-          @changeType="val=>state.detail.departmentType=val"
+          @changeType="(val) => (state.detail.departmentType = val)"
         />
         <RoleTree
           ref="roleTreeRef"
           show-checkbox
           :disabled="state.detail.departmentType != '1'"
-          check-strictly
-          :checked="state.detail.departmentRoles?.split(',')"
+          :checked="state.departmentRoles"
           :treeJson="{ type: roleServer }"
         />
       </div>
     </template>
     <template #bottom>
-      <el-button type="success" @click="submitHandle" :disabled="!state.action || state.action==='del'">确定</el-button>
+      <el-button
+        type="success"
+        @click="state.submit = true"
+        >确定</el-button
+      >
     </template>
   </Layout>
 </template>
@@ -67,7 +78,7 @@ import { Response, SearchParamsModel } from '@/api/interface'
 import { SearchModel } from '@/api/model/baseModel'
 import Layout from '@/components/Layout/Layout.vue'
 import { cloneDeep, debounce } from 'lodash-es'
-import { RoleService } from "@/api/service/System/RoleService";
+import { RoleService } from '@/api/service/System/RoleService'
 
 const departmentServer = new DepartmentService()
 const roleServer = new RoleService()
@@ -85,73 +96,59 @@ const state = reactive({
   submit: false, // 提交按钮
   form: {} as DepartmentModel, // submit提交信息
   flagArr: [] as Array<any>, // 提交数组
-  departmentCode:'',  // 当前部门编号
+  departmentCode: '', // 当前部门编号
   currentNode: {} as any, // 当前选中节点
   tagFlag: false as boolean,
   newDepartment: {} as DepartmentModel, // 修改或新增的部门信息
   submitLoading: false,
-  text:'正在提交数据，请稍后...',
-  deptList:[]
+  text: '正在提交数据，请稍后...',
+  deptList: [],
+  departmentRoles: []
 })
 
 // 获取详情
 const getDeptDetail = (departmentCode: string) => {
   state.loading = state.submitLoading = true
   state.text = '加载中...'
-  departmentServer.list({
-    "pageParams": {
-      "pageIndex": 0,
-      "pageSize": -1
-    },
-    "searchParams": [
-      {
-        "key": "departmentCode",
-        "match": "eq",
-        "value": departmentCode
-      }
-    ]
-  }).then((res) => {
-    state.action = 'edit'
-    state.loading = state.submitLoading = false
-    state.text = '正在提交数据，请稍后...'
-    state.detail = res.data.results[0]
-  })
+  departmentServer
+    .list({
+      pageParams: {
+        pageIndex: 0,
+        pageSize: -1,
+      },
+      searchParams: [
+        {
+          key: 'departmentCode',
+          match: 'eq',
+          value: departmentCode,
+        },
+      ],
+    })
+    .then((res) => {
+      state.action = 'edit'
+      state.loading = state.submitLoading = false
+      state.text = '正在提交数据，请稍后...'
+      state.detail = cloneDeep(res.data.results[0])
+      state.currentNode = cloneDeep(res.data.results[0])
+      state.departmentRoles = res.data.results[0]?.departmentRoles.split(',')
+    })
 }
 const handleNodeClick = (node: any) => {
-  console.log();
-  
-  state.currentNode = node
   state.action = 'edit'
   getDeptDetail(node.code)
-  // if (node.code) {
-  //   state.departmentCode = node.code
-    
-  //   if (state.action == 'add' && !state.newDepartment) {
-  //     ElMessageBox.confirm(
-  //       `本次${
-  //         state.action == 'add' ? '新增' : '修改'
-  //       }内容还未保存，确认切换吗？`,
-  //       '提示'
-  //     ).then(() => {
-  //       state.detail = {} as DepartmentModel
-  //       getDeptDetail(node.code)
-  //     })
-  //   } else {
-  //     getDeptDetail(node.code)
-  //   }
-  // }
 }
-const caseEntry = (check:boolean)=>{
-  state.tagFlag=check
-}
+
 const addHandle = () => {
-  
-  if (state.detail.departmentCode) {
+  if (state.currentNode.departmentCode) {
     state.action = 'add'
-  }else{
+    state.detail = {
+      status: 1,
+      sort: 1,
+      departmentParentCode: state.currentNode.departmentCode,
+      departmentLevel: Number(state.currentNode.departmentLevel) + 1
+    } as DepartmentModel
+  } else {
     ElMessage.warning('请选择左侧部门为上级部门')
-    // state.detail.departmentCode = '0'
-    // state.detail.departmentLevel = 0
   }
 }
 
@@ -160,56 +157,30 @@ const doDel = () => {
     ElMessageBox.confirm('是否确定删除？', '提示').then(() => {
       state.submitLoading = true
       state.action = 'del'
-      departmentServer.delete(String(state.detail.departmentCode)).then((res) => {
-        state.submitLoading = false
-        ElMessage({
-          type: res.code == 200 ? 'success' : 'error',
-          message: res.message
+      departmentServer
+        .delete(String(state.detail.departmentCode))
+        .then((res) => {
+          state.submitLoading = false
+          ElMessage({
+            type: res.code == 200 ? 'success' : 'error',
+            message: res.message,
+          })
+          state.refresh = true
         })
-        state.detail = {} as DepartmentModel
-        state.refresh = true
-        state.newDepartment = {} as DepartmentModel
-      }).catch(()=>state.submitLoading = false)
+        .catch(() => (state.submitLoading = false))
     })
   } else {
     ElMessage.info('请先选择左侧部门')
   }
 }
 
-// const save = () => {
-//   if(state.flagArr.length === 2){
-//     // 检查数据是否被修改
-//     if(state.flagArr.every(item=>item.isEqual)){
-//       ElMessage.warning('未修改数据！')
-//       state.submit = false
-//       state.submitLoading = false
-//     }else{
-//       // console.log('saveOrUpdate',state.form);
-//       state.submitLoading = true
-      
-//       departmentServer.saveOrUpdate(state.form).then(res=>{
-//         state.submitLoading = false
-//         ElMessage({
-//           type:res.code == 200 ? 'success' :'error',
-//           message: res.code == 200 ? res.message : (res.data || res.message)
-//         })
-//         if(res.code == 200){
-//           state.newDepartment = res.data
-//           state.refresh = true
-//         }
-//         state.flagArr = []
-//       }).catch(()=>{
-//         state.submitLoading = false
-//         state.flagArr = []
-//       })
-//     }
-//   }
-// }
 
 const save = () => {
-  state.form.departmentRoles = roleTreeRef.value?.getCheckedKeys().join(',')
-  if (state.form.id) {
-    departmentServer.update(state.form).then((res: Response) => {
+  // state.submitLoading = true
+  state.detail.departmentRoles = roleTreeRef.value?.getCheckedKeys().join(',')
+
+  if (state.detail.id) {
+    departmentServer.update(state.detail).then((res: Response) => {
       if (res.code === 200) {
         ElMessage.success('修改成功!')
         state.refresh = true
@@ -218,7 +189,7 @@ const save = () => {
       }
     })
   } else {
-    departmentServer.save(state.form).then((res: Response) => {
+    departmentServer.save(state.detail).then((res: Response) => {
       if (res.code === 200) {
         ElMessage.success('新增成功!')
         state.refresh = true
@@ -228,29 +199,12 @@ const save = () => {
     })
   }
 }
-const setRefresh = ()=>{
+const setRefresh = () => {
   state.refresh = state.submit = false
+  state.submitLoading = false
   state.action = 'edit'
-  state.detail = state.newDepartment
 }
-const onSubmit = (flag: any, data: DepartmentModel,roleList?:Array<string>) => {
-  if (flag.type === 'form') {
-    let roleList =  state.form.roleList
-    state.form = cloneDeep(data) as DepartmentModel
-    state.form.roleList = roleList
-    // Object.keys(data).forEach((key): keyof DepartmentModel => state.form[key] = data[key] )
 
-  } else {
-    state.form.roleList = roleList || []
-  }
-  state.flagArr.push(flag)
-  save()
-}
-const submitHandle = ()=>{
-  state.flagArr = []
-  state.submit = true
-  
-}
 </script>
 
 <style lang="scss" scoped>

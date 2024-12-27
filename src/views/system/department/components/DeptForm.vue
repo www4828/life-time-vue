@@ -3,7 +3,7 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-form
         ref="deptform"
-        :model="state.form"
+        :model="props.formData"
         label-width="140px"
         :rules="rules"
         label-position="left"
@@ -12,27 +12,26 @@
       >
         <el-form-item label="部门名称" prop="departmentName">
           <el-input
-            v-model.trim="state.form.departmentName"
+            v-model.trim="props.formData.departmentName"
             placeholder="请输入部门名称"
           ></el-input>
         </el-form-item>
         <el-form-item label="部门编码" prop="departmentCode">
           <el-input
-            v-model.trim="state.form.departmentCode"
+            v-model.trim="props.formData.departmentCode"
             :disabled="props.action==='edit'"
             placeholder="请输入部门编码"
           ></el-input>
         </el-form-item>
         <el-form-item label="上级部门" prop="departmentParentCode">
           <el-tree-select
-            v-model="state.form.departmentParentCode"
+            v-model="props.formData.departmentParentCode"
             :data="props.deptList"
             :render-after-expand="false"
             :props="treeProps"
             node-key="departmentCode"
             value-key="departmentCode"
             check-strictly
-            @change="deptParentChange"
             ref="deptParentTree"
             placeholder="选中左侧部门为上级"
             disabled
@@ -40,18 +39,18 @@
         </el-form-item>
         <el-form-item label="部门层级" prop="departmentLevel">
           <el-input
-            v-model.trim="state.form.departmentLevel"
+            v-model.trim="props.formData.departmentLevel"
             placeholder="部门层级"
             disabled
           ></el-input>
         </el-form-item>
         <el-form-item label="部门类型" prop="departmentTag">
           <el-select
-            v-model="state.form.departmentType"
+            v-model="props.formData.departmentType"
             placeholder="请选择"
             filterable
-            @change="emits('changeType',state.form.departmentType)"
-          >
+            >
+            <!-- @change="emits('changeType',props.formData.departmentType)" -->
             <el-option
               v-for="item in types.deptTypes"
               :key="item.codeValue"
@@ -62,7 +61,7 @@
         </el-form-item>
         <el-form-item label="部门标签" prop="departmentTag">
           <el-select
-            v-model="state.form.departmentTags"
+            v-model="props.formData.departmentTags"
             placeholder="请选择部门标签"
             filterable
             multiple
@@ -76,24 +75,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门首页" prop="homeUrl">
-          <el-input v-model.trim="state.form.homeUrl" placeholder="部门首页"></el-input>
+          <el-input v-model.trim="props.formData.homeUrl" placeholder="部门首页"></el-input>
         </el-form-item>
         <el-form-item
           label="部门标识"
           prop="departmentMark"
-          :error="props.tagFlag && !state.form.departmentMark ? '请输入部门标识' : ''"
+          :error="props.tagFlag && !props.formData.departmentMark ? '请输入部门标识' : ''"
         >
           <el-input
-            v-model.trim="state.form.departmentMark"
+            v-model.trim="props.formData.departmentMark"
             placeholder="请输入部门标识"
           ></el-input>
         </el-form-item>
         <!-- <el-form-item
           label="部门分组"
           prop="departmentGroup"
-          v-if="state.form.departmentLevel == 2"
+          v-if="props.formData.departmentLevel == 2"
         >
-          <el-select v-model="state.form.departmentGroup" placeholder="请选择部门分组">
+          <el-select v-model="props.formData.departmentGroup" placeholder="请选择部门分组">
             <el-option
               v-for="item in groupTypes"
               :key="item.codeValue"
@@ -104,13 +103,13 @@
         </el-form-item> -->
         <el-form-item label="部门全称" prop="departmentShortName">
           <el-input
-            v-model="state.form.departmentShortName"
+            v-model="props.formData.departmentShortName"
             placeholder="请输入部门全称"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" prop="contactNumber">
           <el-input
-            v-model.trim.number="state.form.contactNumber"
+            v-model.trim.number="props.formData.contactNumber"
             placeholder="请输入联系电话"
             maxlength="11"
             disabled
@@ -118,19 +117,19 @@
         </el-form-item>
         <el-form-item label="联系人" prop="contactPerson">
           <el-input
-            v-model.trim="state.form.contactPerson"
+            v-model.trim="props.formData.contactPerson"
             placeholder="请输入联系人"
             disabled
           ></el-input>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input
-            v-model.number.trim="state.form.sort"
+            v-model.number.trim="props.formData.sort"
             placeholder="请输入排序"
           ></el-input>
         </el-form-item>
         <el-form-item label="是否启用" prop="sort">
-          <el-switch v-model="state.form.status" :active-value="1" :inactive-value="0" />
+          <el-switch v-model="props.formData.status" :active-value="1" :inactive-value="0" />
         </el-form-item>
         <br />
       </el-form>
@@ -165,28 +164,7 @@ const props = withDefaults(
   }
 );
 const { types } = useCode()
-const checkCode = (rule: any, value: any, callback: any) => {
-  if (value) {
-    let reg = /^\w+$/;
-    if (reg.test(value)) {
-      if (props.action === "add") {
-        departmentServer.getCodeIsUsed(value).then((res) => {
-          if (res.data) {
-            callback(new Error("该编码已被使用"));
-          } else {
-            callback();
-          }
-        });
-      } else {
-        callback();
-      }
-    } else {
-      callback(new Error("请输入数字、字母、下划线"));
-    }
-  } else {
-    callback(new Error("请输入部门编码"));
-  }
-};
+
 const rules = reactive({
   // departmentCode: [
   //   { required: true, validator: checkCode, trigger: "blur", pattern: /^\w+$/ },
@@ -223,87 +201,13 @@ const state = reactive({
   dictionaryType: [] as any,
 });
 
-const clearForm = () => {
-  state.form = {};
-  state.form.status = 1;
-  state.form.departmentParentCode = props.formData.departmentCode;
-  state.form.departmentLevel = props.formData.departmentLevel
-    ? Number(props.formData.departmentLevel) + 1
-    : 0;
-};
-
-const deptParentChange = (val: any) => {
-  deptParentTree.value.setCheckedKeys([val]);
-  let node = deptParentTree.value.getCheckedNodes()[0];
-  state.form.departmentLevel = Number(node.departmentLevel) + 1;
-};
-// loadDeptList()
-const getDictionaryType = () => {
-  // departmentServer.dictionaryType().then((res) => {
-  //   state.dictionaryType = res.data;
-  // });
-};
-getDictionaryType();
-
-const init = () => {
-  deptform.value.resetFields();
-
-  if (props.action === "edit") {
-    Object.keys(props.formData).forEach((key) => {
-      state.form[key] = props.formData[key];
-    });
-    state.form.departmentTags = props.formData.departmentTag
-      ? props.formData.departmentTag?.split(",")
-      : "";
-    props.formData.departmentTags = state.form.departmentTags;
-  } else {
-    clearForm();
-  }
-
-  // console.log("init", props.action, state.form);
-};
-const isObjEqual = () => {
-  let oldObj: any = {},
-    newObj: any = {};
-  Object.keys(props.formData).forEach((key) => {
-    props.formData[key] && (oldObj[key] = props.formData[key]);
-  });
-  Object.keys(state.form).forEach((key) => {
-    state.form[key] && (newObj[key] = state.form[key]);
-  });
-  return isEqual(oldObj, newObj);
-};
-watch(
-  () => props.formData,
-  () => {
-    init();
-  }
-);
-watch(
-  () => props.action,
-  () => {
-    init();
-  }
-);
-watch(
-  () => props.tagFlag,
-  () => {
-    // rules.departmentMark[0].required = props.tagFlag;
-  }
-);
 watch(
   () => props.submit,
   (val) => {
     if (val) {
       deptform.value.validate((valid: any, fields: any) => {
         if (valid) {
-          state.form.departmentTag = state.form.departmentTags
-            ? state.form.departmentTags?.join(",")
-            : state.form.departmentTag;
-          let flag = isObjEqual();
-          console.log("emits", props.action, state.form);
-
-          emits("onSubmit", { type: "form", isEqual: flag }, state.form);
+          emits("onSubmit")
         } else {
           emits("changeSubmit", false);
         }
