@@ -16,6 +16,7 @@ export class CodeModel extends BaseModel {
   "sort"?: string | number
   "status"?:string | number
   "thirdParam"?: string
+  "dataType"?: number
 }
 
 export class CodeTreeModel extends BaseModel {

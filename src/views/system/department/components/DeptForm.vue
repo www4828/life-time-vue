@@ -16,6 +16,13 @@
             placeholder="请输入部门名称"
           ></el-input>
         </el-form-item>
+        <el-form-item label="部门编码" prop="departmentCode">
+          <el-input
+            v-model.trim="state.form.departmentCode"
+            :disabled="props.action==='edit'"
+            placeholder="请输入部门编码"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="上级部门" prop="departmentParentCode">
           <el-tree-select
             v-model="state.form.departmentParentCode"
@@ -164,24 +171,16 @@ const checkCode = (rule: any, value: any, callback: any) => {
   }
 };
 const rules = reactive({
-  departmentCode: [
-    { required: true, validator: checkCode, trigger: "blur", pattern: /^\w+$/ },
-  ],
+  // departmentCode: [
+  //   { required: true, validator: checkCode, trigger: "blur", pattern: /^\w+$/ },
+  // ],
   departmentName: [{ required: true, message: "请输入部门名称", trigger: "blur" }],
+  departmentCode: [{ required: true, message: "请输入部门编码", trigger: "blur" }],
   departmentParentCode: [
     { required: true, message: "请选择左侧部门为上级部门", trigger: "blur" },
   ],
   departmentLevel: [
     { required: true, message: "请选择左侧部门为上级部门", trigger: "blur" },
-  ],
-  departmentMark: [
-    {
-      required: props.tagFlag,
-      message: "请输入部门标识,长度4位",
-      trigger: "blur",
-      min: 4,
-      max: 4,
-    },
   ],
 });
 const emits = defineEmits(["changeAction", "onSubmit", "changeSubmit"]);
@@ -272,7 +271,7 @@ watch(
 watch(
   () => props.tagFlag,
   () => {
-    rules.departmentMark[0].required = props.tagFlag;
+    // rules.departmentMark[0].required = props.tagFlag;
   }
 );
 watch(

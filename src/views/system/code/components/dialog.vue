@@ -51,11 +51,16 @@
       <el-form-item label="预留参数四">
         <el-input v-model="props.formData.fourthParam" placeholder="预留参数四" />
       </el-form-item>
+      <el-form-item label="备注">
+        <el-input v-model="props.formData.codeNote" placeholder="备注" />
+      </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="props.formData.status" placeholder="状态">
-          <el-option label="启用" :value="1"/>
-          <el-option label="禁用" :value="0"/>
-          <el-option label="禁止删除" :value="-1"/>
+        <el-switch v-model="props.formData.status" :active-value="1" :inactive-value="0" />
+      </el-form-item>
+      <el-form-item label="数据类型" prop="dataType">
+        <el-select v-model="props.formData.dataType" >
+          <el-option label="正常" :value="1" />
+          <el-option label="不可删除" :value="-1" />
         </el-select>
       </el-form-item>
     </el-form>

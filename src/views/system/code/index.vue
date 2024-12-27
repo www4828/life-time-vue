@@ -179,10 +179,10 @@ const showDialog = (row: CodeModel) => {
     data.formData.codeValue = "";
     data.formData.sort = 1;
     data.formData.status = 1;
+    data.formData.dataType = 1;
     data.formData.codeParent = data.treeInfo.code || PARENT_CODE;
     data.formData.codeType = data.treeInfo.type || PARENT_CODE;
   }
-  console.log(data.formData);
   
   data.formData.firstParam = row.firstParam;
   data.formData.secondParam = row.secondParam;
@@ -319,6 +319,7 @@ const add = () => {
     codeValue: "",
     status: 1,
     sort: 1,
+    dataType: 1,
     firstParam: "",
     secondParam: "",
     thirdParam: "",
@@ -331,7 +332,7 @@ const paginationChange = (pageInfo: PageInfo) => {
   getAll();
 };
 const getTree = () => {
-  codeService.getTree({
+  codeService.tree({
     pageParams: {
       pageIndex: 0,
       pageSize: -1
@@ -339,14 +340,7 @@ const getTree = () => {
     searchParams: []
   }).then((res: Response) => {
     if (res.code == 200) {
-      treeData.value = [
-        {
-          name: "字典分类",
-          type: PARENT_CODE,
-          code: PARENT_CODE,
-          child: res.data
-        },
-      ];
+      treeData.value = res.data
     } else {
       ElMessage.error(res.message);
     }

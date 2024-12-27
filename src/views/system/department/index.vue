@@ -44,14 +44,6 @@
           show-checkbox
           :treeJson="{ type: roleServer }"
         />
-        <!-- <RoleTree
-          :departmentCode="state.departmentCode"
-          :submit="state.submit"
-          @onSubmit="onSubmit"
-          :action="state.action"
-          :new="state.newDepartment"
-          @caseEntry="caseEntry"
-        /> -->
       </div>
     </template>
     <template #bottom>
@@ -62,7 +54,6 @@
 <script lang="ts" setup>
 import { reactive, unref, ref, watch } from 'vue'
 import DeptForm from './components/DeptForm.vue'
-// import DepartmentTree from '@/businessComponent/tree/departmentTree/index.vue'
 import DepartmentTree from '@/businessComponent/tree/index.vue'
 import RoleTree from '@/businessComponent/tree/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -123,27 +114,26 @@ const getDeptDetail = (departmentCode: string) => {
   })
 }
 const handleNodeClick = (node: any) => {
-  console.log(node);
-  
   state.currentNode = node
   state.action = 'edit'
-  if (node.code) {
-    state.departmentCode = node.code
+  getDeptDetail(node.code)
+  // if (node.code) {
+  //   state.departmentCode = node.code
     
-    if (state.action == 'add' && !state.newDepartment) {
-      ElMessageBox.confirm(
-        `本次${
-          state.action == 'add' ? '新增' : '修改'
-        }内容还未保存，确认切换吗？`,
-        '提示'
-      ).then(() => {
-        state.detail = {} as DepartmentModel
-        getDeptDetail(node.code)
-      })
-    } else {
-      getDeptDetail(node.code)
-    }
-  }
+  //   if (state.action == 'add' && !state.newDepartment) {
+  //     ElMessageBox.confirm(
+  //       `本次${
+  //         state.action == 'add' ? '新增' : '修改'
+  //       }内容还未保存，确认切换吗？`,
+  //       '提示'
+  //     ).then(() => {
+  //       state.detail = {} as DepartmentModel
+  //       getDeptDetail(node.code)
+  //     })
+  //   } else {
+  //     getDeptDetail(node.code)
+  //   }
+  // }
 }
 const caseEntry = (check:boolean)=>{
   state.tagFlag=check
@@ -161,22 +151,18 @@ const addHandle = () => {
 }
 
 const doDel = () => {
-  if(state.currentNode.childs.length>0){
-    ElMessage.error("请先删除子节点!");
-    return
-  }
   if (state.detail.id) {
     ElMessageBox.confirm('是否确定删除？', '提示').then(() => {
       state.submitLoading = true
       state.action = 'del'
-      departmentServer.delete(String(state.detail.id)).then((res) => {
+      departmentServer.delete(String(state.detail.departmentCode)).then((res) => {
         state.submitLoading = false
         ElMessage({
           type: res.code == 200 ? 'success' : 'error',
-          message: res.code == 200 ? res.message : (res.data || res.message),
+          message: res.message
         })
-        state.refresh = true
         state.detail = {} as DepartmentModel
+        state.refresh = true
         state.newDepartment = {} as DepartmentModel
       }).catch(()=>state.submitLoading = false)
     })
@@ -185,33 +171,55 @@ const doDel = () => {
   }
 }
 
-const save = () => {
-  if(state.flagArr.length === 2){
-    // 检查数据是否被修改
-    if(state.flagArr.every(item=>item.isEqual)){
-      ElMessage.warning('未修改数据！')
-      state.submit = false
-      state.submitLoading = false
-    }else{
-      // console.log('saveOrUpdate',state.form);
-      state.submitLoading = true
+// const save = () => {
+//   if(state.flagArr.length === 2){
+//     // 检查数据是否被修改
+//     if(state.flagArr.every(item=>item.isEqual)){
+//       ElMessage.warning('未修改数据！')
+//       state.submit = false
+//       state.submitLoading = false
+//     }else{
+//       // console.log('saveOrUpdate',state.form);
+//       state.submitLoading = true
       
-      departmentServer.saveOrUpdate(state.form).then(res=>{
-        state.submitLoading = false
-        ElMessage({
-          type:res.code == 200 ? 'success' :'error',
-          message: res.code == 200 ? res.message : (res.data || res.message)
-        })
-        if(res.code == 200){
-          state.newDepartment = res.data
-          state.refresh = true
-        }
-        state.flagArr = []
-      }).catch(()=>{
-        state.submitLoading = false
-        state.flagArr = []
-      })
-    }
+//       departmentServer.saveOrUpdate(state.form).then(res=>{
+//         state.submitLoading = false
+//         ElMessage({
+//           type:res.code == 200 ? 'success' :'error',
+//           message: res.code == 200 ? res.message : (res.data || res.message)
+//         })
+//         if(res.code == 200){
+//           state.newDepartment = res.data
+//           state.refresh = true
+//         }
+//         state.flagArr = []
+//       }).catch(()=>{
+//         state.submitLoading = false
+//         state.flagArr = []
+//       })
+//     }
+//   }
+// }
+
+const save = () => {
+  if (state.form.id) {
+    departmentServer.update(state.form).then((res: Response) => {
+      if (res.code === 200) {
+        ElMessage.success('修改成功!')
+        state.refresh = true
+      } else {
+        ElMessage.error(res.message)
+      }
+    })
+  } else {
+    departmentServer.save(state.form).then((res: Response) => {
+      if (res.code === 200) {
+        ElMessage.success('新增成功!')
+        state.refresh = true
+      } else {
+        ElMessage.error(res.message)
+      }
+    })
   }
 }
 const setRefresh = ()=>{

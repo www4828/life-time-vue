@@ -11,7 +11,7 @@
           <el-form-item label="姓名:" prop="name">
             <el-input v-model.trim="props.editform.name" placeholder="姓名"></el-input>
           </el-form-item>
-          <el-form-item label="用户部门:" prop="departmentCode">
+          <el-form-item label="部门:" prop="departmentCode">
             <el-tree-select 
               disabled
               v-model="props.editform.departmentCode" 
@@ -49,25 +49,6 @@
           <el-form-item label="是否启用:" prop="status">
             <el-switch v-model="props.editform.status" :active-value="1" :inactive-value="0"></el-switch>
           </el-form-item>
-          <div class="title">坐席信息</div>
-          <el-form-item label="坐席账号:" prop="seatAccount">
-            <el-input placeholder="坐席账号" v-model="props.editform.seatAccount"></el-input>
-          </el-form-item>
-          <el-form-item label="坐席密码:" prop="seatPassword">
-            <el-input placeholder="坐席密码" v-model="props.editform.seatPassword"></el-input>
-          </el-form-item>
-          <el-form-item label="坐席分组:" prop="seatGroup">
-            <el-select v-model="props.editform.seatGroup" placeholder="请选择">
-              <el-option
-                v-for="item in seatGroupTypes"
-                :label="item.codeName"
-                :value="item.codeValue"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="企业号:" prop="seatEnterprise">
-            <el-input placeholder="企业号" v-model="props.editform.seatEnterprise"></el-input>
-          </el-form-item>
         </el-form>
       </div>
       <div class="right">
@@ -98,7 +79,6 @@ import { verifyPhone } from '@/utils/toolsValidate'
 import { UserService } from '@/api/service/System/UserService'
 import { useCode } from '@/hooks/useCode'
 
-const { seatGroupTypes } = useCode();
 const validateMobile = (rule: any, value: any, callback: any) => {
   if (verifyPhone(value)) {
     callback()
@@ -106,7 +86,7 @@ const validateMobile = (rule: any, value: any, callback: any) => {
     callback(new Error('号码格式错误，请重新输入'))
   }
 }
-const editRules = reactive<FormRules>({
+const editRules = reactive<InstanceType<typeof FormRules>>({
   username: [{ required: true, message: "请输入", trigger: "blur"}],
   name: [{ required: true, message: "请输入", trigger: "blur" }],
   mobile: [{ required: true, trigger: "blur", validator: validateMobile, }],
@@ -164,7 +144,7 @@ const loadUserRole = () => {
     },
     "searchParams": [
       {
-        "key": "username",
+        "key": "userName",
         "match": "eq",
         "value": props.editform.username
       }

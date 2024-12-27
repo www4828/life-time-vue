@@ -11,7 +11,7 @@ export class CodeService implements CodeInterface {
   constructor() {
     this.request = new RequestService('sysUrl').service!
   }
-  getTree(searchParams?: SearchParamsModel<CodeModel>): Promise<Response> {
+  tree(searchParams?: SearchParamsModel<CodeModel>): Promise<Response> {
     return this.request.post(this.baseUlr + '/tree', searchParams)
   }
   find(id: string): Promise<Response> {

@@ -11,8 +11,14 @@
               </el-form-item>
               <el-form-item label="系统布局:">
                   <el-select v-model="getThemeConfig.layout">
-                      <el-option label="默认" value="defaults" />
-                      <el-option label="经典" value="defaults" />
+                      <el-option 
+                        :label="item.codeName" 
+                        :value="item.codeNote" 
+                        v-for="item in types.systemLayoutTypes" 
+                        :key="item.codeValue" 
+                      />
+                      <!-- <el-option label="默认" value="defaults" />
+                      <el-option label="经典" value="defaults" /> -->
                   </el-select>
               </el-form-item>
               <el-form-item label="开启系统Logo:">
@@ -22,9 +28,15 @@
               </el-form-item>
               <el-form-item label="动画方式:">
                   <el-select v-model="getThemeConfig.animation">
-                      <el-option label="右侧载入" value="slide-right" />
+                    <el-option 
+                      :label="item.codeName" 
+                      :value="item.codeNote" 
+                      v-for="item in types.animationTypes" 
+                      :key="item.codeValue" 
+                    />
+                      <!-- <el-option label="右侧载入" value="slide-right" />
                       <el-option label="左侧载入" value="slide-left" />
-                      <el-option label="渐隐渐入" value="opacitys" />
+                      <el-option label="渐隐渐入" value="opacitys" /> -->
                   </el-select>
               </el-form-item>
               <el-form-item label="开启水印:">
@@ -67,8 +79,14 @@
               </el-form-item>
               <el-form-item label="标签样式:">
                   <el-select v-model="getThemeConfig.tagsStyle" :disabled="!getThemeConfig.isTagsView">
-                      <el-option label="默认" value="default" />
-                      <el-option label="经典" value="default" />
+                      <!-- <el-option label="默认" value="default" />
+                      <el-option label="经典" value="default" /> -->
+                      <el-option 
+                        :label="item.codeName" 
+                        :value="item.codeNote" 
+                        v-for="item in types.tagStyleTypes" 
+                        :key="item.codeValue" 
+                      />
                   </el-select>
               </el-form-item>
               <el-form-item label="开启标签图标:" >
@@ -108,14 +126,19 @@ import { ThemeService } from "@/api/service/System/ThemeService";
 import { ThemeConfigModel } from "@/api/model/themeModel";
 import { ElMessage } from "element-plus";
 import { cloneDeep } from "lodash-es";
+import { useCode } from "@/hooks/useCode";
+
 
 const store = useStore(); 
+const { types } = useCode()
 const themeService = new ThemeService()
 const getThemeConfig = computed(() => {
+  console.log(types.systemLayoutTypes);
     return store.state.themeConfig.themeConfig;
 });
 
 const saveHandle = () => {
+  
   let config = cloneDeep(store.state.themeConfig.themeConfig),
   themeConfig = {} as ThemeConfigModel
   for(let key in config){

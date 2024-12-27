@@ -260,6 +260,7 @@ const nodeClick = (data: Tree) => {
           parentId: detail.permission.permissionId,
           sort: 1,
           status: 1,
+          url: '#'
         } as PermissionModel]
       }
     }
@@ -288,6 +289,7 @@ const reset = () => {
     parentId: state.parentId,
     sort: 1,
     status: 1,
+    url: '#'
   } as PermissionModel]
 }
 
@@ -374,6 +376,7 @@ const addDocument = () => {
     parentId: detail.permission.permissionId,
     sort: 1,
     status: 1,
+    url: '#'
   } as PermissionModel)
 }
 const deleteDocument = (scope: any) => {
@@ -390,6 +393,7 @@ const deleteDocument = (scope: any) => {
       parentId: state.parentId,
       sort: 1,
       status: 1,
+      url: '#'
     } as PermissionModel]
   }
 }

@@ -104,53 +104,10 @@ const deepAddDisabled = function (data: Tree[]) {
   })
   return result
 }
-// 权限
-// const sourceData = ref<PermissionModel[]>([]);
-// const searchPerModel = ref<SearchModel<PermissionModel>[]>([new SearchModel()]);
-// const searchPerParamsModel = reactive(new SearchParamsModel<PermissionModel>());
-// const permissionSever = new PermissionService();
-// const getPerAll = () => {
-//   searchPerParamsModel.searchParams = searchPerModel.value;
-//   searchPerParamsModel.pageParams.pageSize = -1;
-//   permissionSever.list(searchPerParamsModel).then((res: Response) => {
-//     if (res.code === 200) {
-//       const { results } = res.data;
-//       sourceData.value = results;
-//       console.log(results)
-//       const childrenData = tranListTotreeList(
-//         cloneDeep(res.data.results),
-//         "parentID",
-//         "permissionID"
-//       ).sort((a: PermissionModel, b: PermissionModel) => a.sort - b.sort)
-//       treeData.value = [
-//         {
-//           id: "-1",
-//           parentID: "-1",
-//           name: "权限管理",
-//           url: "",
-//           icon: "",
-//           nodeCode: "",
-//           remark: "",
-//           status: 0,
-//           type: "",
-//           tag: "",
-//           openType: 0,
-//           disabled: true,
-//           sort: 1,
-//           children: deepAddDisabled(childrenData),
-//           permissionID: "",
-//         },
-//       ];
-//     } else {
-//       ElMessage.error(res.message);
-//     }
-//   });
-// };
-// getPerAll();
 
 const emit = defineEmits(["close", "save"]);
 
-const editRules = reactive<FormRules>({
+const editRules = reactive<InstanceType<typeof FormRules>>({
   // roleId: [{ required: true, message: "角色编号为必填", trigger: "blur" }],
   rolename: [{ required: true, message: "角色名称为必填", trigger: "blur" }],
 });
@@ -171,8 +128,6 @@ const handleNodeClick = (node: Tree, type: boolean, leafType: boolean) => {
   props.editform.permissionList = keys.filter(item => {
     return item && item.trim()
   })
-  console.log('editform.permissionList', props.editform.permissionList)
-
 }
 const perDataChange = () => {
   if (props.title == "修改") {
