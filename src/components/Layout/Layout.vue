@@ -1,8 +1,6 @@
 <template>
   <div class="Layout">
-    <div class="treeWrapper" :style="{
-      width: props.leftWidth
-    }">
+    <div class="treeWrapper" :style="{ width: props.leftWidth }">
       <div class="search">
         <slot name="search"></slot>
       </div>
@@ -15,9 +13,9 @@
         <slot name="button"></slot>
       </div>
 
-      <div class="content">
+      <Scrollbar class="content">
         <slot name="content"></slot>
-      </div>
+      </Scrollbar>
       <div class="bottom">
         <slot name="bottom"></slot>
         

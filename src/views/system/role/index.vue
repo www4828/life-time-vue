@@ -138,6 +138,7 @@
           show-checkbox
           :disabled="state.formData.roleType != '1' "
           :checked="state.formData.permissions?.split(',')"
+          :showLine="false"
           :treeJson="{
             type: permissionSever,
             name: 'name',
@@ -342,7 +343,7 @@ watch(
 }
 
 ::v-deep(.el-form) {
-  width: 65%;
+  width: 70%;
   height: 100%;
   padding-right: 15px;
   float: left;
@@ -360,32 +361,16 @@ watch(
   justify-content: flex-end;
 }
 
-.treeRef {
-  background-color: var(--lt-tree-background-color);
-}
-
-::v-deep(.el-tree-node__expand-icon:before) {
-  background: url('@/assets/system/first.png') no-repeat;
-  content: '';
-  display: block;
-  width: 13px;
-  height: 13px;
-  font-size: 13px;
-  background-size: 13px;
-}
-
-::v-deep(.el-tree-node__expand-icon) {
-  width: fit-content;
-
-  svg {
-    display: none;
-  }
-}
 .permission-tree{
-  width: 35%;
+  width: 30%;
   float: right;
   // margin-top: -60px;
   box-sizing: border-box;
   height: 100%;
+  ::v-deep(.header-search){
+    .el-input{
+      margin-top: 0;
+    }
+  }
 }
 </style>

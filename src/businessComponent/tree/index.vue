@@ -2,13 +2,13 @@
   <div class="tree_container">
     <div class="header-search" v-if="props.showSearch">
       <el-input
-        placeholder="请输入内容"
+        placeholder="请输入内容查找"
         :prefix-icon="Search"
         v-model="state.filterText"
       />
     </div>
     <!--这是一个完美的分割线-->
-    <div class="split-line" v-if="props.showSearch"></div>
+    <div class="split-line" v-if="props.showLine"></div>
     <div class="tree">
       <el-tree
         :empty-text="state.emptyText"
@@ -52,11 +52,13 @@ const props = withDefaults(
     treeJson: any,
     showCheckbox?: boolean,
     showSearch?: boolean,
+    showLine?: boolean
     disabled?: boolean,
     checkStrictly?: boolean
   }>(),
   {
-    showSearch: true
+    showSearch: true,
+    showLine: true
   }
 );
 

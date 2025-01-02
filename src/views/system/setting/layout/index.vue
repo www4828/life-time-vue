@@ -1,7 +1,7 @@
 <template>
     <div class="setting-layout-container">
         <Scrollbar>
-          <el-form :model="getThemeConfig">
+          <el-form :model="getThemeConfig" label-width="200px">
               <el-divider content-position="left">系统设置</el-divider>
               <el-form-item label="系统标题:">
                   <el-input v-model="getThemeConfig.globalTitle" />
@@ -170,7 +170,7 @@ const saveHandle = () => {
         flex-flow: column;
     }
     ::v-deep(.el-form-item){
-         width: 60%;
+         width: 70%;
     }
     .el-button{
       position: absolute;

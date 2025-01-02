@@ -21,16 +21,6 @@
             code: 'codeValue',
           }"
         />
-        <!-- <el-tree
-          ref="treeRef"
-          :props="treeProps"
-          :data="treeData"
-          class="treeRef"
-          highlight-current
-          node-key="code"
-          :filter-node-method="filterNode"
-          @node-click="nodeClick"
-        /> -->
       </div>
     </template>
     <template #content>
@@ -62,6 +52,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="codeType" align="center" label="类型编号" />
+            <el-table-column prop="codeNote" align="center" label="备注" />
             <el-table-column align="center" label="操作">
               <template #default="scope">
                 <el-button type="warning" plain @click="showDialog(scope.row)"

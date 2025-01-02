@@ -51,6 +51,7 @@
         <RoleTree
           ref="roleTreeRef"
           show-checkbox
+          :showLine="false"
           :disabled="state.detail.departmentType != '1'"
           :checked="state.departmentRoles"
           :treeJson="{ type: roleServer }"
@@ -218,6 +219,11 @@ const setRefresh = () => {
   }
   .tree_container {
     width: 30%;
+  }
+  ::v-deep(.header-search){
+    .el-input{
+      margin-top: 0;
+    }
   }
 }
 </style>

@@ -415,6 +415,8 @@ watch(
 
 ::v-deep(.el-form) {
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   .el-form-item {
     display: flex;
     flex-direction: column;

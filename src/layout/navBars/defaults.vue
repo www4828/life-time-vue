@@ -20,7 +20,7 @@
             <div class="info-item">
                 <!-- <User :name="userinfo.name!" :deptment="userinfo.departmentList.map((i: any) => i.departmentName).join(',')"
                     :avatar="Icon" /> -->
-                    <User :name="userinfo.name!" :deptment="userinfo.departCode"
+                    <User :name="userName" :deptment="department"
                       :avatar="Icon" />
             </div>
         </div>
@@ -63,7 +63,8 @@ export default defineComponent({
             }
             emit("update:selected", ic_selected.value);
         };
-        const userinfo = Session.get('userInfo');
+        const userName = Session.get('userInfo').userName;
+        const department = Session.get('departments')[0].departmentName
         watch(
             () => props.selected,
             () => {
@@ -75,7 +76,8 @@ export default defineComponent({
             clientModel,
             isSelect,
             ic_selected,
-            userinfo, 
+            userName, 
+            department,
             visible,
             Icon
         }
