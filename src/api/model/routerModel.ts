@@ -11,4 +11,9 @@ export class RouteModel extends BaseModel {
   isAffix?: string
   isIframe?: string
   icon?: string
+  meta?: any
+  component?: any
+  permissionId?: string
+  parentId?: string
+  children?: RouteModel[]
 }

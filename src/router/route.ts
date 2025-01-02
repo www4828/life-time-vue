@@ -55,12 +55,6 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/audioPlayer',
-    name: 'audioPlayer',
-    component: () => import('@/components/AudioPlayer/index.vue'),
-    meta: {},
-  },
-  {
     path: '/jumpPage',
     name: 'jumpPage',
     component: () => import('@/views/jumpPage/index.vue'),

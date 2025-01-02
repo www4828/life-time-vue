@@ -120,10 +120,10 @@
     <el-icon class="closeIcon" @click="state.showPopover = false">
       <Close />
     </el-icon>
-    <AudioPlayer
+    <!-- <AudioPlayer
       :audioSrc="audio.url || audio.recordName"
       v-if="audio?.url || audio?.recordName"
-    />
+    /> -->
   </el-popover>
   <el-image-viewer
     v-if="state.previewImageShow"
@@ -145,7 +145,7 @@ import { ElMessageBox, ElMessage } from "element-plus";
 import { ref, reactive, watchEffect, watch } from "vue";
 import Title from "@/components/Title/TitleCollapse.vue";
 import { CaseType } from "@/api/model/fileAttachmentModel";
-import AudioPlayer from "@/components/AudioPlayer/player.vue";
+// import AudioPlayer from "@/components/AudioPlayer/player.vue";
 import FileUpload from "@/businessComponent/FileUpload/FileUpload.vue";
 import {
   Download,
