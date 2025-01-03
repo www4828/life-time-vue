@@ -348,7 +348,7 @@ watch(
   padding-right: 15px;
   float: left;
   box-sizing: border-box;
-  border-right: 1px solid #ccc;
+  border-right: 1px dashed #ccc;
   .el-form-item {
     display: flex;
     flex-direction: column;

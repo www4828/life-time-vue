@@ -33,8 +33,11 @@
       >
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="父级编码" prop="parentId">
+            <!-- <el-form-item label="上级编码" prop="parentId">
               <el-input v-model="detail.permission.parentId" disabled> </el-input>
+            </el-form-item> -->
+            <el-form-item label="上级菜单" prop="parentId">
+              <el-input v-model="detail.permission.parentName" disabled> </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -53,11 +56,11 @@
               <el-input v-model.trim="detail.permission.name" maxlength="20"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="权限编码" prop="permissionId">
-              <el-input v-model.trim="detail.permission.permissionId" maxlength="20"></el-input>
+              <el-input v-model.trim="detail.permission.permissionId" :disabled="state.action == 'edit'" maxlength="20"></el-input>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="权限地址" prop="url">
               <el-input v-model.trim="detail.permission.url"></el-input>
@@ -246,6 +249,7 @@ const permissionSever = new PermissionService()
 const nodeClick = (data: Tree) => {
   state.parentId = data.code
   state.action = 'edit'
+  
   permissionSever.find(data.code!).then((res) => {
     if (res.code == 200 && res.data.permission) {
       detail.permission = cloneDeep(res.data.permission)
@@ -298,7 +302,7 @@ const cancel = () => {
   authForm.value!.clearValidate()
 }
 const deletePermission = () => {
-  if (detail.permission.permissionId === '') {
+  if (!detail.permission.permissionId) {
     ElMessage.error('请选择一个节点删除！')
     return
   }
@@ -336,7 +340,7 @@ const save = () => {
       } else {
         ElMessage.error(res.message)
       }
-    })
+    }).finally(()=>state.refresh = false)
   } else {
     permissionSever.saveWithButton({
       permission: detail.permission,
@@ -349,7 +353,7 @@ const save = () => {
       } else {
         ElMessage.error(res.message)
       }
-    })
+    }).finally(()=>state.refresh = false)
   }
 }
 const submitForm = async (formEl: InstanceType<typeof FormInstance>) => {

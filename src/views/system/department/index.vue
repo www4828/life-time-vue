@@ -215,7 +215,7 @@ const setRefresh = () => {
   display: flex;
   .dept-add-box {
     width: 70%;
-    border-right: 1px solid var(--lt-tree-border-color);
+    border-right: 1px dashed var(--lt-tree-border-color);
   }
   .tree_container {
     width: 30%;

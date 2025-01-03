@@ -146,9 +146,11 @@ const loadData = () => {
         searchParams: [],
       })
       .then((res: any) => {
+
         state.list = res.data
-        state.expandedList = [state.list[0][nodeKey]]
-        let key = props.new![nodeKey] || state.node[nodeKey] 
+        let key = props.new ?  props.new![nodeKey] : state.node[nodeKey]
+        state.expandedList = [state.list[0][nodeKey],key]
+        
         nextTick(()=>{
           treeRef.value!.setCurrentKey(key, true)
         })
