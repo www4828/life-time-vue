@@ -179,6 +179,7 @@ const doDel = () => {
 const save = () => {
   // state.submitLoading = true
   state.detail.departmentRoles = roleTreeRef.value?.getCheckedKeys().join(',')
+  state.detail.departmentRolesTree = roleTreeRef.value?.getTreeKeys().join(',')
 
   if (state.detail.id) {
     departmentServer.update(state.detail).then((res: Response) => {

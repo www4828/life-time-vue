@@ -11,9 +11,6 @@ export class RoleService implements RoleInterface {
   constructor() {
     this.request = new RequestService('sysUrl').service!
   }
-  find?(id: string): Promise<Response> {
-    return this.request.get(this.baseUlr + `${id}`)
-  }
   save(permission: RoleModel): Promise<Response> {
     return this.request.post(this.baseUlr, permission)
   }
@@ -29,28 +26,10 @@ export class RoleService implements RoleInterface {
   delete(id: string): Promise<Response> {
     return this.request.delete(this.baseUlr + `/${id}`)
   }
-  
-  // 角色权限
-  findPer?(id: string): Promise<Response> {
-    return this.request.get(this.url + `${id}`)
+  deptRoleTree(deptCode: string): Promise<Response> {
+    return this.request.get(this.baseUlr + `/tree/${deptCode}`)
   }
-  savePer(permission: any): Promise<Response> {
-    return this.request.post(this.url, permission)
-  }
-  updatePer(T: RoleModel): Promise<Response> {
-    return this.request.put(this.url + `/${T.id}`, T)
-  }
-  listPer(
-    searchParams: SearchParamsModel<RoleModel>
-  ): Promise<Response> {
-    return this.request.post(this.url + `/searchList`, searchParams)
-  }
-  deletePer(id: string): Promise<Response> {
-    return this.request.delete(this.url + `/${id}`)
-  }
-  deleteRolePer(roleId: string): Promise<Response> {
-    return this.request.delete(this.url + `/roleId?roleId=${roleId}`)
-  }
+
 }
 
 

@@ -94,6 +94,7 @@ class Service {
           if (error.response.data) ElMessage.error(error.response.data.message || error.response.data.error)
           else ElMessage.error('接口路径找不到')
         }
+        ElMessage.error(error.response.data.message)
         return Promise.reject(error)
       }
     )

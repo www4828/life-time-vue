@@ -1,75 +1,64 @@
 <template>
-  <el-dialog :model-value="props.dialogVisible" :title="title" width="70%" @close="handleClose" custom-class="card-mark"
-    top="100px">
+  <el-dialog :model-value="props.dialogVisible" :title="title" width="50%" @close="handleClose">
     <div class="content">
-      <div class="left">
+      <!-- <div class="left">
         <div class="title">基础信息</div>
-        <el-form ref="form" :model="props.editform" :rules="editRules" label-position="right" :inline="true" class="form">
-          <el-form-item label="用户名:" prop="userCode">
-            <el-input v-model.trim="props.editform.userCode" placeholder="用户名" :disabled="title === '修改'"></el-input>
-          </el-form-item>
-          <el-form-item label="姓名:" prop="userName">
-            <el-input v-model.trim="props.editform.userName" placeholder="姓名"></el-input>
-          </el-form-item>
-          <el-form-item label="密码:" prop="passWord" v-if="title == '添加' " >
-            <el-input v-model.trim="props.editform.passWord" placeholder="密码" show-password></el-input>
-          </el-form-item>
-          <el-form-item label="昵称:" prop="userNickName">
-            <el-input v-model.trim="props.editform.userNickName" placeholder="昵称"></el-input>
-          </el-form-item>
-          <el-form-item label="部门:" prop="departmentCode">
-            <el-tree-select 
-              disabled
-              v-model="props.editform.departmentCode" 
-              :data="state.deptList"
-              :render-after-expand="false" 
-              :props="{
-                  children: 'child',
-                  label: 'name',
-                  value: 'code',
-              }" 
-              node-key="code" 
-              check-strictly 
-              ref="deptParentTree" 
-              check-on-click-node 
-            />
-          </el-form-item>
-          <el-form-item label="手机:" prop="mobile">
-            <el-input v-model.trim="props.editform.mobile" placeholder="手机" :maxlength="11"></el-input>
-          </el-form-item>
-          <el-form-item label="身份证:" prop="idCard">
-            <el-input v-model.trim="props.editform.idCard" placeholder="身份证" :maxlength="18"></el-input>
-          </el-form-item>
-          <el-form-item label="性别:" prop="sex">
-            <el-radio-group v-model="props.editform.sex">
-              <el-radio :label="0">女</el-radio>
-              <el-radio :label="1">男</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="邮箱:" prop="email">
-            <el-input v-model.trim="props.editform.email" placeholder="邮箱"></el-input>
-          </el-form-item>
-          <el-form-item label="地址:" prop="address">
-            <el-input v-model.trim="props.editform.address" placeholder="地址"></el-input>
-          </el-form-item>
-          <el-form-item label="备注:" prop="remark">
-            <el-input v-model.trim="props.editform.remark" placeholder="备注"></el-input>
-          </el-form-item>
-          <el-form-item label="是否启用:" prop="status">
-            <el-switch v-model="props.editform.status" :active-value="1" :inactive-value="0"></el-switch>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div class="right">
-        <div class="title">用户角色设置</div>
-        <RoleTree
-          :showSearch="false"
-          ref="roleTreeRef"
-          show-checkbox
-          :checked="state.checkdeList"
-          :treeJson="{ type: roleServer }"
-        />
-      </div>
+      </div> -->
+      <el-form ref="form" :model="props.editform" :rules="editRules" label-position="right" :inline="true" class="form">
+        <el-form-item label="用户名:" prop="userCode">
+          <el-input v-model.trim="props.editform.userCode" placeholder="用户名" :disabled="title === '修改'"></el-input>
+        </el-form-item>
+        <el-form-item label="部门:" prop="departmentCode">
+          <el-tree-select 
+            disabled
+            v-model="props.editform.departmentCode" 
+            :data="state.deptList"
+            :render-after-expand="false" 
+            :props="{
+                children: 'child',
+                label: 'name',
+                value: 'code',
+            }" 
+            node-key="code" 
+            check-strictly 
+            ref="deptParentTree" 
+            check-on-click-node 
+          />
+        </el-form-item>
+        <el-form-item label="密码:" prop="passWord" v-if="title == '添加' " >
+          <el-input v-model.trim="props.editform.passWord" placeholder="密码" show-password></el-input>
+        </el-form-item>
+        <el-form-item label="姓名:" prop="userName">
+          <el-input v-model.trim="props.editform.userName" placeholder="姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="昵称:" prop="userNickName">
+          <el-input v-model.trim="props.editform.userNickName" placeholder="昵称"></el-input>
+        </el-form-item>
+        <el-form-item label="手机:" prop="mobile">
+          <el-input v-model.trim="props.editform.mobile" placeholder="手机" :maxlength="11"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证:" prop="idCard">
+          <el-input v-model.trim="props.editform.idCard" placeholder="身份证" :maxlength="18"></el-input>
+        </el-form-item>
+        <el-form-item label="性别:" prop="sex">
+          <el-radio-group v-model="props.editform.sex">
+            <el-radio :label="0">女</el-radio>
+            <el-radio :label="1">男</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="邮箱:" prop="email">
+          <el-input v-model.trim="props.editform.email" placeholder="邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="地址:" prop="address">
+          <el-input v-model.trim="props.editform.address" placeholder="地址"></el-input>
+        </el-form-item>
+        <el-form-item label="备注:" prop="remark">
+          <el-input v-model.trim="props.editform.remark" placeholder="备注"></el-input>
+        </el-form-item>
+        <el-form-item label="是否启用:" prop="status">
+          <el-switch v-model="props.editform.status" :active-value="1" :inactive-value="0"></el-switch>
+        </el-form-item>
+      </el-form>
     </div>
     <template #footer>
       <span class="dialog-footer">
@@ -142,56 +131,16 @@ const loadDeptList = () => {
   })
 }
 loadDeptList()
-const loadUserRole = () => {
-  userServer.getUserRole(props.editform.userCode,Session.get('activeDept')).then(res=>{
-    state.checkdeList = res.data?.map((i:any)=>i.roleCode)
-    state.roleList = res.data
-  })
-}
-
-// props.title === '修改' && loadUserRole()
-
-const save = () => {
-  let list =  roleTreeRef.value?.getCheckedKeys() as string[],
-  roleList = [] as UserModel[]
-  list.forEach(role=>{
-    if(state.checkdeList.indexOf(role) > -1){
-      let index = state.checkdeList.indexOf(role)
-      roleList.push(state.roleList[index])
-    }else{
-      roleList.push({
-        roleCode: role,
-        roleDept: Session.get('activeDept'),
-        userCode: props.editform.userCode
-      } as UserModel)
-    }
-  })
-  console.log(roleList);
-  
-  emit('save',roleList)
-  handleClose();
-};
-
 const onSubmit = (flag: any, list: any,checkList:any) => {
-
-  // let obj = {} as any
-  // Object.keys(props.editform).forEach(key => {
-  //   obj[key] = props.editform[key]
-  // })
-  // flag.type === 'tree' && (obj.roleList = checkList)
   form.value.validate((valid: any, fields: any) => {
     if (valid) {
-      save()
+      emit('save')
     }
   })
 }
 const handleClose = () => {
   emit("close", false);
 };
-watch(()=>props.editform,(val)=>{
-  val.userCode && loadUserRole()
-},{
-  immediate: true
-})
+
 </script>
 <style lang="scss" scoped></style>

@@ -24,8 +24,8 @@
         @node-expand="handleNodeExpand"
         @node-collapse="handleNodeCollapse"
         :show-checkbox="props.showCheckbox"
-        :check-on-click-node="!props.showCheckbox"
         :check-strictly="props.checkStrictly"
+        :check-on-click-node="!props.showCheckbox"
         />
         <!-- expand-on-click-node -->
         <!-- check-on-click-node -->
@@ -49,7 +49,8 @@ const props = withDefaults(
     checked?: Array<string>,
     refresh?: boolean,
     new?: any,
-    treeJson: any,
+    treeJson?: any,
+    content?: any, // 默认数据
     showCheckbox?: boolean,
     showSearch?: boolean,
     showLine?: boolean
@@ -172,7 +173,7 @@ watch(
   (val) => {
     nextTick(()=>{
       treeRef.value.setCheckedKeys(val)
-      val && (state.expandedList = val)
+      val && (state.expandedList = cloneDeep(val))
     })
   },
   {
@@ -185,10 +186,27 @@ watch(
     val && loadData()
   }
 )
-
+watch(
+  () => props.content,
+  (val) => {
+    if(val.length>0){
+      state.list = val
+    }
+  },
+  {
+    deep: true
+  }
+)
 defineExpose({
   getCheckedKeys(){
+    let keys = treeRef.value?.getCheckedKeys().concat(treeRef.value?.getHalfCheckedKeys()) 
+    // console.log(keys);
     return treeRef.value?.getCheckedKeys()
+  },
+  getTreeKeys(){
+    let keys = treeRef.value?.getCheckedKeys().concat(treeRef.value?.getHalfCheckedKeys()) 
+    // console.log(keys);
+    return keys
   }
 })
 </script>

@@ -41,7 +41,7 @@ export class UserService implements userInterface {
     return this.request.post(this.url, user)
   }
   saveUserRoleFull(user: UserModel[]): Promise<Response> {
-    return this.request.post(this.url, user)
+    return this.request.post(this.url+'/full', user)
   }
   deleteUserRole(id: string): Promise<Response> {
     return this.request.delete(this.url + `/${id}`)

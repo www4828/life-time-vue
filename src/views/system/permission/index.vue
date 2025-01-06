@@ -36,7 +36,7 @@
             <!-- <el-form-item label="上级编码" prop="parentId">
               <el-input v-model="detail.permission.parentId" disabled> </el-input>
             </el-form-item> -->
-            <el-form-item label="上级菜单" prop="parentId">
+            <el-form-item label="上级菜单" prop="parentName">
               <el-input v-model="detail.permission.parentName" disabled> </el-input>
             </el-form-item>
           </el-col>
@@ -227,7 +227,8 @@ const state = reactive({
   refresh: false,
   action: '',
   formData: {} as PermissionModel,
-  parentId: ''
+  parentId: '',
+  parentName: ''
 })
 const detail = reactive<PermissionButtonModel>({
   buttons: [] as PermissionModel[],
@@ -248,6 +249,7 @@ const permissionSever = new PermissionService()
 
 const nodeClick = (data: Tree) => {
   state.parentId = data.code
+  state.parentName = data.name
   state.action = 'edit'
   
   permissionSever.find(data.code!).then((res) => {
@@ -275,7 +277,7 @@ const valChange = (value: string) => {
   detail.permission.sort = Number(value.replace(/\D/g, ''))
 }
 const addChildren = () => {
-  if (state.parentId === '') {
+  if (!state.parentId) {
     ElMessage.error('请选择节点后再添加！')
     return
   }
@@ -284,13 +286,14 @@ const addChildren = () => {
 }
 
 const reset = () => {
-  detail.permission = {status: 1,sort: 1,parentId:state.parentId} as PermissionModel
+  detail.permission = {status: 1,sort: 1,parentId:state.parentId,parentName: state.parentName} as PermissionModel
   detail.buttons = [{
     name: '',
     tag: '',
     remark: '',
     type: '2',
     parentId: state.parentId,
+    parentName: state.parentName,
     sort: 1,
     status: 1,
     url: '#'
@@ -395,6 +398,7 @@ const deleteDocument = (scope: any) => {
       remark: '',
       type: '2',
       parentId: state.parentId,
+      parentName: state.parentName,
       sort: 1,
       status: 1,
       url: '#'

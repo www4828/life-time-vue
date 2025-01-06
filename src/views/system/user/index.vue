@@ -48,10 +48,6 @@
           </el-row>
         </div>
         <PageLayout>
-          <!-- <template #button>
-            <el-button type="primary" :icon="Plus" @click="addHandle">添加</el-button>
-          </template> -->
-          <!-- background: '#f2f7ff', -->
           <template #table>
             <el-table
               :data="state.tableData"
@@ -113,6 +109,13 @@
       @close="dialogState.deptDialog = false"
       :userCode="dialogState.userCode"
       />
+    <RoleDialog
+      v-if="dialogState.roleDialog"
+      :dialogVisible="dialogState.roleDialog"
+      @close="dialogState.roleDialog = false"
+      :userCode="dialogState.userCode"
+      :deptCode="state.detail.code"
+    />
   </div>
 </template>
 <script lang="ts" setup>
@@ -129,6 +132,7 @@ import PageLayout from '@/businessComponent/pageLayout/index.vue'
 import Pagination from '@/components/pagination/index.vue'
 import EditDialog from './components/dialog.vue'
 import DepartmentDialog from './components/department.vue'
+import RoleDialog from './components/role.vue'
 import ButtonGropup from '@/components/ButtonGroup/ButtonGropup.vue'
 import { DepartmentService } from '@/api/service/System/DepartmentService'
 import { cloneDeep } from 'lodash-es'
@@ -167,6 +171,7 @@ const state = reactive({
     { name: '启用', id: 1 },
     { name: '删除' },
     { name: '设置部门' },
+    { name: '设置角色' },
     // { name: '重置密码' },
   ],
   currentPage: 1 as number,
@@ -184,6 +189,7 @@ const dialogState = reactive({
   titleName: '' as string,
   EditDialog: false as boolean,
   deptDialog: false as boolean,
+  roleDialog: false as boolean,
   userCode: ''
 })
 
@@ -262,6 +268,10 @@ const commandClick = (command: string, row: UserModel) => {
       break
     case '设置部门':
       dialogState.deptDialog = true
+      dialogState.userCode = row.userCode
+      break
+    case '设置角色':
+      dialogState.roleDialog = true
       dialogState.userCode = row.userCode
       break
     case '停用':

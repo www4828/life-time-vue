@@ -352,6 +352,16 @@
         }
       }
     }
+    &.user-mark{
+      .content{
+        .left {
+          width: 50%;
+        }
+        .right{
+          width: 50%
+        }
+      }
+    }
   }
 
   &.card {

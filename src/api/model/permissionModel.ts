@@ -13,6 +13,7 @@ export class PermissionModel extends BaseModel {
   "sort": number
   "permissionId": string
   "disabled"?: boolean
+  "parentName"?: string
   [key:string]: any
 }
 

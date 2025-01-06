@@ -12,4 +12,5 @@ export class RoleModel extends BaseModel {
     "dataScope": string
     "dataUsers": string
     "permissions": string
+    "permissionTree": string
 }

@@ -292,6 +292,7 @@ const deletePermission = () => {
 
 const save = () => {
   state.formData.permissions = permissionTreeRef.value?.getCheckedKeys().join(',')
+  state.formData.permissionTree = permissionTreeRef.value?.getTreeKeys().join(',')
   if (state.formData.id) {
     roleSever.update(state.formData).then((res: Response) => {
       if (res.code === 200) {
