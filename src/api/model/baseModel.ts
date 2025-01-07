@@ -1,6 +1,6 @@
 export class BaseModel {
   id?: string
-  department?:string
+  operaDeptCode?:string
   createTime?: string
   createTime_start?: string
   createTime_end?: string
