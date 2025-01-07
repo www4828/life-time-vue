@@ -245,9 +245,10 @@ function calField (tree: any) {
   return tree
 }
 function deepMenu(data: any, arr: any, parentId: string) {
+  
   for (let i = 0; i < data.length; i++) {
     const item = data[i]
-    if (item.parentID === parentId) {
+    if (item.parentId === parentId) {
       const url = dealUrl(item.url, item)
       const isString = typeof url === 'string'
       const path = getPath(url, i, data)
@@ -271,19 +272,19 @@ function deepMenu(data: any, arr: any, parentId: string) {
           nodeCode: nodeCode
         },
         query: getQueryParams(url),
-        permissionId: item.permissionID,
-        parentId: item.parentID,
+        permissionId: item.permissionId,
+        parentId: item.parentId,
         children: [],
       })
-      deepMenu(item.childs, arr[i].children, item.permissionID)
+      deepMenu(item.child, arr[i].children, item.permissionId)
     }
   }
 }
 export async function setCaseNum() {
   const menus = Session.get("menus")
   const result: any = []
-  deepMenu(menus, result, '1')
-  console.log(result)
+  
+  deepMenu(menus, result, menus[0].parentId)
   let data = calField(result)
   data.unshift({
     path: '/home',
@@ -305,13 +306,12 @@ export async function setCaseNum() {
   return data
 }
 export function SetMenu(): Promise<object[]> {
-  const result: any = []
-  const modules = import.meta.glob('@/views/**/*.vue')
-  const { username } = Session.get('userInfo')
+  const { userCode } = Session.get('userInfo')
+  const activeDept = Session.get('activeDept')
   return new Promise((resolve) => {
-    permissionSever.getMenuTree(username).then(async (res: Response) => {
+    permissionSever.getMenuTree(userCode, activeDept).then(async (res: Response) => {
       if (res.code === 200) {
-        Session.set("menus", res.data)
+        Session.set("menus", res.data[0].child)
         resolve(setCaseNum())
       }
     })

@@ -11,9 +11,6 @@ export class DataSourceService implements DataSourceInterface {
   constructor() {
     this.request = new RequestService('sysUrl').service!
   }
-  tree(searchParams?: SearchParamsModel<DataSourceModel>): Promise<Response> {
-    return this.request.post(this.baseUlr + '/tree', searchParams)
-  }
   save(permission: DataSourceModel): Promise<Response<DataSourceModel>> {
     return this.request.post(this.baseUlr, permission)
   }
@@ -25,5 +22,20 @@ export class DataSourceService implements DataSourceInterface {
   }
   delete(id: string): Promise<Response> {
     return this.request.delete(this.baseUlr + `/${id}`)
+  }
+  catalog(id: string): Promise<Response> { // 数据库目录
+    return this.request.post(this.baseUlr + `/catalog/${id}`)
+  }
+  column(schema: string, table: string, id: string): Promise<Response> { // 数据库字段
+    return this.request.post(this.baseUlr + `/column/${schema}/${table}/${id}`)
+  }
+  connect(id: string): Promise<Response> { // 测试链接
+    return this.request.post(this.baseUlr + `/connect/${id}`)
+  }
+  schema(catalog: string, id: string): Promise<Response> { //  数据库模式
+    return this.request.post(this.baseUlr + `/schema/${catalog}/${id}`)
+  }
+  table(schema: string, id: string): Promise<Response> { // 数据库表单
+    return this.request.post(this.baseUlr + `/table/${schema}/${id}`)
   }
 }

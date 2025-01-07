@@ -73,4 +73,5 @@ export class UserService implements userInterface {
   getSsoToken(type: any): Promise<Response> {
     return this.request.get('user/ssoToken/'+type)
   }
+  
 }

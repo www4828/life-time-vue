@@ -24,6 +24,9 @@ export class LoginService implements LoginInterface  {
   loginEncrypt(data: LoginModel, loginType: LoginType) {
     return this.request.post(`/user/loginEncrypt/${loginType}`, data)
   }
+  setUserActiveDept(userCode: string,deptCode: string): Promise<Response> {
+    return this.request.get(`/user/active-dept/${userCode}/${deptCode}`)
+  }
   signOut = ()=>{ 
     return new Promise((resolve)=>{
       resolve({});

@@ -8,9 +8,10 @@ export function useCode() {
   const codeService = new CodeService()
   const codes = ref<CodeModel[]>([])
   const types = reactive<any>({})
-  const getCodesByType = (type: string): CodeModel[] => {
-    const allCodes = cloneDeep(codes.value)
-    return allCodes?.filter((code) => code.codeParent == type)
+  const getCodesByType = (type: string,parent?: string): CodeModel[] => {
+    parent = parent ? parent : type
+    const allCodes = cloneDeep(codes.value) 
+    return allCodes?.filter((code) => (code.codeParent == type) )
   }
 
   const setValue = () => {
@@ -18,6 +19,8 @@ export function useCode() {
     types.tagStyleTypes = getCodesByType('1200')
     types.animationTypes = getCodesByType('1300')
     types.deptTypes = getCodesByType('2100')
+    types.SQLTypes = getCodesByType('3100')
+    types.NoSQLTypes = getCodesByType('3200')
   }
   const getAllCode = () => {
     if (Session.get('allCode')) {

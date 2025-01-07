@@ -3,7 +3,7 @@ import { BaseInterface, Response, SearchParamsModel } from '@/api/interface'
 import { PermissionModel, PermissionButtonModel } from '@/api/model/permissionModel'
 
 export interface PermissionInterface extends BaseInterface<PermissionModel> {
-  getMenuTree(userCode: string): Promise<Response>
+  getMenuTree(userCode: string, deptCode: string): Promise<Response>
 }
 
 export class PermissionService implements PermissionInterface {
@@ -12,8 +12,8 @@ export class PermissionService implements PermissionInterface {
   constructor() {
     this.request = new RequestService('sysUrl').service!
   }
-  getMenuTree(userCode: string): Promise<Response> {
-    return this.request.get(this.baseUlr + '/tree', { params: { userCode }})
+  getMenuTree(userCode: string, deptCode: string): Promise<Response> {
+    return this.request.get(`user/menu/${userCode}/${deptCode}`)
   }
   tree(searchParams: SearchParamsModel<PermissionModel>): Promise<Response> {
     return this.request.post(this.baseUlr + '/tree', searchParams)

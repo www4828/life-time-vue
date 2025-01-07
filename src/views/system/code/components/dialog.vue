@@ -36,17 +36,14 @@
           @node-click="nodeClick"
         />
       </el-form-item>
-      <el-form-item label="字典类型：" prop="codeType" >
+      <!-- <el-form-item label="字典类型：" prop="codeType" >
         <el-input v-model="props.formData.codeType" placeholder="类型" :disabled="props.dialogStatus === '修改'" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="数据类型" prop="dataType">
         <el-select v-model="props.formData.dataType" >
           <el-option label="正常" :value="1" />
           <el-option label="不可删除" :value="-1" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="排序：" prop="sort">
-        <el-input v-model="props.formData.sort" placeholder="排序" />
       </el-form-item>
       <el-form-item label="预留参数一">
         <el-input v-model="props.formData.firstParam" placeholder="预留参数一" />
@@ -59,6 +56,9 @@
       </el-form-item>
       <el-form-item label="预留参数四">
         <el-input v-model="props.formData.fourthParam" placeholder="预留参数四" />
+      </el-form-item>
+      <el-form-item label="排序：" prop="sort">
+        <el-input v-model="props.formData.sort" placeholder="排序" />
       </el-form-item>
       <el-form-item label="备注">
         <el-input v-model="props.formData.codeNote" placeholder="备注" />

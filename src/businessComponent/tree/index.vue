@@ -149,7 +149,8 @@ const loadData = () => {
       .then((res: any) => {
 
         state.list = res.data
-        let key = props.new ?  props.new![nodeKey] : state.node[nodeKey]
+        let key = props.new ? props.new![props.treeJson.code] : state.node[nodeKey]
+        
         state.expandedList = [state.list[0][nodeKey],key]
         
         nextTick(()=>{
@@ -199,8 +200,6 @@ watch(
 )
 defineExpose({
   getCheckedKeys(){
-    let keys = treeRef.value?.getCheckedKeys().concat(treeRef.value?.getHalfCheckedKeys()) 
-    // console.log(keys);
     return treeRef.value?.getCheckedKeys()
   },
   getTreeKeys(){
