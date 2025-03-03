@@ -239,13 +239,11 @@ function calField (tree: any) {
     if (node.children && node.children.length > 0) {
         calField(node.children)
         node.meta.caseNum = node.children.reduce((sum: any, item: any) => sum + item.meta.caseNum, 0)
-        
     }
   })
   return tree
 }
 function deepMenu(data: any, arr: any, parentId: string) {
-  
   for (let i = 0; i < data.length; i++) {
     const item = data[i]
     if (item.parentId === parentId) {

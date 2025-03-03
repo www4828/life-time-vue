@@ -89,30 +89,11 @@ onBeforeUnmount(() => {
   proxy.mittBus.off("tabClick");
 });
 const tabClick = (index: number) => {
-  let { nodeReportUrl,taskReportUrl,gbReportUrl } = Session.get("appConfig").urls,
-    url = '',
-    token = sessionStorage.getItem("token");
-
   if(index === 2 || index === 3 || index === 4|| index === 5){
     window.open(`${location.origin+location.pathname}#/jumpPage?index=${index}&taskId=${taskId.value}`)
   }else{
     cur.value = index;
   }
-  // userService.getSsoToken(2).then((ssoToken)=>{
-  //   if (index === 2) {
-  //     url = nodeReportUrl + encrypt(taskId.value) + "&token=" + token + '&ssoToken=' + ssoToken.data
-  //   } else if (index === 3) {
-  //     url = taskReportUrl + encrypt(taskId.value)+ '&ssoToken=' + ssoToken.data
-  //   } else if (index === 4) {
-  //     url = gbReportUrl + encrypt(taskId.value) + '&ssoToken=' + ssoToken.data
-  //   }
-  //   if(url){
-  //     // window.open(url);
-  //     window.open(`${location.origin+location.pathname}#/jumpPage?src=${url}`)
-  //   }else{
-  //     cur.value = index;
-  //   }
-  // })
 };
 </script>
 <style lang="scss" scoped>

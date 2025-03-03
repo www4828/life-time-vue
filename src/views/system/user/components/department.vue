@@ -3,7 +3,6 @@
     top="100px" custom-class="card-mark">
     <div class="content user-content">
       <div class="right">
-        <!-- <div class="title">部门数据</div> -->
         <DepartmentTree
           @append="setUserDept"
           :checked="state.checked"

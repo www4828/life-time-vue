@@ -26,7 +26,30 @@
         :show-checkbox="props.showCheckbox"
         :check-strictly="props.checkStrictly"
         :check-on-click-node="!props.showCheckbox"
-        />
+        >
+        <template #default="{ node, data }">
+          <div class="custom-tree-node">
+            <span style="margin-right: 25px;" >{{ node.label }}</span>
+            <el-link v-if="props.operate" :icon="FolderAdd" type="primary" style="margin-right: 2px;" @click="emits('addHandle', data)"></el-link>
+            <el-link v-if="props.operate" :icon="Edit" type="primary" style="margin-right: 2px;" @click="emits('editHandle', data)"></el-link>
+            <el-popconfirm title="是否确定删除此节点?" hide-icon width="160px" @confirm="removeNode(node, data)">
+              <template #reference>
+                <el-link v-if="props.operate && !data[defaultProps.children] " :icon="Delete" type="danger"></el-link>
+              </template>
+              <template #actions="{ confirm, cancel }">
+                <el-button size="mini" @click="cancel">取消</el-button>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @confirm="confirm"
+                >
+                  确定
+                </el-button>
+              </template>
+            </el-popconfirm>
+          </div>
+        </template>
+      </el-tree>
         <!-- expand-on-click-node -->
         <!-- check-on-click-node -->
     </div>
@@ -35,27 +58,27 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive, ref, watch } from 'vue'
-import { Search, Edit, Delete } from '@element-plus/icons-vue'
+import { Search, FolderAdd, Delete, Edit } from '@element-plus/icons-vue'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 import { TreeModel } from '@/api/model/baseModel'
 import { cloneDeep } from 'lodash-es'
+import { ElMessage } from 'element-plus'
 
 const treeRef: any = ref(null)
-const emits = defineEmits(['handleNodeClick', 'setRefresh', 'getTree'])
+const emits = defineEmits(['handleNodeClick', 'setRefresh', 'getTree','addHandle', 'editHandle'])
 const props = withDefaults(
   defineProps<{
-    action?: string,
-    checkbox?: boolean,
     checked?: Array<string>,
-    refresh?: boolean,
-    new?: any,
-    treeJson?: any,
+    refresh?: boolean, // 刷新
+    new?: any,  // 新增数据
+    treeJson?: any, // 
     content?: any, // 默认数据
-    showCheckbox?: boolean,
-    showSearch?: boolean,
-    showLine?: boolean
-    disabled?: boolean,
-    checkStrictly?: boolean
+    showCheckbox?: boolean, // 显示多选框
+    showSearch?: boolean, // 显示搜索框
+    showLine?: boolean, // 显示分割线
+    disabled?: boolean, // 禁选
+    operate?: boolean, // 显示删除图标
+    checkStrictly?: boolean // 严格模式
   }>(),
   {
     showSearch: true,
@@ -135,6 +158,22 @@ const removeChildrenIds = (data: any) => {
     })
   }
 }
+
+const removeNode = (node:any, data:any)=>{
+  if (props.treeJson?.type && data.id) {
+    props.treeJson?.type
+      .delete(data.id)
+      .then((res: any) => {
+        ElMessage({
+          type: res.code == 200 ? 'success' : 'danger',
+          message:res.message
+        })
+        loadData()
+      })
+      .catch(() => (state.emptyText = '暂无数据'))
+  }
+}
+
 // 读取全部
 const loadData = () => {
   if (props.treeJson?.type) {
@@ -157,6 +196,7 @@ const loadData = () => {
           treeRef.value!.setCurrentKey(key, true)
         })
         emits('setRefresh', false)
+        emits('getTree', state.list)
       })
       .catch(() => (state.emptyText = '暂无数据'))
   }
@@ -204,7 +244,6 @@ defineExpose({
   },
   getTreeKeys(){
     let keys = treeRef.value?.getCheckedKeys().concat(treeRef.value?.getHalfCheckedKeys()) 
-    // console.log(keys);
     return keys
   }
 })
@@ -215,6 +254,14 @@ defineExpose({
   height: 100%;
   .tree {
     height: calc(100% - 70px);
+  }
+  .custom-tree-node {
+    // flex: 1;
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
+    // font-size: 14px;
+    // padding-right: 8px;
   }
 }
 </style>

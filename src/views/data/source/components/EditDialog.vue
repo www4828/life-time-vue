@@ -7,7 +7,7 @@
     destroy-on-close
     :close-on-click-modal="false"
   >
-    <div class="sql_icon-wrap" v-if="!data.formData.dataSourceName">
+    <div class="sql_icon-wrap" v-if="!data.formData.dataSourceType">
       SQL
       <div class="sql_icon-box">
         <div
@@ -80,9 +80,9 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <span class="dialog-footer" v-if="data.formData.dataSourceName">
+      <span class="dialog-footer" v-if="data.formData.dataSourceType">
         <el-button @click="reset">上一步</el-button>
-        <el-button>测试连接</el-button>
+        <el-button @click="connect" :loading="data.loading" >测试连接</el-button>
         <el-button type="primary" @click="createData" >确定</el-button>
       </span>
     </template>
@@ -93,14 +93,16 @@ import { reactive, unref, ref, watch } from 'vue'
 import { ElForm } from 'element-plus'
 import type { FormRules } from 'element-plus'
 import { View, Hide, Edit } from '@element-plus/icons-vue'
-import { ClientModel } from '@/api/model/clientModel'
 
 import { useCode } from '@/hooks/useCode'
 import { cloneDeep } from 'lodash-es'
 import { CodeModel } from '@/api/model/codeModel'
 import { DataSourceModel } from '@/api/model/dataModel'
+import { DataSourceService } from '@/api/service/Data/DataSourceService'
+import { ElMessage } from 'element-plus'
 
 const { types } = useCode()
+const dataSourceSever = new DataSourceService();
 const emits = defineEmits(['closeDialog', 'update', 'save'])
 const props = defineProps({
   showFlag: {
@@ -122,7 +124,8 @@ const getImageUrl = (path: string) => {
 }
 const data = reactive({
   dialogVisible: false,
-  formData: {} as DataSourceModel
+  formData: {} as DataSourceModel,
+  loading: false
 })
 const dataForm = ref(ElForm)
 
@@ -143,6 +146,16 @@ const clickHandle = (item: CodeModel)=>{
 }
 const reset = ()=>{
   data.formData = {} as DataSourceModel
+}
+const connect = ()=>{
+  data.loading = true
+  dataSourceSever.connect(data.formData).then(res=>{
+    data.loading = false
+    ElMessage({
+      type: res.code == 200 ? 'success' : 'error',
+      message: res.code == 200 ? '连接成功' : '连接失败'
+    })
+  })
 }
 
 const createData = () => {

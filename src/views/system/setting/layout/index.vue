@@ -133,7 +133,6 @@ const store = useStore();
 const { types } = useCode()
 const themeService = new ThemeService()
 const getThemeConfig = computed(() => {
-  console.log(types.systemLayoutTypes);
     return store.state.themeConfig.themeConfig;
 });
 

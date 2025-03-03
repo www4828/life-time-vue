@@ -23,10 +23,10 @@
           <div class="tableContent">
             <el-table :data="tableData.clientList" style="width:100%" height="100%"
               :header-cell-style="{ 'text-align': 'center', }" :cell-style="{ 'text-align': 'center' }">
-              <el-table-column prop="name" align="center" label="数据源名称" />
-              <el-table-column prop="type" align="center" label="数据源类型" />
-              <el-table-column prop="clientCharacter" align="center" label="客户端字符集" />
-              <el-table-column prop="dataSourceCharacter" align="center" label="数据库字符集" />
+              <el-table-column prop="dataSourceName" align="center" label="数据源名称" />
+              <el-table-column prop="dataSourceType" align="center" label="数据源类型" />
+              <!-- <el-table-column prop="clientCharacter" align="center" label="客户端字符集" />
+              <el-table-column prop="dataSourceCharacter" align="center" label="数据库字符集" /> -->
               <el-table-column prop="driver" align="center" label="驱动程序" />
               <el-table-column prop="dataSourceUrl" align="center" label="数据源url" />
               <el-table-column prop="modifierTime" align="center" label="最后修改时间" />
@@ -81,7 +81,7 @@ const tableData = reactive({
   clientList: [] as Array<any>,
   buttonList: [
     { name: "修改" },
-    { name: "加载表" },
+    // { name: "加载表" },
     { name: "查看表" },
     { name: "删除",id:'' }
   ] as Array<any>,
@@ -102,7 +102,7 @@ const getAll = () => {
     tableData.clientList = res.data.results;
   });
 };
-// getAll();
+getAll();
 // 弹框
 const dialogState = reactive({
   titleName: "" as string,
@@ -162,8 +162,15 @@ const deleteHandle = (row:DataSourceModel)=>{
 }
 
 const commandClick = (commandClick: string, row: DataSourceModel) => {
-  if(commandClick === '删除'){
-    deleteHandle(row)
+  switch(commandClick){
+    case '删除':
+      deleteHandle(row);
+      break;
+    case '查看表':
+      // deleteHandle(row);
+      break;
+    default:
+      break
   }
 }
 const paginationChange = (pageInfo: any) => {

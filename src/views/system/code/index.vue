@@ -104,27 +104,13 @@ import { CodeService } from "@/api/service/System/CodeService";
 import Dialog from "./components/dialog.vue";
 import CodeTree from '@/businessComponent/tree/index.vue'
 import { cloneDeep } from "lodash-es";
+import { Session } from '@/utils/storage'
+import { useCode } from '@/hooks/useCode'
 interface PageInfo {
   currentPage: number;
   pageSize: number;
 }
-interface Tree extends CodeTreeModel {
-  childs?: Tree[];
-}
-const customNodeClass = (data: any, node: Node) => {
-  if (node.level === 1) {
-    return "first";
-  } else if (!data.child) {
-    return "dept";
-  }
-  return "";
-};
 
-const treeProps = {
-  label: "name",
-  children: "child",
-  class: customNodeClass,
-};
 const treeRef = ref<InstanceType<typeof ElTree>>();
 const treeData = ref<CodeTreeModel[]>([]);
 
@@ -166,7 +152,6 @@ const setRefresh = ()=>{
   data.action = 'edit'
 }
 const nodeClick = (node: CodeTreeModel) => {
-  console.log();
   searchModel.value[1].value = node.code
   TYPE_CODE.value = node.type;
   data.treeInfo = cloneDeep(node)
@@ -215,13 +200,7 @@ const deleteHandle = (id: string, deleteData: CodeModel) => {
         });
         if (res.code === 200) {
           searchHandle();
-          getCodeAgain();
           data.refresh = true
-          // treeRef.value!.remove({
-          //   code: deleteData.codeValue,
-          //   name: deleteData.codeName,
-          //   type: deleteData.codeType,
-          // });
         }
       });
     })
@@ -236,10 +215,7 @@ const searchHandle = () => {
   searchParamsModel.pageParams.pageIndex = 1;
   getAll();
 };
-const filterNode = (value: string, data: any): boolean => {
-  if (!value) return true;
-  return data.codeName.includes(value);
-};
+
 // 新增
 const saveHandle = (params: CodeModel) => {
   codeService.save(params).then((res: Response) => {
@@ -365,6 +341,8 @@ const getAll = () => {
       const { results, pageInfo } = res.data;
       searchParamsModel.pageParams.total = pageInfo.total;
       data.tableData = results;
+      Session.set('allCode', res.data.results)
+      useCode();
     } else {
       ElMessage.error(res.message);
     }

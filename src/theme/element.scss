@@ -22,7 +22,7 @@
 }
 
 .scrollbar-wrapper {
-  overflow-x: hidden !important;
+  // overflow-x: hidden !important;
 
   .el-scrollbar__view {
     height: 100%;
@@ -30,7 +30,6 @@
 
   .is-horizontal {
     opacity: 0 !important;
-    // display: none !important;
   }
 
   .is-vertical {
@@ -233,7 +232,7 @@
         font-size: 14px;
         width: calc(100% - 100px);
 
-        .el-input__inner {
+        .el-input__wrapper {
           height: 30px;
           line-height: 30px;
           border-radius: 5px;
@@ -608,4 +607,20 @@ svg:focus{outline: none;}
 }
 .picker{
   z-index: 9999 !important;
+}
+
+.response_drawer{
+  font-size: 16px;
+}
+.tableHeader{
+  background-color: var(--lt-workTicket-background-color) !important;
+  font-family: var(--lt-font-family-bold) !important;
+  font-weight: 500 !important;
+}
+.response_drawer{
+  .el-input__wrapper {
+    height: 30px;
+    line-height: 30px;
+    border-radius: 5px;
+  }
 }

@@ -29,8 +29,8 @@ export class DataSourceService implements DataSourceInterface {
   column(schema: string, table: string, id: string): Promise<Response> { // 数据库字段
     return this.request.post(this.baseUlr + `/column/${schema}/${table}/${id}`)
   }
-  connect(id: string): Promise<Response> { // 测试链接
-    return this.request.post(this.baseUlr + `/connect/${id}`)
+  connect(T: DataSourceModel): Promise<Response> { // 测试链接
+    return this.request.post(this.baseUlr + `/connect`,T)
   }
   schema(catalog: string, id: string): Promise<Response> { //  数据库模式
     return this.request.post(this.baseUlr + `/schema/${catalog}/${id}`)

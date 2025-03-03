@@ -11,7 +11,7 @@
           <div class="logo" v-show="getThemeConfig.isShowLogo"></div>
           <div class="title">{{ getThemeConfig.globalTitle }}</div>
         </div>
-        <div class="checkBox">
+        <!-- <div class="checkBox">
           <div
             :class="state.checkHidden == true ? 'checkText' : 'cancelText'"
             @click="accountClick"
@@ -24,7 +24,7 @@
           >
             手机号登录
           </div>
-        </div>
+        </div> -->
         <div class="accountBox" v-show="state.checkHidden">
           <el-form-item prop="userName">
             <el-input
@@ -117,14 +117,14 @@
         <el-button class="bottom" @click="isCanLogin" :loading="loading"
           >登录</el-button
         >
-        <div class="textBtnBox" v-show="state.checkHidden">
+        <!-- <div class="textBtnBox" v-show="state.checkHidden">
           <el-button type="text" class="bottomText" @click="forgetName"
             >忘记账号名</el-button
           >
           <el-button type="text" class="bottomText" @click="forgetPassWord"
             >忘记密码</el-button
           >
-        </div>
+        </div> -->
       </el-form>
     </div>
     <el-dialog

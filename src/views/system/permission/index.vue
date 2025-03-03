@@ -183,9 +183,7 @@
     </template>
     <template #bottom>
       <div class="btnGroup">
-        <el-button type="success" @click="submitForm(authForm)" class="save"
-          >保存</el-button
-        >
+        <el-button type="success" @click="submitForm(authForm)" class="save">保存</el-button>
         <el-button @click="cancel" class="cancel">取消</el-button>
       </div>
     </template>
@@ -203,7 +201,6 @@ import { PermissionModel, PermissionButtonModel } from '@/api/model/permissionMo
 import { PermissionService } from '@/api/service/System/PermissionService'
 import { Response, SearchParamsModel } from '@/api/interface'
 import { SearchModel } from '@/api/model/baseModel'
-// import PermissionTree from '@/businessComponent/tree/permissionTree/index.vue'
 import PermissionTree from '@/businessComponent/tree/index.vue'
 import { cloneDeep } from 'lodash-es'
 

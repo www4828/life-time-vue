@@ -49,15 +49,15 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       port: env.VITE_PORT as unknown as number,
       open: true,
       proxy: {
-        '/api': {
-          target: 'http://47.97.163.17:8081',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
         '/sysUrl': {
           target: 'http://8.155.10.223/lifetime-api/lifetime-manager-server',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/sysUrl/, ''),
+        },
+        '/apiUrl': {
+          target: 'http://8.155.10.223/lifetime-api/lifetime-api-hub-server',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/apiUrl/, ''),
         },
         '/mediaUrl': {
           target: 'https://cy.fengxian.gov.cn/file-service',

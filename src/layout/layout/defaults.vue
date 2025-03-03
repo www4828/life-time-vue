@@ -14,9 +14,6 @@
       </div>
     </div>
     <CloseFull v-if="!isTagsViewFull" />
-    <el-collapse-transition v-if="isTagsViewFull">
-      <phonebox v-model:visible="showphone"></phonebox>
-    </el-collapse-transition>
   </div>
 </template>
 <script lang="ts">
@@ -24,7 +21,6 @@ import { computed, defineComponent, onMounted, watch, markRaw, ref } from "vue";
 import NavBar from "@/layout/navBars/defaults.vue";
 import NavMenu from "@/layout/navMenus/defaults/index.vue";
 import AppMain from "@/layout/appMain/defaults/index.vue";
-import phonebox from "@/components/PhoneCall/phone.vue";
 import Watermark from "@/utils/wartermark";
 import CloseFull from "@/layout/components/defaults/closeFull.vue";
 import { useStore } from "@/store";
@@ -37,8 +33,7 @@ export default defineComponent({
     NavBar: markRaw(NavBar),
     NavMenu: markRaw(NavMenu),
     AppMain: markRaw(AppMain),
-    CloseFull,
-    phonebox,
+    CloseFull
   },
   setup() {
     let showphone = ref<boolean>(false);
