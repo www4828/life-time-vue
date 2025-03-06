@@ -68,8 +68,10 @@ import { ElMessage } from 'element-plus'
 const emits = defineEmits(['closeDialog', 'update', 'save'])
 const props = defineProps({
   formData: {
-    type: ApiBaseInfoModel,
-    default: {} as ApiBaseInfoModel,
+    type: ApiBaseInfoModel
+  },
+  groupCode: {
+    type: String
   },
   list: {}
 })
@@ -90,15 +92,31 @@ const rules = reactive<InstanceType<typeof FormRules>>({
 
 const init = ()=>{
   data.formData.apiType = 'SQL脚本'
+  props.groupCode && (data.formData.groupCode = props.groupCode)
 }
 init()
 watch(
   () => props.formData,
   (newValue, oldValue) => {
-    data.formData = cloneDeep(props.formData)
+    if(props.formData){
+      data.formData = cloneDeep(props.formData)
+    }else{
+      data.formData = {} as ApiBaseInfoModel
+    }
+    init()
   },
   {
     deep: true,
+    immediate: true
+  }
+)
+watch(
+  () => props.groupCode,
+  (newValue, oldValue) => {
+    props.groupCode && (data.formData.groupCode = props.groupCode)
+  },
+  {
+    immediate: true,
   }
 )
 

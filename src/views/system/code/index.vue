@@ -1,12 +1,5 @@
 <template>
   <Layout class="code">
-    <!-- <template #search>
-      <div class="header-search">
-        <el-input placeholder="请输入内容" :prefix-icon="Search" v-model="keywords">
-        </el-input>
-      </div>
-      <div class="split-line"></div>
-    </template> -->
     <template #tree>
       <div class="tree">
         <CodeTree

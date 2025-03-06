@@ -54,11 +54,5 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     meta: {
       title: 'message.staticRoutes.noPower',
     },
-  },
-  {
-    path: '/jumpPage',
-    name: 'jumpPage',
-    component: () => import('@/views/jumpPage/index.vue'),
-    meta: {},
   }
 ]

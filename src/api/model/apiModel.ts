@@ -55,4 +55,15 @@ export class ApiGroupModel extends BaseModel  {
   'parentCode': string
   'remark': string
 }
+export class AppModel extends BaseModel  {
+  'apiCodes': string
+  'appCode': string
+  'appDes': string
+  'appId': string
+  'appKey': string
+  'appName': string
+  'appSecret': string
+  'ips': string
+  'strategy': string
+}
 

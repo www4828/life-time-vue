@@ -18,7 +18,7 @@
               <el-input v-model="state.list[scope.$index].columnName" style="width: 100%" placeholder="映射字段" />
             </template>
           </el-table-column>
-          <el-table-column prop="remark" label="参数类型" align="center">
+          <el-table-column prop="paramType" label="参数类型" align="center">
             <template #default="scope">
               <el-select class="sh3h-search-input" v-model="state.list[scope.$index].paramType" style="width: 100%"
                 placeholder="参数类型">
@@ -109,7 +109,6 @@ const props = defineProps({
 
 const state = reactive({
   drawer: false,
-  formData: {},
   list: [] as RequestInfoModel[],
   isPage: '0'
 })
@@ -120,9 +119,6 @@ const close = () => {
   emits('closeDialog')
 }
 
-const init = () => {
-}
-init()
 const deleteDocument = (scope: any) => {
   state.list = state.list.filter(
     (item, index) => index !== scope.$index
@@ -136,7 +132,7 @@ const addDocument = () => {
     'example': '',
     'paramModel': '',
     'paramName': '',
-    'paramType': '',
+    'paramType': 'String',
     'privacy': '',
     'remark': '',
     'required': ''
@@ -149,10 +145,15 @@ watch(() => props.showFlag, (newValue, oldValue) => {
 watch(
   () => props.formData,
   (newValue, oldValue) => {
-    state.formData = cloneDeep(props.formData)
+    if(props.formData?.length > 0){
+      state.list = cloneDeep(props.formData)
+    }else{
+      state.list = []
+    }
   },
   {
     deep: true,
+    immediate: true
   }
 )
 

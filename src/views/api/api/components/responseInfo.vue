@@ -124,6 +124,10 @@ const props = defineProps({
     type: Array<RequestInfoModel>,
     default: [] as RequestInfoModel[],
   },
+  list: {
+    type: Array<RequestInfoModel>,
+    default: [] as RequestInfoModel[],
+  },
 })
 
 const state = reactive({
@@ -174,6 +178,20 @@ watch(
   },
   {
     deep: true,
+  }
+)
+watch(
+  () => props.list,
+  (newValue, oldValue) => {
+    if(props.formData?.length > 0){
+      state.list = cloneDeep(props.formData)
+    }else{
+      state.list = []
+    }
+  },
+  {
+    deep: true,
+    immediate: true
   }
 )
 

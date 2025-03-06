@@ -213,7 +213,7 @@ export async function initRouter(token: string) {
   setFilterMenuAndCacheTagsViewRoutes()
 }
 //await initRouter();
-const whiteList = [ '/portal','/jumpPage']
+const whiteList = ['']
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
   console.log(to);

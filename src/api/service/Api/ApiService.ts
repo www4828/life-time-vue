@@ -1,6 +1,6 @@
 import RequestService from '@/utils/request'
 import { BaseInterface, Response, SearchParamsModel } from '@/api/interface'
-import { ApiModel, ApiGroupModel, ApiSqlInfoModel } from '@/api/model/apiModel'
+import { ApiModel, ApiGroupModel, AppModel } from '@/api/model/apiModel'
 
 export interface ApiInterface extends BaseInterface<ApiModel> {
 }
@@ -17,7 +17,7 @@ export class ApiInfoService implements ApiInterface {
   update(T: ApiModel): Promise<Response> {
     return this.request.put(this.baseUlr, T)
   }
-  list(searchParams: SearchParamsModel<ApiModel>): Promise<Response> {
+  list(searchParams: SearchParamsModel<any>): Promise<Response> {
     return this.request.post(this.baseUlr + `/search`, searchParams)
   }
   delete(code: string): Promise<Response> {
@@ -53,3 +53,22 @@ export class ApiGroupService{
   }
 }
 
+export class AppService{
+  protected baseUlr: string =  'app'
+  private request
+  constructor() {
+    this.request = new RequestService('apiUrl').service!
+  }
+  save(apiInfo: AppModel): Promise<Response<AppModel>> {
+    return this.request.post(this.baseUlr, apiInfo)
+  }
+  update(id: string,T: AppModel): Promise<Response> {
+    return this.request.put(this.baseUlr + '/' + id, T)
+  }
+  list(searchParams: SearchParamsModel<AppModel>): Promise<Response> {
+    return this.request.post(this.baseUlr + `/search`, searchParams)
+  }
+  delete(id: string): Promise<Response> {
+    return this.request.delete(this.baseUlr + `/${id}`)
+  }
+}

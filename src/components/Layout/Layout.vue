@@ -12,13 +12,11 @@
       <div class="button">
         <slot name="button"></slot>
       </div>
-
       <Scrollbar class="content">
         <slot name="content"></slot>
       </Scrollbar>
       <div class="bottom">
         <slot name="bottom"></slot>
-        
       </div>
     </div>
   </div>
