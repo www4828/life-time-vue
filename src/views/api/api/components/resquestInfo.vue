@@ -130,7 +130,7 @@ const addDocument = () => {
     'columnName': '',
     'defaultValue': '',
     'example': '',
-    'paramModel': '',
+    'paramModel': 'request',
     'paramName': '',
     'paramType': 'String',
     'privacy': '',

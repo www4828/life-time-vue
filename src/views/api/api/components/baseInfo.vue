@@ -22,9 +22,9 @@
     </el-form-item>
     <el-form-item label="认证方式:" prop="authType">
       <el-select class="sh3h-search-input" v-model="data.formData.authType" placeholder="认证方式">
-        <el-option label="无认证" value="无认证"/>
+        <el-option label="无签名" value="无签名"/>
         <el-option label="签名认证" value="签名认证"/>
-        <el-option label="oauth2认证" value="oauth2认证"/>
+        <el-option label="code认证" value="code认证"/>
       </el-select>
     </el-form-item>
     <el-form-item label="接口分组:" prop="groupCode">

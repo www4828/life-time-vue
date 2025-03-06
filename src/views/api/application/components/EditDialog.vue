@@ -14,21 +14,15 @@
         <el-input v-model="props.formData.appKey" placeholder="密钥ID" />
       </el-form-item>
       <el-form-item label="appSecret:" prop="appSecret" >
-        <el-input
-          v-model="props.formData.appSecret"
-          type="password"
-          placeholder="appSecret"
-          show-password
-          autocomplete="new-password"
-        />
+        <el-input v-model="props.formData.appSecret" placeholder="appSecret" />
       </el-form-item>
       <el-form-item label="应用描述:" prop="appDes" >
         <el-input v-model="props.formData.appDes" placeholder="应用描述" />
       </el-form-item>
       <el-form-item label="策略类型:" prop="strategy" >
-        <el-select class="sh3h-search-input" v-model="props.formData.strategy" >
-          <el-option lable='白名单' value="white" />
-          <el-option lable='黑名单' value="black" />
+        <el-select v-model="props.formData.strategy" clearable placeholder="策略类型" >
+          <el-option label="白名单"  value="white" />
+          <el-option label="黑名单"  value="black" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态:" prop="status" >
