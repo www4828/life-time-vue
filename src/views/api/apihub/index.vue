@@ -1,144 +1,22 @@
 <template>
-  <Layout>
-    <template #tree>
-      <div class="tree_container">
-        <div class="header-search">
-          <div class="header-left">
-            <el-icon>
-              <Menu />
-            </el-icon>
-            API分类
-          </div>
-        </div>
-        <div class="split-line" />
-        <div class="tree">
-          <ApiGroupTree
-            @handleNodeClick="handleNodeClick"
-            :showSearch="false"
-            :showLine="false"
-            :treeJson="{ type: apiGroupSever }"
-          />
-        </div>
-      </div>
-    </template>
-    <!-- <template #button>
-      <div class="hub-search">
-        <el-input
-          v-model="state.input"
-          style="width: 600px"
-          placeholder="输入你要的API"
-          class="input-with-select"
-        >
-          <template #append>
-            <el-button type="primary" :icon="Search">搜索</el-button>
-          </template>
-        </el-input>
-      </div>
-    </template> -->
-    <template #content>
-      <div class="hub-search">
-        <el-input
-          v-model="state.input"
-          style="width: 600px"
-          placeholder="输入你要的API"
-          class="input-with-select"
-        >
-          <template #append>
-            <el-button type="primary" :icon="Search">搜索</el-button>
-          </template>
-        </el-input>
-      </div>
-      <div class="hub-content">
-        <div class="item" v-for="item in state.tableData">
-          <i class="icon interface"></i>
-          <div class="apiName">{{ item.apiBaseInfo.apiName }}</div>
-          <div class="count">
-            <el-icon><View /></el-icon>
-            10
-          </div>
-          <div class="des">简介：{{ item.apiBaseInfo.apiName }}</div>
-          <div class="item-botton">
-            <div class="apiGroup">
-              <i class="icon group"></i>
-              {{ item.apiBaseInfo.groupCode }}
-            </div>
-            <el-link type="primary" :icon="Link"> 详情</el-link>
-          </div>
-        </div>
-      </div>
-      <Pagination 
-        :currentPage="searchParamsModel.pageParams.pageIndex"
-        :pageSize="searchParamsModel.pageParams.pageSize" 
-        :total="searchParamsModel.pageParams.total"
-        :callBack="paginationChange" 
-      />
-    </template>
-    <!-- <template #bottom>
-      <Pagination 
-        :currentPage="searchParamsModel.pageParams.pageIndex"
-        :pageSize="searchParamsModel.pageParams.pageSize" 
-        :total="searchParamsModel.pageParams.total"
-        :callBack="paginationChange" 
-      />
-    </template> -->
-  </Layout>
+  <ApiInfo v-if="state.formData?.apiBaseInfo?.apiCode" :formData="state.formData" />
+  <ApiHub v-else @showInfo="showInfo"/>
 </template>
 <script scoped lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { Menu, Search, Coin, Link, View } from '@element-plus/icons-vue'
-import Layout from '@/components/Layout/Layout-v2.vue'
-import { ApiInfoService, ApiGroupService } from '@/api/service/Api/ApiService'
-import { ApiGroupModel, ApiModel, ApiBaseInfoModel } from '@/api/model/apiModel'
-import { ElMessage } from 'element-plus'
-import ApiGroupTree from '@/businessComponent/tree/index.vue'
-import Pagination from "@/components/pagination/index.vue";
-import type { FormRules } from 'element-plus'
-import { useApiData } from '@/views/api/api/useApiData'
-import { SearchParamsModel } from '@/api/interface';
-import { SearchModel } from '@/api/model/baseModel'
+import ApiHub from './apiHub.vue';
+import ApiInfo from './apiInfo.vue';
+import { ApiModel } from '@/api/model/apiModel';
+import { cloneDeep } from 'lodash-es';
 
-const apiInfoSever = new ApiInfoService()
-const apiGroupSever = new ApiGroupService()
-const { apiState } = useApiData()
-const searchParamsModel = reactive(new SearchParamsModel<ApiBaseInfoModel>());
-const searchModel = ref<SearchModel<ApiBaseInfoModel>[]>([
-  {
-    key: "apiName",
-    value: "",
-    match: "like",
-  },
-  {
-    key: "groupCode",
-    value: '',
-    match: "eq",
-  }
-]);
 const state = reactive({
-  input: '',
-  tableData: [] as ApiModel[]
+  formData: {apiBaseInfo:{apiCode:'1'}} as ApiModel
 })
 
-const handleNodeClick = (node: any) => {
-  
+const showInfo = (item: ApiModel)=>{
+  state.formData = cloneDeep(item)
 }
-const paginationChange = (pageInfo: any) => {
-  searchParamsModel.pageParams.pageIndex = pageInfo.currentPage;
-  searchParamsModel.pageParams.pageSize = pageInfo.pageSize;
-  searchHandle();
-};
-const searchHandle = () => {
-  searchParamsModel.searchParams = searchModel.value;
-  apiInfoSever.list(searchParamsModel).then(res => {
-    if (res.code == 200) {
-      const { results, pageInfo } = res.data;
-      searchParamsModel.pageParams.total = pageInfo.total;
-      state.tableData = results;
-    } else {
-      ElMessage.error(res.message);
-    }
-  })
-}
-searchHandle()
+
 </script>
 <style lang="scss" scoped>
 .tree_container {
