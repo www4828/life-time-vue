@@ -250,19 +250,17 @@ const submit = (isPublish: string) => {
     requestParams: resquestInfoRef.value.getformData().params,
     responseParams: responseInfoRef.value.getformData().params,
   }
-  console.log(params);
-  
 
-  // apiInfoSever.save(params).then((res) => {
-  //   ElMessage({
-  //     type: res.code == 200 ? 'success' : 'danger',
-  //     message: res.message,
-  //   })
-  //   if (res.code === 200) {
-  //     state.refresh = true
-  //     state.publish = false
-  //   }
-  // })
+  apiInfoSever.save(params).then((res) => {
+    ElMessage({
+      type: res.code == 200 ? 'success' : 'danger',
+      message: res.message,
+    })
+    if (res.code === 200) {
+      state.refresh = true
+      state.publish = false
+    }
+  })
 }
 
 watch(
