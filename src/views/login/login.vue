@@ -113,11 +113,8 @@
           :width="300"
           :height="180"
           @success="emitChange('success')"
-        ></SliderVerify>
-        <el-button class="bottom" @click="isCanLogin" :loading="loading"
-          >登录</el-button
-        >
-        <!-- <div class="textBtnBox" v-show="state.checkHidden">
+        ></SliderVerify> 
+         div class="textBtnBox" v-show="state.checkHidden">
           <el-button type="text" class="bottomText" @click="forgetName"
             >忘记账号名</el-button
           >
@@ -125,6 +122,10 @@
             >忘记密码</el-button
           >
         </div> -->
+       <slideVerify v-if="sliderVConf.isShowSelf" @success="emitChange('success')" @close="sliderVConf.isShowSelf = false"></slideVerify>
+        <el-button class="bottom" @click="isCanLogin" :loading="loading"
+          >登录</el-button
+        >
       </el-form>
     </div>
     <el-dialog
@@ -178,7 +179,7 @@ import { setRem } from '@/utils/rem'
 import { useCode } from '@/hooks/useCode'
 import SelectDepartment from './selectDepartment.vue'
 import { DepartmentModel } from '@/api/model/departmentModel'
-
+import slideVerify from "@/components/slideVerify/slideVerify.vue"
 const loading = ref(false)
 const store = useStore()
 const route = useRoute()
