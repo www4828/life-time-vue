@@ -103,7 +103,7 @@
             </el-row>
           </el-form-item>
         </div>
-        <SliderVerify
+        <!-- <SliderVerify
           v-model:isShowSelf="sliderVConf.isShowSelf"
           :isBorder="sliderVConf.isBorder"
           :isParentNode="sliderVConf.isParentNode"

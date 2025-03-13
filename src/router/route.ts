@@ -40,6 +40,14 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   }, 
   {
+    path: '/chat',
+    name: 'chat',
+    component: () => import('@/views/chat/index.vue'),
+    meta: {
+      title: '登录',
+    },
+  }, 
+  {
     path: '/404',
     name: 'notFound',
     component: () => import('@/views/error/404.vue'),

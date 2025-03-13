@@ -9,18 +9,17 @@ import other from "@/utils/other";
 import { store, key } from '@/store';  
 import 'xe-utils'
 import { onPerClick } from '@/utils/permission'
-import SliderVerify from 'slider-verify-v3'
-import 'slider-verify-v3/lib/SliderVerify.css'
+
 import layer from '@layui/layer-vue';
-import '@layui/layer-vue/lib/index.css';
-
-
+import '@layui/layer-vue/lib/index.css'; 
+// import SliderVerify from "slider-verify-v3" 
+// import 'slider-verify-v3/lib/SliderVerify.css'
 const app=createApp(App);
 other.elSvg(app);
 // app.use(NumberKeyboard)
 app.use(router).use(store,key).use(ElementPlus, {
   locale: zhCn,
-}).use(SliderVerify).use(layer).mount("#app");
+}).use(layer).mount("#app");
 app.config.globalProperties.mittBus = mitt(); 
 app.config.globalProperties.$onPerClick = onPerClick
  
