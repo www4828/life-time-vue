@@ -213,7 +213,7 @@ export async function initRouter(token: string) {
   setFilterMenuAndCacheTagsViewRoutes()
 }
 //await initRouter();
-const whiteList = ['/flow']
+const whiteList = ['/chat']
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
   console.log(to);

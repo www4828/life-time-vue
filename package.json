@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@codemirror/lang-sql": "^6.8.0",
+    "@devui-design/icons": "^1.4.0",
     "@element-plus/icons-vue": "^1.0.0",
     "@fullcalendar/core": "^6.1.9",
     "@fullcalendar/daygrid": "^6.1.9",
@@ -16,6 +17,7 @@
     "@layui/layer-vue": "^2.3.2",
     "@logicflow/core": "^2.0.11",
     "@logicflow/extension": "^2.0.15",
+    "@matechat/core": "^1.2.0",
     "ace-builds": "^1.39.0",
     "axios": "^0.26.0",
     "codemirror": "^6.0.1",
