@@ -48,6 +48,14 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   }, 
   {
+    path: '/chat2',
+    name: 'chat2',
+    component: () => import('@/views/chat/index2.vue'),
+    meta: {
+      title: '登录',
+    },
+  }, 
+  {
     path: '/404',
     name: 'notFound',
     component: () => import('@/views/error/404.vue'),
