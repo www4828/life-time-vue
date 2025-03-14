@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
- import 'vue-devui/button/style.css';
+  
 import { ref, defineComponent, nextTick, onMounted } from "vue";
 //import { introPrompt, simplePrompt, mockAnswer, guessQuestions } from './mock.constants';
 const introPrompt = {
