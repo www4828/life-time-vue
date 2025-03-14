@@ -109,13 +109,7 @@
   </div>
 </template>
 <script scoped lang="ts" setup>
-import {
-  Promotion,
-  ArrowLeftBold,
-  Search,
-  Share,
-  Upload,
-} from '@element-plus/icons-vue'
+import { Promotion, ArrowLeftBold } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { ApiModel } from '@/api/model/apiModel'
 import dayjs from 'dayjs'

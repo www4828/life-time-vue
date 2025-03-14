@@ -48,6 +48,12 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   }, 
   {
+    path: '/flow',
+    name: 'flow',
+    component: () => import('@/views/flow/index.vue'),
+    meta: {},
+  }, 
+  {
     path: '/404',
     name: 'notFound',
     component: () => import('@/views/error/404.vue'),
