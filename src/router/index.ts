@@ -213,11 +213,9 @@ export async function initRouter(token: string) {
   setFilterMenuAndCacheTagsViewRoutes()
 }
 //await initRouter();
-const whiteList = ['/chat']
+const whiteList = ['/chat', '/flow']
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
-  console.log(to);
-  
   if (to.meta.title) NProgress.start()
   const token = sessionStorage.getItem('token') || to.query.token as string
   if (to.path === '/login' && !token) {

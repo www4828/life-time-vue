@@ -17,6 +17,7 @@
     "@layui/layer-vue": "^2.3.2",
     "@logicflow/core": "^2.0.11",
     "@logicflow/extension": "^2.0.15",
+    "@logicflow/vue-node-registry": "^1.0.14",
     "@matechat/core": "^1.2.0",
     "ace-builds": "^1.39.0",
     "axios": "^0.26.0",

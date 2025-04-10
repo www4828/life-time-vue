@@ -4,6 +4,7 @@ import { DataSourceService } from '@/api/service/Data/DataSourceService'
 import { ElMessage } from 'element-plus'
 import { reactive } from 'vue'
 import * as sqlFormatter from 'sql-formatter'
+import { format } from "sql-formatter";
 import { ApiInfoService } from '@/api/service/Api/ApiService'
 
 export function useApiData() {
@@ -38,19 +39,30 @@ export function useApiData() {
   const dataSourceSever = new DataSourceService()
   const apiInfoSever = new ApiInfoService()
   const getSchema = () => {
-    apiState.apiSqlInfo.dataSourceType = apiState.dbList.find(
-      (i) => apiState.apiSqlInfo.dataSourceId === i.id
-    )?.dataSourceType
-    dataSourceSever.catalog(apiState.apiSqlInfo.dataSourceId).then((res) => {
-      apiState.schemaList = res.data
-    })
+    if(apiState.apiSqlInfo.dataSourceId){
+      apiState.apiSqlInfo.dataSourceType = apiState.dbList.find(
+        (i) => apiState.apiSqlInfo.dataSourceId === i.id
+      )?.dataSourceType
+      dataSourceSever.catalog(apiState.apiSqlInfo.dataSourceId).then((res) => {
+        apiState.schemaList = res.data
+      })
+    }else{
+      apiState.apiSqlInfo.schemaName = ''
+      apiState.apiSqlInfo.tableName = ''
+      apiState.apiSqlInfo.operaType = ''
+    }
   }
   const getTable = () => {
-    dataSourceSever
-      .table(apiState.apiSqlInfo.schemaName, apiState.apiSqlInfo.dataSourceId)
-      .then((res) => {
-        apiState.sqlTableList = res.data
-      })
+    if(apiState.apiSqlInfo.schemaName){
+      dataSourceSever
+        .table(apiState.apiSqlInfo.schemaName, apiState.apiSqlInfo.dataSourceId)
+        .then((res) => {
+          apiState.sqlTableList = res.data
+        })
+    }else{
+      apiState.apiSqlInfo.tableName = ''
+      apiState.apiSqlInfo.operaType = ''
+    }
   }
   const getDataSource = () => {
     dataSourceSever
@@ -73,8 +85,9 @@ export function useApiData() {
   }
   const sqlFormat = () => {
     // sql语句格式化
-    apiState.apiSqlInfo.sqlScript = sqlFormatter.format(
-      apiState.apiSqlInfo.sqlScript
+    // apiStat?
+    apiState.apiSqlInfo.sqlScript = format(
+      apiState.apiSqlInfo.sqlScript, {language:'mysql'}
     )
   }
   const checkSQLSentence = (item: any) => {

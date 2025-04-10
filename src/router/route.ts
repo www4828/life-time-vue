@@ -48,9 +48,9 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     },
   }, 
   {
-    path: '/chat2',
-    name: 'chat2',
-    component: () => import('@/views/chat/index2.vue'),
+    path: '/flow',
+    name: 'flow',
+    component: () => import('@/views/flow/index.vue'),
     meta: {
       title: '登录',
     },

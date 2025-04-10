@@ -640,6 +640,7 @@ export default defineComponent({
     list-style: none;
     // margin-left: $tagMargin;
     padding: 0;
+    margin: 0;
     height: $tagsView-height;
     display: flex;
     align-items: center;
@@ -647,7 +648,6 @@ export default defineComponent({
     font-size: $font-size-14;
     font-family: SourceHanSansCN-Medium;
     white-space: nowrap;
-    padding: 0 0;
     transform: translateX(-10px);
     &-li {
       height: $tagsView-height;
