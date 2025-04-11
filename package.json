@@ -19,6 +19,7 @@
     "@logicflow/extension": "^2.0.15",
     "@logicflow/vue-node-registry": "^1.0.14",
     "@matechat/core": "^1.2.0",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "ace-builds": "^1.39.0",
     "axios": "^0.26.0",
     "codemirror": "^6.0.1",
