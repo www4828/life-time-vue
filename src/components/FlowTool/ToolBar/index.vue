@@ -1,5 +1,4 @@
 <template>
-
   <div class="toolbar">
     <el-tooltip 
       v-for="(item, index) in toolList" 

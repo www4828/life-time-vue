@@ -3,10 +3,11 @@
     <div class="container" ref="container"></div>
     <Palette :lf="logicflow" />
     <ToolBar :lf="logicflow" />
+    <Setting v-if="settingShow" />
   </div>
 </template>
 <script scoped lang="ts" setup>
-import { h, nextTick, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import LogicFlow from '@logicflow/core'
 import '@logicflow/core/lib/style/index.css'
 import { DndPanel, SelectionSelect, Menu, Control } from '@logicflow/extension';
@@ -15,6 +16,7 @@ import ToolBar from '@/components/FlowTool/ToolBar/index.vue'
 import { register } from '@logicflow/vue-node-registry'
 import CommonNode from '@/components/FlowTool/CommonNode/index.vue'
 import Palette from '@/components/FlowTool/Palette/index.vue'
+import Setting from '@/components/FlowTool/Setting/index.vue'
 
 
 LogicFlow.use(DndPanel);
@@ -24,6 +26,7 @@ LogicFlow.use(Menu);
 
 const container = ref()
 const logicflow = ref()
+const settingShow = ref(false)
 
 const init = () => {
   logicflow.value = new LogicFlow({
@@ -42,6 +45,12 @@ const init = () => {
     },
   });
   logicflow.value.render()
+
+
+  logicflow.value.on('node:click,edge:click', (data: any) => {
+    console.log(data);
+    settingShow.value = true
+  })
 }
 
 
