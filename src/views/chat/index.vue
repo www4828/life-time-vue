@@ -229,6 +229,7 @@ const onSubmit = (evt) => {
               top: conversationRef.value.scrollHeight,
             });
           });
+          
         }
       }, 10);
       // for (let i = 0; i < content.length; ) {
