@@ -1,7 +1,6 @@
 import { ConfigEnv, defineConfig, loadEnv } from 'vite'
 import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
-import { svgBuilder } from './src/plugins/svgBuilder'
+import vue from '@vitejs/plugin-vue' 
 import topLevelAwait from 'vite-plugin-top-level-await'
 import { createHtmlPlugin } from 'vite-plugin-html'
 
@@ -22,8 +21,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       },
     },
     plugins: [
-      vue(),
-      svgBuilder('./src/assets/svg/'),
+      vue(), 
       topLevelAwait({
         // The export name of top-level await promise for each chunk module
         promiseExportName: '__tla',
@@ -49,10 +47,10 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       port: env.VITE_PORT as unknown as number,
       open: true,
       proxy: {
-        '/sysUrl': {
-          target: 'http://8.155.10.223/lifetime-api/lifetime-manager-server',
+        '/agentUrl': {
+          target: 'http://localhost:8080',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/sysUrl/, ''),
+          rewrite: (path) => path.replace(/^\/agentUrl/, ''),
         },
         '/apiUrl': {
           target: 'http://8.155.10.223/lifetime-api/lifetime-api-hub-server',

@@ -18,10 +18,7 @@
                 <Screenfull />
             </div>
             <div class="info-item">
-                <!-- <User :name="userinfo.name!" :deptment="userinfo.departmentList.map((i: any) => i.departmentName).join(',')"
-                    :avatar="Icon" /> -->
-                    <User :name="userName" :deptment="department"
-                      :avatar="Icon" />
+                 
             </div>
         </div>
     </div>
@@ -30,14 +27,13 @@
 import { useStore } from "@/store";
 import { defineComponent, computed, defineProps, ref, onMounted, defineEmits, watch } from "vue";
 import Screenfull from "@/components/screenFull/index.vue";
-import User from "@/components/user/index.vue";
+
 import { Session } from "@/utils/storage";
 import Icon from '@/assets/login/icon_user.png'
 export default defineComponent({
     name: "navBarDeafaults",
     components: {
-        Screenfull,
-        User
+        Screenfull 
     },
     props: {
         selected: {

@@ -1,7 +1,7 @@
-<template> 
-  <McLayout class="container"> 
+<template>
+  <McLayout class="container">
     <McHeader
-      :title="'虎音转换助手'"
+      :title="'智能工单小助手'"
       :logoImg="'https://matechat.gitcode.com/logo.svg'"
     >
     </McHeader>
@@ -17,8 +17,8 @@
     >
       <McIntroduction
         :logoImg="'https://matechat.gitcode.com/logo2x.svg'"
-        :title="'虎音转换助手'"
-        :subTitle="'Hi，虎音转换助手'"
+        :title="'智能工单小助手'"
+        :subTitle="'Hi，智能工单小助手'"
         :description="description"
       ></McIntroduction>
       <McPrompt
@@ -28,7 +28,11 @@
         @itemClick="onSubmit($event.label)"
       ></McPrompt>
     </McLayoutContent>
-    <div v-else ref="conversationRef"  class="conversation-area content-container"> 
+    <div
+      v-else
+      ref="conversationRef"
+      class="conversation-area content-container"
+    >
       <template v-for="(msg, idx) in messages" :key="idx">
         <McBubble
           v-if="msg.from === 'user'"
@@ -111,11 +115,12 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import { Button } from "vue-devui/button";
+import { useSSE, useStreamChat, useSSEStream } from "@/utils/sseUtil";
 const conversationRef = ref();
 const theme = ref("light");
 const description = [
-  "虎子哥语音转文字模型 可以辅助研发人员将语音转为文字等。",
-  "作为AI模型，虎音可以准确的将您的声音转化为准确的声音。",
+  "智能工单小助手 可以辅助员工通过自然语言操作工单",
+  "作为AI模型，小智可以准确的将您的描述转为精准的业务需要。",
 ];
 const aiModelAvatar = {
   imgSrc: "https://matechat.gitcode.com/logo.svg",
@@ -132,21 +137,21 @@ const introPrompt = {
   list: [
     {
       value: "quickSort",
-      label: "语音快速转为文字",
+      label: "精准解析订单号",
       iconConfig: { name: "icon-info-o", color: "#5e7ce0" },
-      desc: "语音快速转为文字",
+      desc: "通过用户的描述解析订单号查询订单相信",
     },
     {
       value: "helpMd",
-      label: "你可以帮我做些什么？",
+      label: "获取物料信息",
       iconConfig: { name: "icon-star", color: "rgb(255, 215, 0)" },
-      desc: "了解当前大模型可以帮你做的事",
+      desc: "根据用户的描述去查询对应的物料",
     },
     {
       value: "bindProjectSpace",
-      label: "怎么训练真人声音",
+      label: "操作工序",
       iconConfig: { name: "icon-priority", color: "#3ac295" },
-      desc: "如何训练真人声音",
+      desc: "通过用户的指令使用MCP工具操作业务数据",
     },
   ],
 };
@@ -154,7 +159,7 @@ const simplePrompt = [
   {
     value: "quickSort",
     iconConfig: { name: "icon-info-o", color: "#5e7ce0" },
-    label: "帮我写一个快速排序算法",
+    label: "帮我查询一个订单的信息",
   },
   {
     value: "helpMd",
@@ -162,19 +167,13 @@ const simplePrompt = [
     label: "你可以帮我做些什么？",
   },
 ];
-const startPage = ref(false);
+const startPage = ref(true);
 const inputValue = ref("");
 const inputFootIcons = [{ icon: "icon-add", text: "附件" }];
 const messages = ref<any[]>([
   {
-    from: "user",
-    content: "你好",
-    vatarPosition: "side-right",
-    avatarConfig: { ...customerAvatar },
-  },
-  {
     from: "model",
-    content: "你好，我是虎音转化助手",
+    content: "你好，欢迎使用智能工单小助手",
     id: "init-msg",
     vatarPosition: "side-left",
     avatarConfig: { ...aiModelAvatar },
@@ -187,6 +186,11 @@ const newConversation = () => {
 };
 
 const onSubmit = (evt) => {
+  nextTick(() => {
+    conversationRef.value?.scrollTo({
+      top: conversationRef.value.scrollHeight,
+    });
+  });
   inputValue.value = "";
   startPage.value = false;
   // 用户发送消息
@@ -196,18 +200,63 @@ const onSubmit = (evt) => {
     vatarPosition: "side-right",
     avatarConfig: { ...customerAvatar },
   });
-  nextTick(() => {
-    conversationRef.value?.scrollTo({
-      top: conversationRef.value.scrollHeight,
-      behavior: "smooth",
-    });
+  messages.value.push({
+    from: "model",
+    content: "",
+    avatarPosition: "side-left",
+    avatarConfig: { ...aiModelAvatar },
+    loading: true,
   });
-  if(evt=="帮我写一个快速排序算法"){
-    getAIAnswer(quickSort.value);
-  }else{
-    getAIAnswer(evt ?? e);
-  }
-  
+
+  // 调用 SSE
+  const close = useSSE({
+    url: "/agentUrl/agent/order/stream", // 你的后端接口
+    data: "userPrompt=" + evt,
+    // 实时接收
+    onMessage: (content) => {
+      console.log(content);
+      messages.value.at(-1).loading = false;
+      setTimeout(async () => {
+        messages.value.at(-1).loading = false;
+        for (let i = 0; i < content.length; ) {
+          await new Promise((r) => setTimeout(r, 300 * Math.random()));
+          messages.value[messages.value.length - 1].content = content.slice(
+            0,
+            (i += Math.random() * 10),
+          );
+          nextTick(() => {
+            conversationRef.value?.scrollTo({
+              top: conversationRef.value.scrollHeight,
+            });
+          });
+        }
+      }, 10);
+      // for (let i = 0; i < content.length; ) {
+      //   await new Promise((r) => setTimeout(r, 300 * Math.random()));
+      //   messages.value[messages.value.length - 1].content = content.slice(
+      //     0,
+      //     (i += Math.random() * 10),
+      //   );
+      //   nextTick(() => {
+      //     conversationRef.value?.scrollTo({
+      //       top: conversationRef.value.scrollHeight,
+      //     });
+      //   });
+      // }
+      // messages.value[messages.value.length - 1].content= content
+      // nextTick(() => {
+      //   conversationRef.value?.scrollTo({
+      //     top: conversationRef.value.scrollHeight,
+      //   });
+      // });
+    },
+    onComplete: () => {
+      console.log("结束");
+    },
+    onError: (err) => {
+      console.log("error", err);
+    },
+  });
 };
 const getAIAnswer = (content) => {
   messages.value.push({
@@ -225,7 +274,7 @@ const getAIAnswer = (content) => {
       await new Promise((r) => setTimeout(r, 300 * Math.random()));
       messages.value[messages.value.length - 1].content = content.slice(
         0,
-        (i += Math.random() * 10)
+        (i += Math.random() * 10),
       );
       nextTick(() => {
         conversationRef.value?.scrollTo({
@@ -271,11 +320,8 @@ const arr = [3, 6, 8, 10, 1, 2, 1];
 console.log(quickSort(arr)); // 输出排序后的数组
 }
 \`\`\`
-`); 
-
-
-
-</script> 
+`);
+</script>
 <style>
 .container {
   width: 1000px;
@@ -295,7 +341,7 @@ console.log(quickSort(arr)); // 输出排序后的数组
   overflow: auto;
   font-size: 14px;
   font-weight: 700;
-  height:1000px 
+  height: 1000px;
 }
 .conversation-are {
   flex: 1;
@@ -304,9 +350,9 @@ console.log(quickSort(arr)); // 输出排序后的数组
   overflow: auto;
   padding: 0 12px;
   gap: 8px;
-  font-size: 16px; 
-  overflow-y: auto; 
-} 
+  font-size: 16px;
+  overflow-y: auto;
+}
 .input-foot-wrapper {
   display: flex;
   justify-content: space-between;
@@ -345,34 +391,34 @@ console.log(quickSort(arr)); // 输出排序后的数组
   }
 }
 .bubble-bottom-operations {
-    margin-top: 8px;
-    i {
-      padding: 4px;
-      border-radius: 4px;
-      cursor: pointer;
+  margin-top: 8px;
+  i {
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
 
-      &:hover {
-        background-color: #EBEBEB;
-      }
+    &:hover {
+      background-color: #ebebeb;
     }
   }
- .mc-input-content{
-   font-size: 14px !important;
- } 
-.mc-markdown-render{
+}
+.mc-input-content {
+  font-size: 14px !important;
+}
+.mc-markdown-render {
   font-size: 14px;
   font-weight: 400;
 }
-.mc-code-block-header{ 
-  padding: 10px 15px !important; 
+.mc-code-block-header {
+  padding: 10px 15px !important;
 }
-.mc-code-lang{
+.mc-code-lang {
   font-size: 16px !important;
 }
 .mc-code-block {
-    margin: 10px 0 !important
+  margin: 10px 0 !important;
 }
-.hljs{
+.hljs {
   font-size: 14px !important;
 }
 </style>

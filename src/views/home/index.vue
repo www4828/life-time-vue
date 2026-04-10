@@ -7,16 +7,9 @@
 
 <script lang="ts" setup>
 import qs from 'qs'
-import { ref } from 'vue'
-import { useDepartment } from '@/hooks/useDepartment'
-import Scrollbar from '@/components/scrollbar/index.vue'
-import { UserService } from '@/api/service/System/UserService'
-
-const userService = new UserService()
-const deptHomeUrl = ref('')
-const departmentInfo = useDepartment()
-type Value = keyof typeof departmentInfo
-
+import { ref } from 'vue' 
+import Scrollbar from '@/components/scrollbar/index.vue' 
+const deptHomeUrl = ref('') 
 
 </script>
 <style lang="scss">

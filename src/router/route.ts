@@ -29,16 +29,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
   },
 ]
 
-export const staticRoutes: Array<RouteRecordRaw> = [
-  {
-    path: '/login',
-    name: 'login',
-    // component: () => import('@/views/login/index.vue'),
-    component: () => import('@/views/login/login.vue'),
-    meta: {
-      title: '登录',
-    },
-  }, 
+export const staticRoutes: Array<RouteRecordRaw> = [ 
   {
     path: '/chat',
     name: 'chat',

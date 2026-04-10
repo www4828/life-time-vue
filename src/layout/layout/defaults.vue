@@ -25,7 +25,7 @@ import Watermark from "@/utils/wartermark";
 import CloseFull from "@/layout/components/defaults/closeFull.vue";
 import { useStore } from "@/store";
 import { useRoute } from "vue-router";
-import { useDepartment } from "@/hooks/useDepartment";
+ 
 
 export default defineComponent({
   name: "layoutDefaults",
@@ -50,20 +50,17 @@ export default defineComponent({
     const handlerClickSider = () => {
       store.dispatch("themeConfig/toggleSideBar");
     };
-    const onWartermarkChange = () => {
-      let { userCode } = useDepartment();
-      getThemeConfig.value.isWarteMark ? Watermark.set(userCode) : Watermark.del();
-    };
+    
     const isTagsViewFull = computed(
       () => !store.state.tagsViewRoutes.isTagsViewCurrenFull
     );
     onMounted(() => {
-      onWartermarkChange();
+      
     });
     watch(
       () => getThemeConfig.value.isWarteMark,
       (val) => {
-        onWartermarkChange();
+         
       },
       {
         deep: true,
@@ -71,8 +68,7 @@ export default defineComponent({
     );
     return {
       getThemeConfig,
-      handlerClickSider,
-      onWartermarkChange,
+      handlerClickSider, 
       isTagsViewFull,
       showphone,
     };

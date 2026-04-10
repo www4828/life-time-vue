@@ -3,11 +3,10 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import { staticRoutes, dynamicRoutes } from './route'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { store } from '@/store'
-import { useCode } from '@/hooks/useCode'
+import { store } from '@/store' 
 import { RouteService } from '@/api/routesService'
 import { loadAppConfig } from '@/utils/loadJson'
-import { UserService } from '@/api/service/System/UserService'
+ 
 const routeService = new RouteService()
 /**
  * 创建一个可以被 Vue 应用程序使用的路由实例
