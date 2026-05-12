@@ -46,7 +46,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     base: env.VITE_BASE_PATH,
     server: {
       host: '0.0.0.0',
-      port: env.VITE_PORT as unknown as number,
+      port: 8070,
       open: true,
       proxy: {
         '/sysUrl': {

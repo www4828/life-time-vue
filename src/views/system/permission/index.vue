@@ -71,7 +71,7 @@
               <el-input v-model.trim="detail.permission.tag"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="detail.permission.type === '1'">
+          <el-col :span="8" v-if="detail.permission.type != '2'">
             <el-form-item label="图标" prop="icon">
               <IconSelect
                 @change="val=>detail.permission.icon = val"

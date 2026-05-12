@@ -7,7 +7,6 @@
 <script lang="ts" setup>
 import LogicFlow from "@logicflow/core"
 import { patternItems } from '@/utils/typeMap'
-import { ref } from 'vue'
 import CommonNode from '@/components/FlowTool/CommonNode/index.vue'
 
 const props = defineProps({
