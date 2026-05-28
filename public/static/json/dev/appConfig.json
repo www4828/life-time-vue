@@ -1,8 +1,8 @@
 {
   "urls":{ 
     "iconUrl": "http://8.155.10.223/lifetime",
-    "sysUrl": "/sysUrl",
-    "apiUrl": "/apiUrl",
+    "sysUrl": "http://8.155.10.223/lifetime-api/lifetime-manager-server",
+    "apiUrl": "http://8.155.10.223/lifetime-api/lifetime-api-hub-server",
     "mediaUrl":"https://12319.shucm.cn/file-service/",
     "SSEUrl":"http://8.155.10.223/lifetime-ai/ai"
   },

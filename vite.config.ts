@@ -1,7 +1,6 @@
 import { ConfigEnv, defineConfig, loadEnv } from 'vite'
 import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
-import { svgBuilder } from './src/plugins/svgBuilder'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import { createHtmlPlugin } from 'vite-plugin-html'
 
@@ -23,7 +22,6 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     },
     plugins: [
       vue(),
-      svgBuilder('./src/assets/svg/'),
       topLevelAwait({
         // The export name of top-level await promise for each chunk module
         promiseExportName: '__tla',
