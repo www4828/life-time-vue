@@ -93,6 +93,7 @@
           <el-tab-pane label="基本信息" name="second"></el-tab-pane>
           <el-tab-pane label="请求参数" name="third"></el-tab-pane>
           <el-tab-pane label="返回参数" name="fourth"></el-tab-pane>
+          <el-tab-pane label="数据插件" name="five"></el-tab-pane>
         </el-tabs>
         <div class="result-content">
           <v-ace-editor
@@ -128,6 +129,30 @@
             ref="responseInfoRef"
             :list="props.apiInfo?.responseParams"
           />
+          <el-drawer
+            :modal="false"
+            destroy-on-close
+            v-model="state.fiveDrawer"
+            size="45%"
+            :with-header="false"
+            direction="rtl"
+            class="response_drawer"
+          >
+            <template #default>
+              <div class="content">
+                <el-icon class="close-icon" @click="state.fiveDrawer = false">
+                  <Close />
+                </el-icon>
+                <Title title="接口结果插件配置" />
+                <img src="./data.png" fit="scale-down" style="width: 100%;" />
+              </div>
+            </template>
+            <template #footer>
+              <div style="flex: auto">
+                <el-button @click="state.fiveDrawer = false">关闭</el-button>
+              </div>
+            </template>
+          </el-drawer>
         </div>
       </div>
     </div>
@@ -143,48 +168,49 @@
         <el-button type="primary" @click="checkSubmit('0')">保存</el-button>
         <el-button type="primary" @click="runSQL">测试</el-button>
         <el-button type="primary" @click="checkSubmit('1')">发布</el-button>
-        <el-button  @click="emits('back')">返回</el-button>
+        <el-button @click="emits('back')">返回</el-button>
       </div>
     </div>
   </div>
 </template>
 <script scoped lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
-import { Codemirror } from 'vue-codemirror'
-import { MagicStick } from '@element-plus/icons-vue'
-import { sql } from '@codemirror/lang-sql'
+import { reactive, ref, watch } from "vue";
+import { Codemirror } from "vue-codemirror";
+import { MagicStick } from "@element-plus/icons-vue";
+import { sql } from "@codemirror/lang-sql";
 
-import BaseInfo from './baseInfo.vue'
-import ResquestInfo from './resquestInfo.vue'
-import ResponseInfo from './responseInfo.vue'
-import { ApiInfoService } from '@/api/service/Api/ApiService'
-import { ApiGroupModel, ApiModel, ApiSqlInfoModel } from '@/api/model/apiModel'
-import { ElMessage } from 'element-plus'
-import { VAceEditor } from 'vue3-ace-editor'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/theme-chrome'
-import 'ace-builds/src-noconflict/ext-language_tools'
-import { useCode } from '@/hooks/useCode'
-import { useApiData } from '../useApiData'
-import { cloneDeep } from 'lodash-es'
+import Title from '@/components/Title/Title.vue'
+import BaseInfo from "./baseInfo.vue";
+import ResquestInfo from "./resquestInfo.vue";
+import ResponseInfo from "./responseInfo.vue";
+import { ApiInfoService } from "@/api/service/Api/ApiService";
+import { ApiGroupModel, ApiModel, ApiSqlInfoModel } from "@/api/model/apiModel";
+import { ElMessage } from "element-plus";
+import { VAceEditor } from "vue3-ace-editor";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-chrome";
+import "ace-builds/src-noconflict/ext-language_tools";
+import { useCode } from "@/hooks/useCode";
+import { useApiData } from "../useApiData";
+import { cloneDeep } from "lodash-es";
 
-const emits = defineEmits(['back'])
+const emits = defineEmits(["back"]);
 const props = defineProps({
   apiInfo: {
-    type: ApiModel
+    type: ApiModel,
   },
   groupCode: {
-    type: String
+    type: String,
   },
-  list: {}
-})
+  list: {},
+});
 
-const extensions = [sql()]
-const apiInfoSever = new ApiInfoService()
-const baseInfoRef = ref()
-const resquestInfoRef = ref()
-const responseInfoRef = ref()
-const { types } = useCode()
+const extensions = [sql()];
+const apiInfoSever = new ApiInfoService();
+const baseInfoRef = ref();
+const resquestInfoRef = ref();
+const responseInfoRef = ref();
+const { types } = useCode();
 const {
   apiState,
   getSchema,
@@ -196,48 +222,53 @@ const {
   runSQL,
   jsonFormat,
   changeOperaType,
-  getDataSource
-} = useApiData()
-getDataSource()
+  getDataSource,
+} = useApiData();
+getDataSource();
 
 const state = reactive({
   list: [],
-  sql: '',
+  sql: "",
   requestDrawer: false,
   responseDrawer: false,
+  fiveDrawer: false,
   apiInfo: {} as ApiModel,
   apiGroupList: [],
   refresh: false,
   publish: true,
-})
+});
 
 const closeDialog = () => {
-  state.requestDrawer = false
-  state.responseDrawer = false
-}
+  state.requestDrawer = false;
+  state.responseDrawer = false;
+  state.fiveDrawer = false;
+};
 
 const tabChange = (val: any) => {
   switch (val.props.name) {
-    case 'third':
-      state.requestDrawer = true
-      break
-    case 'fourth':
-      state.responseDrawer = true
-      break
+    case "third":
+      state.requestDrawer = true;
+      break;
+    case "fourth":
+      state.responseDrawer = true;
+      break;
+    case "five":
+      state.fiveDrawer = true;
+      break;
   }
-}
+};
 
 const checkSubmit = (isPublish: string) => {
   if (checkRunSQL()) {
     baseInfoRef.value.checkForm().then((valid: boolean) => {
       if (valid) {
-        submit(isPublish)
+        submit(isPublish);
       } else {
-        apiState.activeName = 'second'
+        apiState.activeName = "second";
       }
-    })
+    });
   }
-}
+};
 
 const submit = (isPublish: string) => {
   let params: ApiModel = {
@@ -249,73 +280,72 @@ const submit = (isPublish: string) => {
     apiSqlInfo: apiState.apiSqlInfo,
     requestParams: resquestInfoRef.value.getformData().params,
     responseParams: responseInfoRef.value.getformData().params,
-  }
+  };
 
   apiInfoSever.save(params).then((res) => {
     ElMessage({
-      type: res.code == 200 ? 'success' : 'danger',
+      type: res.code == 200 ? "success" : "danger",
       message: res.message,
-    })
+    });
     if (res.code === 200) {
-      state.refresh = true
-      state.publish = false
+      state.refresh = true;
+      state.publish = false;
     }
-  })
-}
+  });
+};
 
 watch(
   () => props.apiInfo,
   (newValue, oldValue) => {
-    if(props.apiInfo?.apiSqlInfo){
-      apiState.apiSqlInfo = cloneDeep(props.apiInfo.apiSqlInfo)
-      getSchema()
-      getTable()
-    }else{
+    if (props.apiInfo?.apiSqlInfo) {
+      apiState.apiSqlInfo = cloneDeep(props.apiInfo.apiSqlInfo);
+      getSchema();
+      getTable();
+    } else {
       apiState.apiSqlInfo = {
-        sqlScript: '',
-        tableName: ''
-      } as ApiSqlInfoModel
+        sqlScript: "",
+        tableName: "",
+      } as ApiSqlInfoModel;
     }
-    
   },
   {
     deep: true,
-    immediate: true
-  }
-)
-
+    immediate: true,
+  },
+);
 </script>
 <style lang="scss" scoped>
 $margin: 20px;
 $padding: 22px;
 $padding10: 10px;
 $leftWidth: 350px;
- .sql-create {
-    border: 1px solid var(--lt-tree-border-color);
-    background-color: var(--lt-tree-background-color);
-    height: 100%;
+.sql-create {
+  border: 1px solid var(--lt-tree-border-color);
+  background-color: var(--lt-tree-background-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  .sql-create_button {
     display: flex;
-    flex-direction: column;
-    .sql-create_button {
-      display: flex;
-      height: 50px;
-      padding: $padding10;
-      box-sizing: border-box;
-    }
-    .sql-create_content {
-      padding: $padding10 $margin;
-      box-sizing: border-box;
-      height: calc(100% - 100px);
-    }
-    .sql-create_bottom {
-      width: 100%;
-      display: flex;
-      height: 50px;
-      padding: $padding10;
-      box-sizing: border-box;
-      justify-content: space-between;
-    }
+    height: 50px;
+    padding: $padding10;
+    box-sizing: border-box;
   }
+  .sql-create_content {
+    padding: $padding10 $margin;
+    box-sizing: border-box;
+    height: calc(100% - 100px);
+  }
+  .sql-create_bottom {
+    width: 100%;
+    display: flex;
+    height: 50px;
+    padding: $padding10;
+    box-sizing: border-box;
+    justify-content: space-between;
+  }
+}
 
 .sh3h-search-box {
   background-color: transparent;

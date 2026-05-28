@@ -109,16 +109,16 @@ const tableData = reactive({
 let editform = reactive({}) as AIModelModel;
 
 const searchModel = ref<SearchModel<AIModelModel>[]>([
-  // {
-  //   key: "",
-  //   value: '',
-  //   match: "like",
-  // },
-  // {
-  //   key: "",
-  //   value: '',
-  //   match: "like",
-  // }
+  {
+    key: "modelName",
+    value: '',
+    match: "like",
+  },
+  {
+    key: "modelType",
+    value: '',
+    match: "like",
+  }
 ]);
 const getAll = () => {
   searchParamsModel.searchParams = searchModel.value;

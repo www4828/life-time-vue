@@ -3,6 +3,8 @@ import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import { createHtmlPlugin } from 'vite-plugin-html'
+//@ts-ignore
+import { svgBuilder } from './src/plugins/svgBuilder.js'
 
 const pathResolve = (dir: string): any => {
   return resolve(__dirname, '.', dir)
@@ -22,6 +24,7 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
     },
     plugins: [
       vue(),
+      svgBuilder('./src/assets/svg/'),
       topLevelAwait({
         // The export name of top-level await promise for each chunk module
         promiseExportName: '__tla',

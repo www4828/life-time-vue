@@ -9,9 +9,17 @@
             </el-icon>
             API分类
           </div>
-          <el-button type="primary" size="small" @click="createSql"
+          <!-- <el-button type="primary" size="small" @click="createSql"
             >创建</el-button
-          >
+          > -->
+          <div class="buttonWrapper">
+            <ButtonGropup
+              :row="{}"
+              :list="state.buttonList"
+              @dropdownClick="createSql"
+              @commandClick="commandClick"
+            ></ButtonGropup>
+          </div>
         </div>
         <div class="split-line" />
         <div class="tree">
@@ -83,13 +91,18 @@
     </template>
     <template #content>
       <SqlTable v-if="state.isTable" :groupCode="apiState.groupCode" @edit="editSqlInfo" />
-      <SqlCreate
-        v-else
-        @back="state.isTable = true"
-        :list="apiState.apiGroupList"
-        :groupCode="apiState.groupCode"
-        :apiInfo="state.apiInfo"
-      />
+      <div v-else style="box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto">
+        <SqlCreate
+          v-if="state.flag === 0"
+          @back="state.isTable = true"
+          :list="apiState.apiGroupList"
+          :groupCode="apiState.groupCode"
+          :apiInfo="state.apiInfo"
+        />
+        <img v-if="state.flag === 1" src="./components/1.png" fit="scale-down" style="width: 100%;" />
+        <img v-if="state.flag === 2" src="./components/2.png" fit="scale-down" style="width: 100%;" />
+        <img v-if="state.flag === 3" src="./components/3.png" fit="scale-down" style="width: 100%;" />
+      </div>
     </template>
   </Layout>
 </template>
@@ -105,6 +118,7 @@ import type { FormRules } from 'element-plus'
 import SqlTable from './components/sqlTable.vue'
 import SqlCreate from './components/sqlCreate.vue'
 import { useApiData } from '@/views/api/api/useApiData'
+import ButtonGropup from "@/components/ButtonGroup/ButtonGropup.vue";
 
 const apiInfoSever = new ApiInfoService()
 const apiGroupSever = new ApiGroupService()
@@ -120,10 +134,39 @@ const state = reactive({
   groupForm: {} as ApiGroupModel,
   apiInfo: {} as ApiModel,
   groupFlag: '',
+  flag: 0,
   refresh: false,
   isTable: true,
+  buttonList: [
+    { name: "创建" },
+    { name: "SQL脚本" },
+    { name: "单表接口"},
+    { name: "接口代理"},
+    { name: "接口编排" }
+  ] as Array<any>,
 })
 
+const commandClick = (command: string, row: any) => {
+  console.log(command);
+      state.isTable = false
+  switch (command) {
+    case 'SQL脚本':
+      createSql()
+      break;
+    case '单表接口':
+      state.flag = 1
+      break;
+    case '接口代理':
+      state.flag = 2
+      break;
+    case '接口编排':
+      state.flag = 3
+      break;
+    default:
+      break;
+  }
+  console.log(state.flag)
+}
 const closeDialog = () => {
   state.groupDialogShow = false
   state.groupForm = {} as ApiGroupModel
@@ -181,12 +224,14 @@ const editApiGroupHandle = (row: any) => {
 const createSql = () => {
   state.apiInfo = {} as ApiModel
   state.isTable = false
+  state.flag = 0
 }
 const editSqlInfo = (row: ApiModel)=>{
   console.log(row);
   
   state.apiInfo = row
   state.isTable = false
+  state.flag = 0
 }
 </script>
 <style lang="scss" scoped>
@@ -213,6 +258,9 @@ const editSqlInfo = (row: ApiModel)=>{
         color: var(--el-color-primary);
         margin: 2px 5px 0 0;
       }
+    }
+    .buttonWrapper{
+      height: 30px;
     }
   }
 

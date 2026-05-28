@@ -15,7 +15,8 @@ import { Local } from "./storage";
 	const icons = svg as any;
 	for (const i in icons) {
 		app.component(`ele-${icons[i].name}`, icons[i]);
-	}
+	 }
+	 console.log(icons);
 	app.component('SvgIcon', SvgIcon);
 	app.component('svg-icon',SvgIconDefault);
 } 
