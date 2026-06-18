@@ -24,7 +24,7 @@
           <el-table-column prop="appId" label="ID" min-width="10%" />
           <el-table-column prop="appName" label="应用名称" min-width="10%"/>
           <el-table-column prop="appCode" label="Code" min-width="10%"/>
-          <el-table-column prop="appSecret" label="AppSecret" min-width="10%"/>
+          <el-table-column prop="AppKey" label="AppKey" min-width="10%"/>
           <el-table-column prop="modifierTime" label="修改时间" min-width="20%" />
           <el-table-column prop="status" label="状态" min-width="10%">
             <template #default="scope">
@@ -50,6 +50,16 @@
       @update="editHandle" 
       @save="saveHandle" 
     />
+    <KeyDialog 
+      :showFlag="dialogState.keyDialog" 
+      :formData="editform" 
+      @closeDialog="closeDialog" 
+    />
+    <AuthDialog 
+      :showFlag="dialogState.authDialog" 
+      :formData="editform" 
+      @closeDialog="closeDialog" 
+    />
   </div>
 </template>
 <script lang="ts" setup>
@@ -57,6 +67,8 @@ import { ref, reactive, toRefs, nextTick } from "vue";
 import { Search, Plus, Setting, RefreshLeft } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox, ElTree, ElForm } from "element-plus";
 import EditDialog from "./components/EditDialog.vue";
+import KeyDialog from "./components/secretKey.vue";
+import AuthDialog from "./components/auth.vue";
 import RoleLayout from "@/components/RoleLayout/RoleLayout.vue";
 import { AppModel } from "@/api/model/apiModel";
 import { AppService } from "@/api/service/Api/ApiService";
@@ -71,6 +83,7 @@ const tableData = reactive({
   clientList: [] as Array<any>,
   buttonList: [
     { name: "编辑" },
+    { name: "密钥" },
     { name: "授权API" },
     { name: "删除" },
     { name: "禁用" }
@@ -97,7 +110,8 @@ getAll();
 const dialogState = reactive({
   titleName: "" as string,
   EditDialog: false as boolean,
-  QXDialog: false as boolean,
+  keyDialog: false as boolean,
+  authDialog: false
 });
 const add = () => {
   dialogState.titleName = "添加";
@@ -111,6 +125,8 @@ const edit = (row: AppModel) => {
 
 const closeDialog = () => {
   dialogState.EditDialog = false;
+  dialogState.keyDialog = false;
+  dialogState.authDialog = false;
   editform = {} as AppModel
 };
 const editHandle = (params: AppModel) => {
@@ -156,8 +172,15 @@ const commandClick = (commandClick: string, row: AppModel) => {
     case '删除':
       deleteHandle(row);
       break;
+    case '密钥':
+      dialogState.keyDialog = true
+      break;
+    case '授权API':
+      dialogState.authDialog = true
+      break;
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

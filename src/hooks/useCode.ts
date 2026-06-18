@@ -22,6 +22,7 @@ export function useCode() {
     types.SQLTypes = getCodesByType('3100')
     types.NoSQLTypes = getCodesByType('3200')
     types.SQLSentence = getCodesByType('2001') // 数据库语句
+    types.AppTypes = getCodesByType('4000') // 数据库语句
   }
   const getAllCode = () => {
     if (Session.get('allCode')) {

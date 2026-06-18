@@ -155,7 +155,7 @@
 
   .el-dialog__header {
     margin-right: 0;
-    padding: 20px;
+    padding: 0;
     display: flex;
     border-bottom: 1px solid var(--lt-shadow-color);
   }
@@ -176,7 +176,7 @@
   }
 
   .el-dialog__header {
-    padding: 10px;
+    padding: 0;
     border-bottom: 0;
 
     .el-dialog__title {
@@ -199,7 +199,7 @@
   }
 
   .el-dialog__body {
-    padding: 10px 30px 60px;
+    padding: 10px 10px 50px;
     width: 100%;
     height: calc(100% - 60px);
     box-sizing: border-box;

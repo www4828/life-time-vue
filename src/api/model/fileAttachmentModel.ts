@@ -1,8 +1,8 @@
 import { BaseModel } from '@/api/model/baseModel'
-import { NODE_CODE } from "@/utils";
+
 export type CaseType = 'audio' | 'video' | 'doc' | 'voice'
 
-export type NodeCodeKey = keyof typeof NODE_CODE
+
 
 export interface FileAttachmentModel extends BaseModel {
   nodeCode?: string

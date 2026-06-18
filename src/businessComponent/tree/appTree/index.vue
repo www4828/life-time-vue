@@ -27,28 +27,6 @@
         :check-strictly="props.checkStrictly"
         :check-on-click-node="!props.showCheckbox"
         >
-        <template #default="{ node, data }" v-if="!props.showCheckbox">
-          <div class="custom-tree-node">
-            <span style="margin-right: 25px;" >{{ node.label }}</span>
-            <el-link v-if="props.operate" :icon="FolderAdd" type="primary" style="margin-right: 2px;" @click="emits('addHandle', data)"></el-link>
-            <el-link v-if="props.operate" :icon="Edit" type="primary" style="margin-right: 2px;" @click="emits('editHandle', data)"></el-link>
-            <el-popconfirm title="是否确定删除此节点?" hide-icon width="160px" @confirm="removeNode(node, data)">
-              <template #reference>
-                <el-link v-if="props.operate && !data[defaultProps.children] " :icon="Delete" type="danger"></el-link>
-              </template>
-              <template #actions="{ confirm, cancel }">
-                <el-button size="mini" @click="cancel">取消</el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @confirm="confirm"
-                >
-                  确定
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </div>
-        </template>
       </el-tree>
         <!-- expand-on-click-node -->
         <!-- check-on-click-node -->
@@ -159,20 +137,6 @@ const removeChildrenIds = (data: any) => {
   }
 }
 
-const removeNode = (node:any, data:any)=>{
-  if (props.treeJson?.type && data.id) {
-    props.treeJson?.type
-      .delete(data.id)
-      .then((res: any) => {
-        ElMessage({
-          type: res.code == 200 ? 'success' : 'danger',
-          message:res.message
-        })
-        loadData()
-      })
-      .catch(() => (state.emptyText = '暂无数据'))
-  }
-}
 
 // 读取全部
 const loadData = () => {

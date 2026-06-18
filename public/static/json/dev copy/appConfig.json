@@ -1,0 +1,15 @@
+{
+  "urls":{ 
+    "iconUrl": "http://8.155.10.223/lifetime",
+    "sysUrl": "/sysUrl",
+    "apiUrl": "/apiUrl",
+    "mediaUrl":"https://12319.shucm.cn/file-service/",
+    "SSEUrl":"http://8.155.10.223/lifetime-ai/ai"
+  },
+  "thirdUrls":{ 
+    "baseUrl": "http://10.90.9.240:8080",
+    "origin": "fec2730d-b576-4b62-9c1c-456b5f658631"
+  },
+  "filterRouters":[""],
+  "portalPath": "/login"
+}

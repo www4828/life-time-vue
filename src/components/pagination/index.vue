@@ -21,7 +21,7 @@
           <span class="p_l_10">跳转至：</span>
           <el-input-number
             v-model="backParams.currentPage"
-            :min="1"
+            :min="0"
             :max="props.total"
             :controls="false"
             size="small"

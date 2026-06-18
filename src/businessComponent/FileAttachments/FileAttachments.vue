@@ -134,7 +134,6 @@
 </template>
 <script lang="ts" setup>
 import dayjs from "dayjs";
-import { NODE_CODE } from "@/utils";
 import { getFullPath } from "@/utils";
 import { cloneDeep, last } from "lodash-es";
 import { SearchModel } from "@/api/model/baseModel";
@@ -293,7 +292,6 @@ const uploadFile = (file: UploadModel) => {
     departmentName: currentDepartmentCodeName,
     userName: username,
     time: dayjs().format("YYYY-MM-DD HH:mm"),
-    nodeCodeName: NODE_CODE[props.nodeCode!],
     fileIndex: index,
     fileNewName: props.taskId === -1 ? "" : [props.taskId, index].join("_"),
     fileShowName: [props.taskId, index].filter((t) => t !== -1).join("_"),
@@ -350,7 +348,6 @@ const getAll = () => {
             userName: result.createUser!,
             time: result.createTime!,
             status: result.status,
-            nodeCodeName: NODE_CODE[result.nodeCode! as NodeCodeKey],
             fileIndex: result.fileIndex,
             fileNewName: result.fileNewName,
             fileShowName: result.fileNewName,
