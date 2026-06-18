@@ -11,10 +11,10 @@
     <div class="content">
       <el-form ref="dataForm" :inline="true" :model="props.formData" class="form">
         <el-form-item label="AppKey:" prop="appKey" class="long_item">
-          <el-input v-model="props.formData.appKey" placeholder="appKey" />
+          <el-input v-model="props.formData.appKey" placeholder="appKey" readonly />
         </el-form-item>
         <el-form-item label="AppSecret:" prop="appSecret" class="long_item">
-          <el-input v-model="props.formData.appSecret" placeholder="appSecret" />
+          <el-input v-model="props.formData.appSecret" placeholder="appSecret" readonly />
         </el-form-item>
         <el-alert
           title="请妥善保管AppSecret，离开此页面后将无法再次查看。建议定期轮换密钥以保障安全"

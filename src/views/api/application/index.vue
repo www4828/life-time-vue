@@ -24,12 +24,17 @@
           <el-table-column prop="appId" label="ID" min-width="10%" />
           <el-table-column prop="appName" label="应用名称" min-width="10%"/>
           <el-table-column prop="appCode" label="Code" min-width="10%"/>
-          <el-table-column prop="AppKey" label="AppKey" min-width="10%"/>
-          <el-table-column prop="modifierTime" label="修改时间" min-width="20%" />
+          <el-table-column prop="appKey" label="AppKey" min-width="15%" show-overflow-tooltip/>
+          <el-table-column prop="strategy" label="策略类型" min-width="10%"/>
+          <el-table-column prop="createTime" label="创建时间" min-width="10%" >
+            <template #default="{row}">
+              {{ dayjs(row.createTime).format('YYYY-MM-DD HH:mm') }}
+            </template>
+          </el-table-column>
           <el-table-column prop="status" label="状态" min-width="10%">
             <template #default="scope">
-              <el-tag :type="scope.row.autoApprove == '1' ? 'success' : 'danger'" effect="plain" >
-                  {{ scope.row.autoApprove == "1" ? "启用" : "禁用" }}
+              <el-tag :type="scope.row.status == '1' ? 'success' : 'danger'" effect="plain" >
+                  {{ scope.row.status == "1" ? "启用" : "禁用" }}
                 </el-tag>
             </template>
           </el-table-column>
@@ -75,6 +80,8 @@ import { AppService } from "@/api/service/Api/ApiService";
 import { Response, SearchParamsModel } from "@/api/interface";
 import { SearchModel } from "@/api/model/baseModel";
 import ButtonGropup from '@/components/ButtonGroup/ButtonGropup.vue'
+import { cloneDeep } from "lodash-es";
+import dayjs from "dayjs";
 
 const searchParamsModel = reactive(new SearchParamsModel<AppModel>());
 const appSever = new AppService();
@@ -168,6 +175,7 @@ const deleteHandle = (row:AppModel)=>{
 }
 
 const commandClick = (commandClick: string, row: AppModel) => {
+  editform = cloneDeep(row)
   switch(commandClick){
     case '删除':
       deleteHandle(row);
