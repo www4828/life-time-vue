@@ -17,6 +17,9 @@ export interface UserInfosState {
     token: string
   }
 }
+export interface ApisState {
+  apiMethod: ''
+}
 // 路由缓存列表
 export interface KeepAliveNamesState {
   keepAliveNames: string[]
@@ -28,6 +31,7 @@ export interface TagsViewRoutesState {
   isTagsViewCurrenFull: Boolean
 }
 export interface RootStateTypes {
+  apiInfo: ApisState
   userInfos: UserInfosState
   routesList: RoutesListState
   themeConfig: ThemeConfigState

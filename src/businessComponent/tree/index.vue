@@ -26,11 +26,12 @@
         :show-checkbox="props.showCheckbox"
         :check-strictly="props.checkStrictly"
         :check-on-click-node="!props.showCheckbox"
+        :expand-on-click-node="false"
         >
         <template #default="{ node, data }" v-if="!props.showCheckbox">
           <div class="custom-tree-node">
-            <span style="margin-right: 25px;" >{{ node.label }}</span>
-            <el-link v-if="props.operate" :icon="FolderAdd" type="primary" style="margin-right: 2px;" @click="emits('addHandle', data)"></el-link>
+            <span style="margin-right: 25px;">{{ node.label }}</span>
+            <el-link v-if="props.operate && node.level === 1" :icon="FolderAdd" type="primary" style="margin-right: 2px;" @click="emits('addHandle', data)"></el-link>
             <el-link v-if="props.operate" :icon="Edit" type="primary" style="margin-right: 2px;" @click="emits('editHandle', data)"></el-link>
             <el-popconfirm title="是否确定删除此节点?" hide-icon width="160px" @confirm="removeNode(node, data)">
               <template #reference>

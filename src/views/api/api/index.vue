@@ -1,5 +1,9 @@
 <template>
-  <Layout>
+  <Layout
+    v-loading="state.loading"
+    element-loading-background="rgba(255,255,255,0.3)"
+    element-loading-text="加载中"
+  >
     <template #tree>
       <div class="tree_container">
         <div class="header-search">
@@ -90,149 +94,190 @@
       </el-dialog>
     </template>
     <template #content>
-      <SqlTable v-if="state.isTable" :groupCode="apiState.groupCode" @edit="editSqlInfo" />
-      <div v-else style="box-sizing: border-box; width: 100%; height: 100%; overflow-y: auto">
+      <SqlTable
+        v-if="state.isTable"
+        :groupCode="apiState.groupCode"
+        @edit="editSqlInfo"
+        @changeLoading="(val: boolean)=>state.loading = val"
+      />
+      <div
+        v-else
+        style="
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          overflow-y: auto;
+        "
+      >
         <SqlCreate
           v-if="state.flag === 0"
           @back="state.isTable = true"
           :list="apiState.apiGroupList"
           :groupCode="apiState.groupCode"
           :apiInfo="state.apiInfo"
+          :status="state.status"
         />
-        <img v-if="state.flag === 1" src="./components/1.png" fit="scale-down" style="width: 100%;" />
-        <img v-if="state.flag === 2" src="./components/2.png" fit="scale-down" style="width: 100%;" />
-        <img v-if="state.flag === 3" src="./components/3.png" fit="scale-down" style="width: 100%;" />
+        <img
+          v-if="state.flag === 1"
+          src="./components/1.png"
+          fit="scale-down"
+          style="width: 100%"
+        />
+        <img
+          v-if="state.flag === 2"
+          src="./components/2.png"
+          fit="scale-down"
+          style="width: 100%"
+        />
+        <img
+          v-if="state.flag === 3"
+          src="./components/3.png"
+          fit="scale-down"
+          style="width: 100%"
+        />
       </div>
     </template>
   </Layout>
 </template>
 <script scoped lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { Menu } from '@element-plus/icons-vue'
-import Layout from '@/components/Layout/Layout-v2.vue'
-import { ApiInfoService, ApiGroupService } from '@/api/service/Api/ApiService'
-import { ApiGroupModel, ApiModel, ApiBaseInfoModel } from '@/api/model/apiModel'
-import { ElMessage } from 'element-plus'
-import ApiGroupTree from '@/businessComponent/tree/index.vue'
-import type { FormRules } from 'element-plus'
-import SqlTable from './components/sqlTable.vue'
-import SqlCreate from './components/sqlCreate.vue'
-import { useApiData } from '@/views/api/api/useApiData'
+import { reactive, ref } from "vue";
+import { Menu } from "@element-plus/icons-vue";
+import Layout from "@/components/Layout/Layout-v2.vue";
+import { ApiInfoService, ApiGroupService } from "@/api/service/Api/ApiService";
+import {
+  ApiGroupModel,
+  ApiModel,
+  ApiBaseInfoModel,
+} from "@/api/model/apiModel";
+import { ElMessage } from "element-plus";
+import ApiGroupTree from "@/businessComponent/tree/index.vue";
+import type { FormRules } from "element-plus";
+import SqlTable from "./components/sqlTable.vue";
+import SqlCreate from "./components/sqlCreate.vue";
+import { useApiData } from "@/views/api/api/useApiData";
 import ButtonGropup from "@/components/ButtonGroup/ButtonGropup.vue";
+import SnowflakeId from "snowflake-id";
 
-const apiInfoSever = new ApiInfoService()
-const apiGroupSever = new ApiGroupService()
-const groupForm = ref()
-const { apiState } = useApiData()
+const apiInfoSever = new ApiInfoService();
+const apiGroupSever = new ApiGroupService();
+const groupForm = ref();
+const { apiState } = useApiData();
+const snowflake = new SnowflakeId({
+  mid: 42,
+  offset: (2019 - 1970) * 31536000 * 1000,
+});
 const rules = reactive<InstanceType<typeof FormRules>>({
-  apiCode: [{ required: true, message: '不能为空', trigger: 'blur' }],
-  apiName: [{ required: true, message: '不能为空', trigger: 'blur' }],
-})
+  apiCode: [{ required: true, message: "不能为空", trigger: "blur" }],
+  apiName: [{ required: true, message: "不能为空", trigger: "blur" }],
+});
 
 const state = reactive({
+  loading: false,
   groupDialogShow: false,
   groupForm: {} as ApiGroupModel,
   apiInfo: {} as ApiModel,
-  groupFlag: '',
+  groupFlag: "",
   flag: 0,
   refresh: false,
   isTable: true,
+  status: "",
   buttonList: [
     { name: "创建" },
     { name: "SQL脚本" },
-    { name: "单表接口"},
-    { name: "接口代理"},
-    { name: "接口编排" }
+    // { name: "单表接口"},
+    // { name: "接口代理"},
+    // { name: "接口编排" }
   ] as Array<any>,
-})
+});
 
 const commandClick = (command: string, row: any) => {
-  console.log(command);
-      state.isTable = false
+  state.isTable = false;
   switch (command) {
-    case 'SQL脚本':
-      createSql()
+    case "SQL脚本":
+      createSql();
       break;
-    case '单表接口':
-      state.flag = 1
+    case "单表接口":
+      state.flag = 1;
       break;
-    case '接口代理':
-      state.flag = 2
+    case "接口代理":
+      state.flag = 2;
       break;
-    case '接口编排':
-      state.flag = 3
+    case "接口编排":
+      state.flag = 3;
       break;
     default:
       break;
   }
-  console.log(state.flag)
-}
+  console.log(state.flag);
+};
 const closeDialog = () => {
-  state.groupDialogShow = false
-  state.groupForm = {} as ApiGroupModel
-}
+  state.groupDialogShow = false;
+  state.groupForm = {} as ApiGroupModel;
+};
 
 const handleNodeClick = (node: any) => {
-  apiState.groupCode = node.code
-}
+  apiState.groupCode = node.code;
+};
 
 const submitGroup = () => {
   groupForm.value.validate((valid: boolean) => {
     if (valid) {
-      if (state.groupFlag === 'add') {
+      if (state.groupFlag === "add") {
         apiGroupSever.save(state.groupForm).then((res) => {
           ElMessage({
-            type: res.code == 200 ? 'success' : 'danger',
+            type: res.code == 200 ? "success" : "danger",
             message: res.message,
-          })
+          });
           if (res.code === 200) {
-            state.groupDialogShow = false
-            state.refresh = true
+            state.groupDialogShow = false;
+            state.refresh = true;
           }
-        })
+        });
       } else {
         apiGroupSever
           .update(state.groupForm.id!, state.groupForm)
           .then((res) => {
             ElMessage({
-              type: res.code == 200 ? 'success' : 'danger',
+              type: res.code == 200 ? "success" : "danger",
               message: res.message,
-            })
+            });
             if (res.code === 200) {
-              state.groupDialogShow = false
-              state.refresh = true
+              state.groupDialogShow = false;
+              state.refresh = true;
             }
-          })
+          });
       }
     }
-  })
-}
+  });
+};
 
 const addApiGroupHandle = (row: any) => {
-  state.groupForm.parentCode = row.code
-  state.groupFlag = 'add'
-  state.groupDialogShow = true
-}
+  state.groupForm.parentCode = row.code;
+  state.groupFlag = "add";
+  state.groupDialogShow = true;
+};
 const editApiGroupHandle = (row: any) => {
-  state.groupFlag = 'edit'
-  state.groupForm.groupCode = row.code
-  state.groupForm.id = row.id
-  state.groupForm.groupName = row.name
-  state.groupDialogShow = true
-}
+  state.groupFlag = "edit";
+  state.groupForm.groupCode = row.code;
+  state.groupForm.id = row.id;
+  state.groupForm.groupName = row.name;
+  state.groupDialogShow = true;
+};
 
 const createSql = () => {
-  state.apiInfo = {} as ApiModel
-  state.isTable = false
-  state.flag = 0
-}
-const editSqlInfo = (row: ApiModel)=>{
-  console.log(row);
-  
-  state.apiInfo = row
-  state.isTable = false
-  state.flag = 0
-}
+  state.status = "create";
+  state.apiInfo = {
+    apiBaseInfo: { apiCode: snowflake.generate() },
+  } as ApiModel;
+  state.isTable = false;
+  state.flag = 0;
+};
+const editSqlInfo = (row: ApiModel) => {
+  state.status = "edit";
+  state.apiInfo = row;
+  state.isTable = false;
+  state.flag = 0;
+};
 </script>
 <style lang="scss" scoped>
 .tree_container {
@@ -259,7 +304,7 @@ const editSqlInfo = (row: ApiModel)=>{
         margin: 2px 5px 0 0;
       }
     }
-    .buttonWrapper{
+    .buttonWrapper {
       height: 30px;
     }
   }

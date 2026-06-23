@@ -29,6 +29,9 @@ export class ApiInfoService implements ApiInterface {
   publish(code: string): Promise<Response> {
     return this.request.get(this.baseUlr + `/publish/${code}`)
   }
+  sqlParse(T: any): Promise<Response> {
+    return this.request.post(this.baseUlr + `/sqlParse`, T)
+  }
 }
 export class ApiGroupService{
   protected baseUlr: string =  'api/group'

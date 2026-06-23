@@ -17,8 +17,8 @@ const iv = '1ci5crnda6ojzgtr',
 
 const permissionSever = new PermissionService()
 
-export function randomString(){
-  return cryptoJs.lib.WordArray.random(16).toString(cryptoJs.enc.Hex);
+export function randomString(digit?: number){
+  return cryptoJs.lib.WordArray.random(digit || 16).toString(cryptoJs.enc.Hex);
 }
 export function encrypt(message: string) {
   const keyHex = cryptoJs.enc.Utf8.parse(key),

@@ -2,11 +2,12 @@
   <el-dialog
     v-model="data.dialogVisible"
     :title="props.dialogStatus"
-    width="45%"
+    width="30%"
     @close="$emit('closeDialog')"
     destroy-on-close
     :close-on-click-modal="false"
     class="card-mark"
+    top="80px"
   >
   <div class="content">
     <el-form
@@ -16,20 +17,17 @@
       class="form"
       :rules="rules"
     >
-      <el-form-item label="appId:" prop="appId">
+      <el-form-item label="appId:" prop="appId" class="long_item">
         <el-input
           v-model="props.formData.appId"
           placeholder="appId"
           :disabled="props.dialogStatus === '添加' ? false : true"
         />
       </el-form-item>
-      <el-form-item label="应用名称:" prop="appName">
+      <el-form-item label="应用名称:" prop="appName" class="long_item">
         <el-input v-model="props.formData.appName" placeholder="应用名称" />
       </el-form-item>
-      <el-form-item label="认证code:" prop="appCode">
-        <el-input v-model="props.formData.appCode" placeholder="认证code" />
-      </el-form-item>
-      <el-form-item label="应用类型:" prop="appType">
+      <el-form-item label="应用类型:" prop="appType" class="long_item">
         <el-select
           v-model="props.formData.appType"
           clearable
@@ -42,10 +40,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="应用描述:" prop="appDes">
+      <el-form-item label="应用描述:" prop="appDes" class="long_item">
         <el-input v-model="props.formData.appDes" placeholder="应用描述" />
       </el-form-item>
-      <el-form-item label="策略类型:" prop="strategy">
+      <el-form-item label="策略类型:" prop="strategy" class="long_item">
         <el-select
           v-model="props.formData.strategy"
           clearable
@@ -55,11 +53,11 @@
           <el-option label="黑名单" value="black" />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态:" prop="status">
+      <el-form-item label="状态:" prop="status" class="long_item">
         <el-switch
           v-model="props.formData.status"
-          active-value="1"
-          inactive-value="0"
+          :active-value="1"
+          :inactive-value="0"
         />
       </el-form-item>
     </el-form>
@@ -126,22 +124,12 @@ const createData = () => {
       let params = cloneDeep(props.formData);
       params.appKey = props.formData.appKey || "lt-" + randomString();
       params.appSecret = props.formData.appSecret || "lt-" + randomString();
+      params.appCode = props.formData.appSecret || randomString(8);
       props.dialogStatus === "修改"
         ? emits("update", params)
         : emits("save", params);
     }
   });
-};
-
-const closeUrlDialog = () => {
-  data.showUrlFlag = false;
-};
-const saveUrl = (param: any) => {
-  data.showUrlFlag = false;
-  let arr = param.map((item: any) => {
-    return item.text;
-  });
-  props.formData.webServerRediectUrl = arr.join(";");
 };
 
 watch(props, (newValue, oldValue) => {

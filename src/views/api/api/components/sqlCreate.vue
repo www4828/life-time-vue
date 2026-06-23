@@ -3,7 +3,7 @@
     <div class="sh3h-search-box div-flex-column sql-create_button">
       <el-row>
         <el-col :span="5">
-          <span class="sh3h-search-lable div-flex-right">DB:</span>
+          <span class="sh3h-search-lable div-flex-right">数据库:</span>
           <el-select
             class="sh3h-search-input"
             v-model="apiState.apiSqlInfo.dataSourceId"
@@ -19,7 +19,7 @@
           </el-select>
         </el-col>
         <el-col :span="5">
-          <span class="sh3h-search-lable div-flex-right">Schema:</span>
+          <span class="sh3h-search-lable div-flex-right">库名:</span>
           <el-select
             class="sh3h-search-input"
             v-model="apiState.apiSqlInfo.schemaName"
@@ -35,12 +35,13 @@
           </el-select>
         </el-col>
         <el-col :span="5">
-          <span class="sh3h-search-lable div-flex-right">table:</span>
+          <span class="sh3h-search-lable div-flex-right">表名:</span>
           <el-select
             class="sh3h-search-input"
             v-model="apiState.apiSqlInfo.tableName"
             placeholder="table"
             clearable
+            @change="changeTable"
           >
             <el-option
               :label="item.tableName"
@@ -89,11 +90,10 @@
           class="demo-tabs"
           @tab-click="tabChange"
         >
-          <el-tab-pane label="结果" name="first"></el-tab-pane>
-          <el-tab-pane label="基本信息" name="second"></el-tab-pane>
-          <el-tab-pane label="请求参数" name="third"></el-tab-pane>
-          <el-tab-pane label="返回参数" name="fourth"></el-tab-pane>
-          <el-tab-pane label="数据插件" name="five"></el-tab-pane>
+        <el-tab-pane label="基本信息" name="second"></el-tab-pane>
+        <el-tab-pane label="请求参数" name="third"></el-tab-pane>
+        <el-tab-pane label="返回参数" name="fourth"></el-tab-pane>
+        <el-tab-pane label="结果" name="first"></el-tab-pane>
         </el-tabs>
         <div class="result-content">
           <v-ace-editor
@@ -118,18 +118,20 @@
             :formData="props.apiInfo?.apiBaseInfo"
           />
           <ResquestInfo
-            :showFlag="state.requestDrawer"
+            v-show="apiState.activeName === 'third'"
             @closeDialog="closeDialog"
             ref="resquestInfoRef"
-            :formData="props.apiInfo?.requestParams"
+            :apiCode="props.apiInfo?.apiBaseInfo.apiCode"
+            :formData="state.requestParams"
           />
           <ResponseInfo
-            :showFlag="state.responseDrawer"
+            v-show="apiState.activeName === 'fourth'"
             @closeDialog="closeDialog"
+            :apiCode="props.apiInfo?.apiBaseInfo.apiCode"
             ref="responseInfoRef"
-            :list="props.apiInfo?.responseParams"
+            :list="state.responseParams"
           />
-          <el-drawer
+          <!-- <el-drawer
             :modal="false"
             destroy-on-close
             v-model="state.fiveDrawer"
@@ -152,7 +154,7 @@
                 <el-button @click="state.fiveDrawer = false">关闭</el-button>
               </div>
             </template>
-          </el-drawer>
+          </el-drawer> -->
         </div>
       </div>
     </div>
@@ -165,9 +167,19 @@
         >
       </div>
       <div class="btn-wrap">
-        <el-button type="primary" @click="checkSubmit('0')">保存</el-button>
-        <el-button type="primary" @click="runSQL">测试</el-button>
-        <el-button type="primary" @click="checkSubmit('1')">发布</el-button>
+
+        <el-link
+          type="primary"
+          @click="sqlParse"
+          style="margin-right: 10px;"
+          v-if="
+            apiState.activeName === 'third' || apiState.activeName === 'fourth'
+          "
+          >解析SQL语句</el-link
+        >
+        <el-button type="primary" v-if="props.status === 'create'" @click="checkSubmit('0')">保存</el-button>
+        <el-button type="primary" v-if="props.status === 'edit'" @click="checkSubmit('0')">修改</el-button>
+        <!-- <el-button type="primary" @click="runSQL">测试</el-button> -->
         <el-button @click="emits('back')">返回</el-button>
       </div>
     </div>
@@ -178,13 +190,11 @@ import { reactive, ref, watch } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { MagicStick } from "@element-plus/icons-vue";
 import { sql } from "@codemirror/lang-sql";
-
-import Title from '@/components/Title/Title.vue'
 import BaseInfo from "./baseInfo.vue";
 import ResquestInfo from "./resquestInfo.vue";
 import ResponseInfo from "./responseInfo.vue";
 import { ApiInfoService } from "@/api/service/Api/ApiService";
-import { ApiGroupModel, ApiModel, ApiSqlInfoModel } from "@/api/model/apiModel";
+import { ApiGroupModel, ApiModel, ApiSqlInfoModel, RequestInfoModel } from "@/api/model/apiModel";
 import { ElMessage } from "element-plus";
 import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-json";
@@ -193,6 +203,7 @@ import "ace-builds/src-noconflict/ext-language_tools";
 import { useCode } from "@/hooks/useCode";
 import { useApiData } from "../useApiData";
 import { cloneDeep } from "lodash-es";
+import { Close } from "@element-plus/icons-vue";
 
 const emits = defineEmits(["back"]);
 const props = defineProps({
@@ -203,6 +214,9 @@ const props = defineProps({
     type: String,
   },
   list: {},
+  status: {
+    type: String,
+  },
 });
 
 const extensions = [sql()];
@@ -216,6 +230,7 @@ const {
   getSchema,
   getTable,
   aceConfig,
+  changeTable,
   checkSQLSentence,
   checkRunSQL,
   sqlFormat,
@@ -236,6 +251,9 @@ const state = reactive({
   apiGroupList: [],
   refresh: false,
   publish: true,
+  requestParams: [] as RequestInfoModel[],
+  responseParams: [] as RequestInfoModel[],
+  isPage: 0
 });
 
 const closeDialog = () => {
@@ -262,7 +280,12 @@ const checkSubmit = (isPublish: string) => {
   if (checkRunSQL()) {
     baseInfoRef.value.checkForm().then((valid: boolean) => {
       if (valid) {
-        submit(isPublish);
+        if(props.status === 'create') {
+          submit();
+        }
+        if(props.status === 'edit') {
+          edit();
+        }
       } else {
         apiState.activeName = "second";
       }
@@ -270,18 +293,14 @@ const checkSubmit = (isPublish: string) => {
   }
 };
 
-const submit = (isPublish: string) => {
+const submit = () => {
   let params: ApiModel = {
-    apiBaseInfo: {
-      ...baseInfoRef.value.getformData(),
-      isPage: resquestInfoRef.value.getformData().isPage,
-      isPublish,
-    },
+    apiBaseInfo: baseInfoRef.value.getformData(),
     apiSqlInfo: apiState.apiSqlInfo,
     requestParams: resquestInfoRef.value.getformData().params,
     responseParams: responseInfoRef.value.getformData().params,
   };
-
+  
   apiInfoSever.save(params).then((res) => {
     ElMessage({
       type: res.code == 200 ? "success" : "danger",
@@ -290,17 +309,78 @@ const submit = (isPublish: string) => {
     if (res.code === 200) {
       state.refresh = true;
       state.publish = false;
+      emits("back");
     }
   });
+};
+const edit = () => {
+  let params: ApiModel = {
+    apiBaseInfo: {
+      ...baseInfoRef.value.getformData(),
+      isPublish: 0
+    },
+    apiSqlInfo: apiState.apiSqlInfo,
+    requestParams: resquestInfoRef.value.getformData().params,
+    responseParams: responseInfoRef.value.getformData().params,
+  };
+
+  apiInfoSever.update(params).then((res) => {
+    ElMessage({
+      type: res.code == 200 ? "success" : "danger",
+      message: res.message,
+    });
+    if (res.code === 200) {
+      state.refresh = true;
+      state.publish = false;
+      emits("back");
+    }
+  });
+};
+const sqlParse = () => {
+  apiInfoSever
+    .sqlParse({
+      sqlScript: apiState.apiSqlInfo.sqlScript,
+      datasourceType: apiState.apiSqlInfo.dataSourceType.toLowerCase(),
+    })
+    .then((res) => {
+      if(res.data.resColumns.length > 0){
+        let list = [] as RequestInfoModel[];
+        res.data.resColumns.forEach((item: any) => {
+          list.push({
+            apiCode: props.apiInfo?.apiBaseInfo.apiCode!,
+            paramName: item.colName.split(",")[0],
+            columnName: item.colName.split(",")[1],
+            paramType: item.colType,
+            paramModel: "response",
+          } as RequestInfoModel);
+        });
+        state.responseParams = list
+      }
+      if(res.data.reqColumns.length > 0){
+        let list = [] as RequestInfoModel[];
+        res.data.reqColumns.forEach((item: any) => {
+          list.push({
+            apiCode: props.apiInfo?.apiBaseInfo.apiCode!,
+            paramName: item,
+            columnName: item,
+            paramType: 'String',
+            paramModel: "request",
+          } as RequestInfoModel);
+        });
+        state.requestParams = list
+      }
+    });
 };
 
 watch(
   () => props.apiInfo,
   (newValue, oldValue) => {
     if (props.apiInfo?.apiSqlInfo) {
+      state.requestParams = props.apiInfo?.requestParams
+      state.responseParams = props.apiInfo?.responseParams
+      getSchema(props.apiInfo.apiSqlInfo.dataSourceId);
+      getTable(props.apiInfo.apiSqlInfo.schemaName, props.apiInfo.apiSqlInfo.dataSourceId);
       apiState.apiSqlInfo = cloneDeep(props.apiInfo.apiSqlInfo);
-      getSchema();
-      getTable();
     } else {
       apiState.apiSqlInfo = {
         sqlScript: "",

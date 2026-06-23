@@ -1,7 +1,7 @@
 <template>
   <el-form ref="dataForm" :inline="true" :model="data.formData" class="dataForm" :rules="rules">
     <el-form-item label="接口编码:" prop="apiCode">
-      <el-input v-model="data.formData.apiCode" placeholder="接口编码" />
+      <el-input v-model="data.formData.apiCode" placeholder="接口编码" readonly />
     </el-form-item>
     <el-form-item label="接口名称:" prop="apiName">
       <el-input v-model="data.formData.apiName" placeholder="接口名称" />
@@ -36,7 +36,7 @@
         :props="{ children: 'child', label: 'name', value: 'code' }"
       />
     </el-form-item>
-    <el-form-item label="接口类型:" prop="remark">
+    <el-form-item label="接口类型:" prop="apiType">
       <el-select class="sh3h-search-input" v-model="data.formData.apiType" placeholder="接口类型">
         <el-option label="SQL脚本" value="SQL脚本"/>
         <!-- <el-option label="表格模式" value="表格模式"/> -->
@@ -45,15 +45,21 @@
     <el-form-item label="版本号:" prop="versionNumber">
       <el-input v-model="data.formData.versionNumber" placeholder="版本号" />
     </el-form-item>
-    <el-form-item label="描述说明:" prop="remark" class="long_item" >
+    <el-form-item label="描述说明:" prop="description" class="long_item" >
       <el-input
-        v-model="data.formData.remark"
+        v-model="data.formData.description"
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4 }"
         maxlength="500"
         show-word-limit
       >
       </el-input>
+    </el-form-item>
+    <el-form-item label="分页:" prop="isPage">
+      <el-radio-group v-model="data.formData.isPage">
+        <el-radio value="1">分页</el-radio>
+        <el-radio value="0">不分页</el-radio>
+      </el-radio-group>
     </el-form-item>
   </el-form>
 </template>
@@ -64,6 +70,7 @@ import type { FormRules } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import { ApiBaseInfoModel } from '@/api/model/apiModel'
 import { ElMessage } from 'element-plus'
+import { store } from '@/store'
 
 const emits = defineEmits(['closeDialog', 'update', 'save'])
 const props = defineProps({
@@ -80,7 +87,6 @@ const data = reactive({
   formData: {} as ApiBaseInfoModel
 })
 const dataForm = ref(ElForm)
-
 const rules = reactive<InstanceType<typeof FormRules>>({
   apiCode: [{ required: true, message: '不能为空', trigger: 'blur' }],
   apiName: [{ required: true, message: '不能为空', trigger: 'blur' }],
@@ -92,6 +98,7 @@ const rules = reactive<InstanceType<typeof FormRules>>({
 
 const init = ()=>{
   data.formData.apiType = 'SQL脚本'
+  data.formData.isPage = data.formData.isPage || "1"
   props.groupCode && (data.formData.groupCode = props.groupCode)
 }
 init()
@@ -119,6 +126,11 @@ watch(
     immediate: true,
   }
 )
+watch(()=>store.state.apiInfo.apiMethod,(val)=>{
+  data.formData.apiMethod = val
+},{
+  deep: true
+})
 
 defineExpose({
   checkForm(){
@@ -133,7 +145,9 @@ defineExpose({
   });
   },
   getformData() {
-    return data.formData
+    console.log(data.formData.isPage);
+    
+    return cloneDeep(data.formData)
   },
 })
 </script>
@@ -188,6 +202,9 @@ defineExpose({
     margin-bottom: 15px;
     ::v-deep(label){
       width: 100px;
+    }
+    ::v-deep(.el-radio-group){
+      flex-wrap: nowrap;
     }
   }
 }

@@ -21,9 +21,7 @@
         </el-col>
         <el-col :span="4">
           <span class="label">接口版本：</span>
-          <span class="value">{{
-            props.formData.apiBaseInfo.versionNumber
-          }}</span>
+          <span class="value">{{ props.formData.apiBaseInfo.versionNumber }}</span>
         </el-col>
         <el-col :span="2"></el-col>
         <el-col :span="2">
@@ -31,11 +29,7 @@
         </el-col>
         <el-col :span="8">
           <span class="label">上线时间：</span>
-          <span class="value">{{
-            dayjs(props.formData.apiBaseInfo.createTime).format(
-              'YYYY-MM-DD HH:mm:ss'
-            )
-          }}</span>
+          <span class="value">{{ dayjs(props.formData.apiBaseInfo.createTime).format('YYYY-MM-DD HH:mm:ss')}}</span>
         </el-col>
         <el-col :span="8">
           <span class="label">接口地址：</span>

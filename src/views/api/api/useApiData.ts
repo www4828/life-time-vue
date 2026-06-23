@@ -1,16 +1,18 @@
-import { ApiSqlInfoModel } from '@/api/model/apiModel'
-import { DataSourceModel } from '@/api/model/dataModel'
-import { DataSourceService } from '@/api/service/Data/DataSourceService'
-import { ElMessage } from 'element-plus'
-import { reactive } from 'vue'
-import * as sqlFormatter from 'sql-formatter'
+import { ApiSqlInfoModel } from "@/api/model/apiModel";
+import { DataSourceModel } from "@/api/model/dataModel";
+import { DataSourceService } from "@/api/service/Data/DataSourceService";
+import { ElMessage } from "element-plus";
+import { reactive } from "vue";
+import * as sqlFormatter from "sql-formatter";
 import { format } from "sql-formatter";
-import { ApiInfoService } from '@/api/service/Api/ApiService'
+import { ApiInfoService } from "@/api/service/Api/ApiService";
+import { useStore } from "@/store";
 
 export function useApiData() {
+  const store = useStore();
   const aceConfig = reactive({
-    lang: 'json', //解析json
-    theme: 'chrome', //主题
+    lang: "json", //解析json
+    theme: "chrome", //主题
     readOnly: false, //是否只读
     options: {
       enableBasicAutocompletion: true,
@@ -20,116 +22,136 @@ export function useApiData() {
       showPrintMargin: false,
       fontSize: 14,
     },
-  })
+  });
   const apiState = reactive({
     apiSqlInfo: {
-      sqlScript: '',
-      tableName: '',
+      sqlScript: "",
+      tableName: "",
     } as ApiSqlInfoModel,
     dbList: [] as DataSourceModel[],
     schemaList: [] as Array<any>,
     sqlTableList: [] as Array<any>,
-    jsonValue: '',
-    activeName: 'second',
-    error: '',
-    groupCode: '',
+    jsonValue: "",
+    activeName: "second",
+    error: "",
+    groupCode: "",
     apiGroupList: [],
-  })
+  });
 
-  const dataSourceSever = new DataSourceService()
-  const apiInfoSever = new ApiInfoService()
-  const getSchema = () => {
-    if(apiState.apiSqlInfo.dataSourceId){
+  const dataSourceSever = new DataSourceService();
+  const apiInfoSever = new ApiInfoService();
+  const getSchema = (dataSourceId?: string) => {
+    apiState.apiSqlInfo.schemaName = "";
+    apiState.apiSqlInfo.tableName = "";
+    apiState.apiSqlInfo.operaType = "";
+    changeOperaType('')
+    apiState.schemaList = []
+    apiState.sqlTableList = []
+    console.log('dataSourceId',dataSourceId);
+    
+    if (apiState.apiSqlInfo.dataSourceId || dataSourceId) {
+      let id = apiState.apiSqlInfo.dataSourceId || dataSourceId
       apiState.apiSqlInfo.dataSourceType = apiState.dbList.find(
-        (i) => apiState.apiSqlInfo.dataSourceId === i.id
-      )?.dataSourceType
-      dataSourceSever.catalog(apiState.apiSqlInfo.dataSourceId).then((res) => {
-        apiState.schemaList = res.data
-      })
-    }else{
-      apiState.apiSqlInfo.schemaName = ''
-      apiState.apiSqlInfo.tableName = ''
-      apiState.apiSqlInfo.operaType = ''
+        (i) => id === i.id,
+      )?.dataSourceType;
+      dataSourceSever.catalog(id!).then((res) => {
+        apiState.schemaList = res.data;
+      });
     }
-  }
-  const getTable = () => {
-    if(apiState.apiSqlInfo.schemaName){
+  };
+  const getTable = (schemaName?: string, dataSourceId?: string) => {
+    apiState.apiSqlInfo.tableName = "";
+    apiState.apiSqlInfo.operaType = "";
+    changeOperaType('')
+    apiState.sqlTableList = []
+    if (apiState.apiSqlInfo.schemaName || schemaName) {
+      let schema = apiState.apiSqlInfo.schemaName || schemaName
       dataSourceSever
-        .table(apiState.apiSqlInfo.schemaName, apiState.apiSqlInfo.dataSourceId)
+        .table(schema!, apiState.apiSqlInfo.dataSourceId || dataSourceId!)
         .then((res) => {
-          apiState.sqlTableList = res.data
-        })
-    }else{
-      apiState.apiSqlInfo.tableName = ''
-      apiState.apiSqlInfo.operaType = ''
+          apiState.sqlTableList = res.data;
+        });
     }
+  };
+  const changeTable = ()=>{
+    apiState.apiSqlInfo.operaType = ''
+    changeOperaType('')
   }
   const getDataSource = () => {
     dataSourceSever
       .list({ pageParams: { pageIndex: 0, pageSize: -1 }, searchParams: [] })
       .then((res) => {
-        apiState.dbList = res.data.results
-      })
-  }
+        apiState.dbList = res.data.results;
+      });
+  };
 
   // JSON格式化
   const jsonFormat = () => {
     try {
-      apiState.error = ''
+      apiState.error = "";
       apiState.jsonValue =
         apiState.jsonValue &&
-        JSON.stringify(JSON.parse(apiState.jsonValue), null, 2)
+        JSON.stringify(JSON.parse(apiState.jsonValue), null, 2);
     } catch (e) {
-      apiState.error = '格式化失败，请检查是否JSON格式错误'
+      apiState.error = "格式化失败，请检查是否JSON格式错误";
     }
-  }
+  };
   const sqlFormat = () => {
     // sql语句格式化
     // apiStat?
-    apiState.apiSqlInfo.sqlScript = format(
-      apiState.apiSqlInfo.sqlScript, {language:'mysql'}
-    )
-  }
+    apiState.apiSqlInfo.sqlScript = format(apiState.apiSqlInfo.sqlScript, {
+      language: "mysql",
+    });
+  };
   const checkSQLSentence = (item: any) => {
     // 选择动态语句
-    let param = item.firstParam.replaceAll('${n}', '\n')
-    apiState.apiSqlInfo.sqlScript += '\n' + param
-  }
+    let param = item.firstParam.replaceAll("${n}", "\n");
+    apiState.apiSqlInfo.sqlScript += "\n" + param;
+  };
   const checkRunSQL = () => {
     if (
       !apiState.apiSqlInfo.dataSourceId ||
       !apiState.apiSqlInfo.schemaName ||
       !apiState.apiSqlInfo.tableName
     ) {
-      ElMessage.warning('请选择数据源')
-      return false
+      ElMessage.warning("请选择数据源");
+      return false;
     }
     if (!apiState.apiSqlInfo.sqlScript) {
-      ElMessage.warning('请输入SQL查询语句')
-      return false
+      ElMessage.warning("请输入SQL查询语句");
+      return false;
     }
-    return true
-  }
+    return true;
+  };
   const changeOperaType = (val: string) => {
+    
     // 切换sql
     switch (val) {
-      case 'select':
-        apiState.apiSqlInfo.sqlScript += `\n select * from ${apiState.apiSqlInfo.tableName}`
-        break
-      case 'insert':
-        apiState.apiSqlInfo.sqlScript += `\n insert into ${apiState.apiSqlInfo.tableName} values`
-        break
-      case 'update':
-        apiState.apiSqlInfo.sqlScript += `\n update`
-        break
-      case 'delete':
-        apiState.apiSqlInfo.sqlScript += `\n delete from ${apiState.apiSqlInfo.tableName} where id=#{id}`
-        break
-      case 'call':
-        apiState.apiSqlInfo.sqlScript += `\n call`
-        break
+      case "select":
+        apiState.apiSqlInfo.sqlScript = `select * from ${apiState.apiSqlInfo.tableName}`;
+        store.dispatch('apiInfo/setApiMethod', 'GET')
+        break;
+      case "insert":
+        apiState.apiSqlInfo.sqlScript = `insert into ${apiState.apiSqlInfo.tableName} values`;
+        store.dispatch('apiInfo/setApiMethod', 'POST')
+        break;
+      case "update":
+        apiState.apiSqlInfo.sqlScript = `update`;
+        store.dispatch('apiInfo/setApiMethod', 'PUT')
+        break;
+      case "delete":
+        apiState.apiSqlInfo.sqlScript = `delete from ${apiState.apiSqlInfo.tableName} where id=#{id}`;
+        store.dispatch('apiInfo/setApiMethod', 'DELETE')
+        break;
+      case "call":
+        apiState.apiSqlInfo.sqlScript = `call`;
+        store.dispatch('apiInfo/setApiMethod', 'GET')
+        break;
+      default: 
+        apiState.apiSqlInfo.sqlScript = ''
+        store.dispatch('apiInfo/setApiMethod', '')
     }
-  }
+  };
 
   const runSQL = () => {
     if (checkRunSQL()) {
@@ -142,12 +164,12 @@ export function useApiData() {
           sql: apiState.apiSqlInfo.sqlScript,
         })
         .then((res) => {
-          apiState.jsonValue = JSON.stringify(res)
-          jsonFormat()
-          apiState.activeName = 'first'
-        })
+          apiState.jsonValue = JSON.stringify(res);
+          jsonFormat();
+          apiState.activeName = "first";
+        });
     }
-  }
+  };
 
   return {
     apiState,
@@ -160,6 +182,7 @@ export function useApiData() {
     runSQL,
     jsonFormat,
     changeOperaType,
-    getDataSource
-  }
+    getDataSource,
+    changeTable
+  };
 }
