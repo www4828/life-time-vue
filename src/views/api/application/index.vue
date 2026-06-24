@@ -21,7 +21,6 @@
       <template #table>
         <el-table :data="tableData.clientList" style="width:100%" height="100%"
           :header-cell-style="{ 'text-align': 'center', }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column prop="appId" label="ID" />
           <el-table-column prop="appName" label="应用名称"/>
           <el-table-column prop="appCode" label="AppCode" show-overflow-tooltip/>
           <el-table-column prop="appKey" label="AppKey" show-overflow-tooltip/>

@@ -15,7 +15,6 @@
             :showSearch="false"
             :showLine="false"
             :treeJson="{ type: apiGroupSever }"
-            operate
             ref="apiTree"
             @handleNodeClick="handleNodeClick"
           />
@@ -23,7 +22,14 @@
         <Title title="接口列表" style="width: 65%">
           <template #content>
             <el-table
-              :data="data.interfaceData"
+              :data="
+                data.interfaceData.filter(
+                  (i) =>
+                    data.tableData
+                      .map((ele) => ele.apiBaseInfo.apiCode)
+                      .indexOf(i.apiBaseInfo.apiCode) < 0,
+                )
+              "
               style="width: 100%"
               height="100%"
               :header-cell-style="{ 'text-align': 'center' }"
@@ -47,9 +53,9 @@
                     type="primary"
                     size="small"
                     :icon="ArrowRightBold"
-                    v-if="!data.tableData.some(i=> i.apiBaseInfo.apiCode === row.apiBaseInfo.apiCode)"
                     @click="rightHandle(row)"
                   ></el-button>
+                  <!-- v-if="!data.tableData.some(i=> i.apiBaseInfo.apiCode === row.apiBaseInfo.apiCode)" -->
                 </template>
               </el-table-column>
             </el-table>
@@ -80,7 +86,13 @@
               />
               <el-table-column label="操作" min-width="100px">
                 <template #default="scope">
-                  <el-link type="danger" :underline="false" @click="deleteHandle(scope.$index)" > 删除</el-link>
+                  <el-link
+                    type="danger"
+                    :underline="false"
+                    @click="deleteHandle(scope.$index)"
+                  >
+                    删除</el-link
+                  >
                 </template>
               </el-table-column>
             </el-table>
@@ -103,7 +115,11 @@ import { ArrowRightBold } from "@element-plus/icons-vue";
 import { useCode } from "@/hooks/useCode";
 import { cloneDeep, debounce } from "lodash-es";
 import ApiGroupTree from "@/businessComponent/tree/index.vue";
-import { ApiGroupService, ApiInfoService, AppService } from "@/api/service/Api/ApiService";
+import {
+  ApiGroupService,
+  ApiInfoService,
+  AppService,
+} from "@/api/service/Api/ApiService";
 import { ApiModel, AppModel } from "@/api/model/apiModel";
 import { ElMessage } from "element-plus";
 
@@ -132,24 +148,24 @@ const data = reactive({
 const apiTree = ref();
 
 const createData = () => {
-  let keys = data.tableData.map(i=> i.apiBaseInfo.apiCode)?.join(',') || ''
-  let params = cloneDeep(props.formData) as AppModel
-  params.apiCodes = keys
-  appSever.update(params.id!, params).then(res=>{
+  let keys = data.tableData.map((i) => i.apiBaseInfo.apiCode)?.join(",") || "";
+  let params = cloneDeep(props.formData) as AppModel;
+  params.apiCodes = keys;
+  appSever.update(params.id!, params).then((res) => {
     ElMessage({
-      type: res.code == 200 ? 'success' : 'error',
-      message: res.message
-    })
-    emits('closeDialog')
-  })
+      type: res.code == 200 ? "success" : "error",
+      message: res.message,
+    });
+    emits("closeDialog");
+  });
 };
 
-const rightHandle = debounce((row: ApiModel)=>{
-  data.tableData.push(row)
-})
-const deleteHandle = (index: number)=>{
-  data.tableData.splice(index,1)
-}
+const rightHandle = debounce((row: ApiModel) => {
+  data.tableData.push(row);
+});
+const deleteHandle = (index: number) => {
+  data.tableData.splice(index, 1);
+};
 const searchHandle = () => {
   apiInfoSever
     .list({
@@ -175,7 +191,7 @@ const handleNodeClick = (node: any) => {
         {
           key: "isPublish",
           match: "eq",
-          value: '1',
+          value: "1",
         },
       ],
     })
@@ -199,7 +215,7 @@ watch(
     if (newValue) {
       init();
       handleNodeClick({ code: "" });
-    }else{
+    } else {
       data.tableData = [];
       data.interfaceData = [];
     }
