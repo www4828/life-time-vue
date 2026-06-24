@@ -32,6 +32,7 @@
           style="width: 600px"
           placeholder="输入你要的API"
           class="input-with-select"
+          clearable
         >
           <template #append>
             <el-button type="primary" :icon="Search" @click="searchHandle"
@@ -45,7 +46,9 @@
           <i class="icon interface"></i>
           <div class="apiName">{{ item.apiBaseInfo.apiName }}</div>
           <div class="count">
-            <el-icon><View /></el-icon> 10
+            {{ item.apiBaseInfo.apiMethod }} &nbsp;&nbsp;&nbsp;
+            {{ item.apiBaseInfo.apiUrl }}
+            <!-- <el-icon><View /></el-icon> 10 -->
           </div>
           <div class="des">简介：{{ item.apiBaseInfo.description }}</div>
           <div class="item-botton">

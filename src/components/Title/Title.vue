@@ -29,10 +29,10 @@ const props = withDefaults(defineProps<{ title?: string; align?: Align }>(), {
   align-items: center;
   @include fontStyle(
     var(--lt-font-family-medium),
-    $font-size-18,
+    $font-size-16,
     var(--lt-eme-color)
   );
-  font-weight: bold;
+  // font-weight: bold;
   margin-bottom: 10px;
   &.flex-start {
     justify-content: flex-start;

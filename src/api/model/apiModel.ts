@@ -65,5 +65,6 @@ export class AppModel extends BaseModel  {
   'appSecret': string
   'ips': string
   'strategy': string
+  "status": number
 }
 

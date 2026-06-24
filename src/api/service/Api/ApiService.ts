@@ -66,7 +66,7 @@ export class AppService{
     return this.request.post(this.baseUlr, apiInfo)
   }
   update(id: string,T: AppModel): Promise<Response> {
-    return this.request.put(this.baseUlr + '/' + id, T)
+    return this.request.put(this.baseUlr, T)
   }
   list(searchParams: SearchParamsModel<AppModel>): Promise<Response> {
     return this.request.post(this.baseUlr + `/search`, searchParams)

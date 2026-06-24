@@ -6,7 +6,7 @@
           <el-row>
             <el-col :span="4">
               <span class="sh3h-search-lable ">应用名称:</span>
-              <el-input class="sh3h-search-input" placeholder="应用名称" v-model.trim="searchModel[0].value" />
+              <el-input class="sh3h-search-input" placeholder="应用名称" v-model.trim="searchModel[0].value" clearable />
             </el-col>
             <el-col :span="5">
             </el-col>
@@ -21,26 +21,33 @@
       <template #table>
         <el-table :data="tableData.clientList" style="width:100%" height="100%"
           :header-cell-style="{ 'text-align': 'center', }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column prop="appId" label="ID" min-width="10%" />
-          <el-table-column prop="appName" label="应用名称" min-width="10%"/>
-          <el-table-column prop="appCode" label="Code" min-width="10%"/>
-          <el-table-column prop="appKey" label="AppKey" min-width="15%" show-overflow-tooltip/>
-          <el-table-column prop="strategy" label="策略类型" min-width="10%"/>
-          <el-table-column prop="createTime" label="创建时间" min-width="10%" >
+          <el-table-column prop="appId" label="ID" />
+          <el-table-column prop="appName" label="应用名称"/>
+          <el-table-column prop="appCode" label="AppCode" show-overflow-tooltip/>
+          <el-table-column prop="appKey" label="AppKey" show-overflow-tooltip/>
+          <el-table-column prop="appSecret" label="AppSecret" show-overflow-tooltip/>
+          <el-table-column prop="strategy" label="策略类型">
+            <template #default="scope">
+              <el-tag :type="scope.row.strategy == 'white' ? 'primary' : 'danger'" effect="plain" >
+                  {{ scope.row.strategy == "white" ? "白名单" : "黑名单" }}
+                </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="创建时间" >
             <template #default="{row}">
               {{ dayjs(row.createTime).format('YYYY-MM-DD HH:mm') }}
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="10%">
+          <el-table-column prop="status" label="状态">
             <template #default="scope">
               <el-tag :type="scope.row.status == '1' ? 'success' : 'danger'" effect="plain" >
                   {{ scope.row.status == "1" ? "启用" : "禁用" }}
                 </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="10%">
+          <el-table-column label="操作" min-width="100px">
             <template #default="scope">
-              <ButtonGropup :row="scope.row" :list="tableData.buttonList" @dropdownClick="edit"
+              <ButtonGropup :row="scope.row" :list="tableData.buttonList.filter(i=> i.id || i.status === scope.row.status)" @dropdownClick="edit"
                 @commandClick="commandClick" />
             </template>
           </el-table-column>
@@ -63,7 +70,7 @@
     <AuthDialog 
       :showFlag="dialogState.authDialog" 
       :formData="editform" 
-      @closeDialog="closeDialog" 
+      @closeDialog="closeDialog();getAll()" 
     />
   </div>
 </template>
@@ -82,18 +89,24 @@ import { SearchModel } from "@/api/model/baseModel";
 import ButtonGropup from '@/components/ButtonGroup/ButtonGropup.vue'
 import { cloneDeep } from "lodash-es";
 import dayjs from "dayjs";
+import SnowflakeId from "snowflake-id";
 
 const searchParamsModel = reactive(new SearchParamsModel<AppModel>());
 const appSever = new AppService();
+const snowflake = new SnowflakeId({
+  mid: 42,
+  offset: (2019 - 1970) * 31536000 * 1000,
+});
 
 const tableData = reactive({
   clientList: [] as Array<any>,
   buttonList: [
-    { name: "编辑" },
-    { name: "密钥" },
-    { name: "授权API" },
-    { name: "删除" },
-    { name: "禁用" }
+    { name: "编辑",id:'1' },
+    { name: "密钥",id:'2' },
+    { name: "授权API",id:'3' },
+    { name: "删除",id:'4' },
+    { name: "启用",status: 0 },
+    { name: "禁用",status: 1 }
   ] as Array<any>,
 });
 let editform = reactive({}) as AppModel;
@@ -122,6 +135,7 @@ const dialogState = reactive({
 });
 const add = () => {
   dialogState.titleName = "添加";
+  editform.appId = snowflake.generate()
   dialogState.EditDialog = true;
 };
 const edit = (row: AppModel) => {
@@ -179,6 +193,30 @@ const commandClick = (commandClick: string, row: AppModel) => {
   switch(commandClick){
     case '删除':
       deleteHandle(row);
+      break;
+    case '禁用':
+      ElMessageBox.confirm("确定要禁用吗？", "禁用", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(()=>{
+        editHandle({
+          ...row,
+          status: 0
+        });
+      })
+      break;
+    case '启用':
+      ElMessageBox.confirm("是否启用", "启用", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(()=>{
+        editHandle({
+          ...row,
+          status: 1
+        });
+      })
       break;
     case '密钥':
       dialogState.keyDialog = true

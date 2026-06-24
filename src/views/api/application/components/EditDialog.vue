@@ -21,7 +21,7 @@
         <el-input
           v-model="props.formData.appId"
           placeholder="appId"
-          :disabled="props.dialogStatus === '添加' ? false : true"
+          readonly
         />
       </el-form-item>
       <el-form-item label="应用名称:" prop="appName" class="long_item">
@@ -124,7 +124,7 @@ const createData = () => {
       let params = cloneDeep(props.formData);
       params.appKey = props.formData.appKey || "lt-" + randomString();
       params.appSecret = props.formData.appSecret || "lt-" + randomString();
-      params.appCode = props.formData.appSecret || randomString(8);
+      params.appCode = props.formData.appCode || randomString(8);
       props.dialogStatus === "修改"
         ? emits("update", params)
         : emits("save", params);
