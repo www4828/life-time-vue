@@ -35,9 +35,7 @@
           clearable
         >
           <template #append>
-            <el-button type="primary" :icon="Search" @click="searchHandle"
-              >搜索</el-button
-            >
+            <el-button type="primary" :icon="Search" @click="searchHandle" >搜索</el-button>
           </template>
         </el-input>
       </div>
@@ -61,8 +59,8 @@
               :icon="Link"
               @click="emits('showInfo', item)"
             >
-              详情</el-link
-            >
+              详情
+            </el-link>
           </div>
         </div>
       </div>
@@ -77,7 +75,7 @@
 </template>
 <script scoped lang="ts" setup>
 import { reactive, ref } from "vue";
-import { Menu, Search, Coin, Link, View } from "@element-plus/icons-vue";
+import { Menu, Search, Link } from "@element-plus/icons-vue";
 import Layout from "@/components/Layout/Layout-v2.vue";
 import { ApiInfoService, ApiGroupService } from "@/api/service/Api/ApiService";
 import {
