@@ -47,6 +47,7 @@ import Title from '@/components/Title/Title.vue';
     display: flex;
     align-items: center;
     &-wrap{
+      width: 100%;
       display: flex;
       align-items: center;
       // margin-left: 10px;

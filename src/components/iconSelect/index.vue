@@ -75,6 +75,8 @@ watch(props, (newValue, oldValue) => {
   position: absolute;
   top: 5px;
   left: 10px;
+  width: 100px;
+  background-color: #fff;
 }
 ::v-deep(.el-input__inner) {
   color: var(--lt-head-font-color) !important;

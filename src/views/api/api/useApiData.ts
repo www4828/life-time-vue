@@ -40,21 +40,20 @@ export function useApiData() {
 
   const dataSourceSever = new DataSourceService();
   const apiInfoSever = new ApiInfoService();
-  const getSchema = (dataSourceId?: string) => {
+  const getSchema = (dataSourceId: string) => {
     apiState.apiSqlInfo.schemaName = "";
     apiState.apiSqlInfo.tableName = "";
     apiState.apiSqlInfo.operaType = "";
     changeOperaType('')
     apiState.schemaList = []
     apiState.sqlTableList = []
-    console.log('dataSourceId',dataSourceId);
-    
+     
     if (apiState.apiSqlInfo.dataSourceId || dataSourceId) {
       let id = apiState.apiSqlInfo.dataSourceId || dataSourceId
       apiState.apiSqlInfo.dataSourceType = apiState.dbList.find(
         (i) => id === i.id,
       )?.dataSourceType;
-      dataSourceSever.catalog(id!).then((res) => {
+      dataSourceSever.schema(apiState.dbList.find(i=> i.id === dataSourceId)?.userName!, dataSourceId).then((res) => {
         apiState.schemaList = res.data;
       });
     }
@@ -110,9 +109,10 @@ export function useApiData() {
   };
   const checkRunSQL = () => {
     if (
-      !apiState.apiSqlInfo.dataSourceId ||
-      !apiState.apiSqlInfo.schemaName ||
-      !apiState.apiSqlInfo.tableName
+      !apiState.apiSqlInfo.dataSourceId 
+      // ||
+      // !apiState.apiSqlInfo.schemaName ||
+      // !apiState.apiSqlInfo.tableName
     ) {
       ElMessage.warning("请选择数据源");
       return false;

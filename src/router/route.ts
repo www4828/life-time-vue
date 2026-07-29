@@ -70,5 +70,13 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     meta: {
       title: 'message.staticRoutes.noPower',
     },
+  },
+  {
+    path: '/apiInfo',
+    name: 'apiInfo',
+    component: () => import('@/views/api/apihub/apiInfo.vue'),
+    meta: {
+      title: '接口详情',
+    },
   }
 ]

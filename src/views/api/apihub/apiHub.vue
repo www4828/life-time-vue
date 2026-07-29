@@ -40,27 +40,30 @@
         </el-input>
       </div>
       <div class="hub-content">
-        <div class="item" v-for="item in state.tableData">
-          <i class="icon interface"></i>
-          <div class="apiName">{{ item.apiBaseInfo.apiName }}</div>
-          <div class="count">
-            {{ item.apiBaseInfo.apiMethod }} &nbsp;&nbsp;&nbsp;
-            {{ item.apiBaseInfo.apiUrl }}
-            <!-- <el-icon><View /></el-icon> 10 -->
-          </div>
-          <div class="des">简介：{{ item.apiBaseInfo.description }}</div>
-          <div class="item-botton">
-            <div class="apiGroup">
-              <i class="icon group"></i>
-              {{ item.apiBaseInfo.groupCode }}
+        <div class="item-wrapper">
+          <div class="item" v-for="item in state.tableData">
+            <i class="icon interface"></i>
+            <div class="apiName">{{ item.apiBaseInfo.apiName }}</div>
+            <div class="count">
+              {{ item.apiBaseInfo.apiMethod }} &nbsp;&nbsp;&nbsp;
+              {{ item.apiBaseInfo.apiUrl }}
+              <!-- <el-icon><View /></el-icon> 10 -->
             </div>
-            <el-link
-              type="primary"
-              :icon="Link"
-              @click="emits('showInfo', item)"
-            >
-              详情
-            </el-link>
+            <div class="des">简介：{{ item.apiBaseInfo.description }}</div>
+            <div class="item-botton">
+              <div class="apiGroup">
+                <i class="icon group"></i>
+                {{ item.apiBaseInfo.groupCode }}
+              </div>
+              <el-link
+                type="primary"
+                :icon="Link"
+                @click="jumpTo(item.apiBaseInfo.apiCode)"
+                >
+                <!-- @click="emits('showInfo', item)" -->
+                详情
+              </el-link>
+            </div>
           </div>
         </div>
       </div>
@@ -118,7 +121,14 @@ const state = reactive({
   loading: false,
   text: '加载中...'
 });
-
+const jumpTo = (apicode: string)=>{
+  window.open(
+      location.origin +
+      location.pathname +
+      '#' +
+      '/apiInfo?id=' + apicode
+    )
+}
 const handleNodeClick = (node: any) => {
   searchModel.value[1].value = node.code == "1000" ? "" : node.code;
   searchHandle();
@@ -208,12 +218,17 @@ searchHandle();
   padding: 20px;
   height: calc(100% - 80px);
   box-sizing: border-box;
-  display: flex;
   overflow-y: auto;
+  .item-wrapper{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
   .item {
     width: 30%;
     height: 180px;
     margin-right: 30px;
+    margin-bottom: 30px;
     box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
       rgba(17, 17, 26, 0.05) 0px 8px 32px;
     border-radius: 10px;

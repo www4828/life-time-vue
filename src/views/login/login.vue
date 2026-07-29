@@ -65,64 +65,9 @@
             </el-input>
           </el-form-item>
         </div>
-        <div class="phoneBox" v-show="!state.checkHidden">
-          <el-form-item prop="userName">
-            <el-input
-              placeholder="请输入手机号"
-              v-model="state.ruleForm.userName"
-              name="userName"
-              type="text"
-              tabindex="1"
-              auto-complete="on"
-            >
-            </el-input>
-          </el-form-item>
-
-          <el-form-item prop="password">
-            <el-row style="width: 100%">
-              <el-col :span="16">
-                <el-input
-                  placeholder="验证码"
-                  v-model="state.ruleForm.password"
-                  name="password"
-                  type="password"
-                  tabindex="1"
-                  auto-complete="on"
-                  @keyup.enter="isCanLogin"
-                >
-                </el-input>
-              </el-col>
-              <el-col :span="8" align="right">
-                <el-button
-                  class="codeBox"
-                  :disabled="isDisabled"
-                  @click="sendSmsCode"
-                  >{{ smsText }}</el-button
-                >
-              </el-col>
-            </el-row>
-          </el-form-item>
-        </div>
-        <!-- <SliderVerify
-          v-model:isShowSelf="sliderVConf.isShowSelf"
-          :isBorder="sliderVConf.isBorder"
-          :isParentNode="sliderVConf.isParentNode"
-          :isCloseBtn="sliderVConf.isCloseBtn"
-          :isReloadBtn="sliderVConf.isReloadBtn"
-          :imgUrl="imgUrl"
-          :width="300"
-          :height="180"
-          @success="emitChange('success')"
-        ></SliderVerify> 
-         div class="textBtnBox" v-show="state.checkHidden">
-          <el-button type="text" class="bottomText" @click="forgetName"
-            >忘记账号名</el-button
-          >
-          <el-button type="text" class="bottomText" @click="forgetPassWord"
-            >忘记密码</el-button
-          >
-        </div> -->
-       <slideVerify v-if="sliderVConf.isShowSelf" @success="emitChange('success')" @close="sliderVConf.isShowSelf = false"></slideVerify>
+       <!-- <slideVerify v-if="sliderVConf.isShowSelf" @success="emitChange('success')" @close="sliderVConf.isShowSelf = false"></slideVerify> -->
+       
+        <SliderVerification :show="sliderVConf.isShowSelf" @success="emitChange('success')"></SliderVerification>
         <el-button class="bottom" @click="isCanLogin" :loading="loading"
           >登录</el-button
         >
@@ -159,27 +104,24 @@
 <script lang="ts" setup>
 import {
   computed,
-  defineComponent,
   reactive,
-  ref,
-  toRefs,
-  nextTick,
-  onBeforeUnmount,
-  onBeforeMount,
+  ref
 } from 'vue'
 import { useStore } from '@/store'
 import { ElMessage, ElForm } from 'element-plus'
-/* import SliderVerification from "@/components/sliderVerification/index.vue"; */
+import SliderVerification from "vue3-puzzle-vcode";
 import { useRoute, useRouter } from 'vue-router'
 import { Session } from '@/utils/storage'
 import { LoginService, LoginType } from '@/api/login'
 import { LoginModel } from '@/api/model/loginModel'
 import { Response } from '@/api/interface'
 import { setRem } from '@/utils/rem'
-import { useCode } from '@/hooks/useCode'
-import SelectDepartment from './selectDepartment.vue'
 import { DepartmentModel } from '@/api/model/departmentModel'
-import slideVerify from "@/components/slideVerify/slideVerify.vue"
+import images1 from '/static/verification/1.jpg'
+import images2 from '/static/verification/2.jpg'
+import images3 from '/static/verification/3.jpg'
+import images4 from '/static/verification/4.jpg'
+
 const loading = ref(false)
 const store = useStore()
 const route = useRoute()
@@ -191,10 +133,8 @@ const loginRules = reactive({
   password: [{ required: true, trigger: 'blur', message: '请输入密码' }],
 })
 const loginForm = ref<InstanceType<typeof ElForm>>()
-const smsText = ref('发送验证码')
-const isDisabled = ref(false)
-let timer: any = null
-const radio = ref(3)
+
+const imgs = ref<string[]>([]);
 const state = reactive({
   ruleForm: {
     userName: '',
@@ -216,18 +156,14 @@ const sliderVConf = reactive({
   isReloadBtn: true,
   isParentNode: false,
 })
-const imgUrl = ref('')
 const loginType = ref<LoginType>('password')
-const random = (max: number, min: number): number => {
-  return Math.floor(Math.random() * (min - max) + max)
-}
+
 setRem()
 window.onresize = function () {
   setRem()
 }
 const init = async () => {
-  let { iconUrl } = Session.get('appConfig').urls
-  imgUrl.value = iconUrl + `/static/verification/${random(4, 1)}.jpg`
+  imgs.value = [ images1, images2, images3, images4]
 }
 init()
 const emitChange = (status: string) => {
@@ -242,12 +178,7 @@ const getThemeConfig = computed(() => {
   return store.state.themeConfig.themeConfig
 })
 
-const verifySuccess = (status: boolean) => {
-  state.ruleForm.isVerify = status
-}
-const getCode = (code: string) => {
-  state.ruleForm.code = code
-}
+
 const isCanLogin = () => {
   loginForm.value!.validate((valid: boolean) => {
     if (valid) {
@@ -319,69 +250,7 @@ const goto = () => {
     router.push('/')
   }
 }
-const accountClick = () => {
-  loginType.value = 'password'
-  state.checkHidden = !state.checkHidden
-  state.ruleForm.userName = ''
-  state.ruleForm.password = ''
-  loginRules.userName = [
-    { required: true, trigger: 'blur', message: '请输入用户名' },
-  ]
-  loginRules.password = [
-    { required: true, trigger: 'blur', message: '请输入密码' },
-  ]
-}
-const phoneClick = () => {
-  loginType.value = 'sms_code'
-  state.checkHidden = !state.checkHidden
-  state.ruleForm.userName = ''
-  state.ruleForm.password = ''
-  // loginForm.value!.clearValidate()
-  loginRules.userName = [
-    { required: true, trigger: 'blur', message: '请输入手机号' },
-  ]
-  loginRules.password = [
-    { required: true, trigger: 'blur', message: '请输入验证码' },
-  ]
-}
-const forgetName = () => {}
-const forgetPassWord = () => {}
-const countdown = () => {
-  isDisabled.value = true
-  let downNum = 60
-  console.log('object')
-  timer = setInterval(() => {
-    downNum--
-    smsText.value = `请在${downNum}秒后尝试`
-    if (downNum === 0) {
-      clearInterval(timer)
-      isDisabled.value = false
-      smsText.value = '获取验证码'
-    }
-  }, 1000)
-}
-const sendSmsCode = () => {
-  if (state.ruleForm.userName === '') {
-    ElMessage.error('请输入手机号！')
-    return
-  }
-  const telReg = /^(?:(?:\+|00)86)?1[3-9]\d{9}$/
-  if (!telReg.test(state.ruleForm.userName)) {
-    ElMessage.error('请输入正确的手机号！')
-    return
-  } else {
-    clientServer.getSmsCode(state.ruleForm.userName).then((res) => {
-      ElMessage({
-        type: res.code === 200 ? 'success' : 'error',
-        message: res.message,
-      })
-      if (res.code === 200) {
-        ElMessage.success('验证码已发送！')
-        countdown()
-      }
-    })
-  }
-}
+
 
 const saveDepartment = ()=>{
   Session.set('activeDept',state.activeDept)

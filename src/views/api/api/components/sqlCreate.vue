@@ -177,9 +177,8 @@
           "
           >解析SQL语句</el-link
         >
-        <el-button type="primary" v-if="props.status === 'create'" @click="checkSubmit('0')">保存</el-button>
-        <el-button type="primary" v-if="props.status === 'edit'" @click="checkSubmit('0')">修改</el-button>
-        <!-- <el-button type="primary" @click="runSQL">测试</el-button> -->
+        <el-button type="primary" v-if="props.status === 'create'" @click="checkSubmit()">保存</el-button>
+        <el-button type="primary" v-if="props.status === 'edit'" @click="checkSubmit()">修改</el-button>
         <el-button @click="emits('back')">返回</el-button>
       </div>
     </div>
@@ -276,7 +275,7 @@ const tabChange = (val: any) => {
   }
 };
 
-const checkSubmit = (isPublish: string) => {
+const checkSubmit = () => {
   if (checkRunSQL()) {
     baseInfoRef.value.checkForm().then((valid: boolean) => {
       if (valid) {
@@ -290,6 +289,8 @@ const checkSubmit = (isPublish: string) => {
         apiState.activeName = "second";
       }
     });
+  }else{
+    ElMessage.warning("请选择数据库");
   }
 };
 

@@ -26,7 +26,11 @@
           prop="apiBaseInfo.apiCode"
           align="center"
           label="接口编号"
-        />
+        >
+        <template #default="scope">
+            <el-link type="primary" v-link @click="jumpTo(scope.row.apiBaseInfo.apiCode)" >{{ scope.row.apiBaseInfo.apiCode }}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="apiBaseInfo.apiName"
           align="center"
@@ -118,6 +122,7 @@ import ButtonGropup from "@/components/ButtonGroup/ButtonGropup.vue";
 import PageLayout from "@/businessComponent/pageLayout/index.vue";
 import { ElMessageBox } from "element-plus";
 import { cloneDeep } from "lodash-es";
+import { useRouter } from "vue-router";
 
 interface PageInfo {
   currentPage: number;
@@ -129,7 +134,7 @@ const props = defineProps({
     type: String,
   },
 });
-
+const router = useRouter();
 const apiInfoSever = new ApiInfoService();
 const searchParamsModel = reactive(new SearchParamsModel<ApiBaseInfoModel>());
 const searchModel = ref<SearchModel<ApiBaseInfoModel>[]>([
@@ -156,6 +161,14 @@ const state = reactive({
   ] as Array<any>,
 });
 
+const jumpTo = (apicode: string)=>{
+  window.open(
+      location.origin +
+      location.pathname +
+      '#' +
+      '/apiInfo?id=' + apicode
+    )
+}
 const commandClick = (commandClick: string, row: ApiModel) => {
   switch (commandClick) {
     case "删除":

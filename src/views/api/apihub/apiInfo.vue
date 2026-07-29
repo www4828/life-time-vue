@@ -5,48 +5,48 @@
       <el-row>
         <el-col :span="4">
           <span class="label">接口编号：</span>
-          <span class="value">{{ props.formData.apiBaseInfo.apiCode }}</span>
+          <span class="value">{{ state.formData.apiBaseInfo.apiCode }}</span>
         </el-col>
         <el-col :span="4">
           <span class="label">接口名称：</span>
-          <span class="value">{{ props.formData.apiBaseInfo.apiName }}</span>
+          <span class="value">{{ state.formData.apiBaseInfo.apiName }}</span>
         </el-col>
         <el-col :span="4">
           <span class="label">认证方式：</span>
-          <span class="value">{{ props.formData.apiBaseInfo.authType }}</span>
+          <span class="value">{{ state.formData.apiBaseInfo.authType }}</span>
         </el-col>
         <el-col :span="4">
           <span class="label">接口类型：</span>
-          <span class="value">{{ props.formData.apiBaseInfo.apiType }}</span>
+          <span class="value">{{ state.formData.apiBaseInfo.apiType }}</span>
         </el-col>
         <el-col :span="4">
           <span class="label">接口版本：</span>
-          <span class="value">{{ props.formData.apiBaseInfo.versionNumber }}</span>
+          <span class="value">{{ state.formData.apiBaseInfo.versionNumber }}</span>
         </el-col>
         <el-col :span="2"></el-col>
         <el-col :span="2">
-          <el-button type="primary" :icon="Promotion">申请</el-button>
+          <!-- <el-button type="primary" :icon="Promotion">申请</el-button> -->
         </el-col>
         <el-col :span="8">
           <span class="label">上线时间：</span>
-          <span class="value">{{ dayjs(props.formData.apiBaseInfo.createTime).format('YYYY-MM-DD HH:mm:ss')}}</span>
+          <span class="value">{{ dayjs(state.formData.apiBaseInfo.createTime).format('YYYY-MM-DD HH:mm:ss')}}</span>
         </el-col>
         <el-col :span="8">
           <span class="label">接口地址：</span>
           <span class="value">{{
-            props.formData.apiBaseInfo.apiMethod +
+            state.formData.apiBaseInfo.apiMethod +
             ' &nbsp;&nbsp;' +
-            props.formData.apiBaseInfo.apiUrl
+            state.formData.apiBaseInfo.apiUrl
           }}</span>
         </el-col>
         <el-col :span="6"> </el-col>
         <el-col :span="2">
-          <el-button type="primary" :icon="ArrowLeftBold" @click="emits('showInfo', {})">返回</el-button>
+          <!-- <el-button type="primary" :icon="ArrowLeftBold" @click="emits('showInfo', {})">返回</el-button> -->
         </el-col>
         <el-col :span="20">
           <span class="label">接口描述：</span>
           <span class="value">{{
-            props.formData.apiBaseInfo.description
+            state.formData.apiBaseInfo.description
           }}</span>
         </el-col>
       </el-row>
@@ -56,7 +56,7 @@
       <div class="use-info-content">
         <div>
           <Title title="请求参数" />
-          <el-table :data="props.formData.requestParams" header-cell-class-name="tableHeader">
+          <el-table :data="state.formData.requestParams" header-cell-class-name="tableHeader">
             <el-table-column prop="paramName" label="参数名称" align="center" />
             <el-table-column prop="columnName" label="映射字段" align="center" />
             <el-table-column prop="paramType" label="参数类型" align="center" />
@@ -71,7 +71,7 @@
         </div>
         <div>
           <Title title="返回结果" />
-          <el-table :data="props.formData.responseParams" header-cell-class-name="tableHeader">
+          <el-table :data="state.formData.responseParams" header-cell-class-name="tableHeader">
             <el-table-column prop="paramName" label="参数名称" align="center" />
             <el-table-column prop="columnName" label="映射字段" align="center" />
             <el-table-column prop="paramType" label="参数类型" align="center" />
@@ -104,7 +104,7 @@
 </template>
 <script scoped lang="ts" setup>
 import { Promotion, ArrowLeftBold } from '@element-plus/icons-vue'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { ApiModel } from '@/api/model/apiModel'
 import dayjs from 'dayjs'
 import Title from '@/components/Title/Title.vue'
@@ -112,7 +112,13 @@ import { VAceEditor } from 'vue3-ace-editor'
 import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/theme-dracula'
 import 'ace-builds/src-noconflict/ext-language_tools'
+import { ApiInfoService } from '@/api/service/Api/ApiService'
+import { useRoute } from "vue-router";
+import { ElMessage } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
 
+
+const route = useRoute();
 const emits = defineEmits(['showInfo'])
 const props = defineProps({
   formData: {
@@ -120,6 +126,7 @@ const props = defineProps({
     required: true,
   },
 })
+const apiInfoSever = new ApiInfoService();
 const aceConfig = reactive({
   lang: 'json', //解析json
   theme: 'dracula', //主题
@@ -135,7 +142,8 @@ const aceConfig = reactive({
 })
 const state = reactive({
   error: '',
-  jsonValue: ''
+  jsonValue: '',
+  formData: {} as ApiModel
 })
 
 const jsonFormat = () => {
@@ -148,6 +156,40 @@ const jsonFormat = () => {
     state.error = '格式化失败，请检查是否JSON格式错误'
   }
 }
+
+const searchHandle = () => {
+  apiInfoSever.list({
+    "pageParams": {
+        "pageSize": -1,
+        "pageIndex": 0
+    },
+    "searchParams": [
+        {
+            "key": "apiCode",
+            "value": String(route.query.id),
+            "match": "eq"
+        }
+    ]
+}).then((res) => {
+    if (res.code == 200) {
+      const { results } = res.data;
+      state.formData = results[0]
+    } else {
+      ElMessage.error(res.message);
+    }
+  });
+};
+
+if(route.query.id){
+  searchHandle()
+}
+
+watch(()=>props.formData,(val)=>{
+  state.formData = cloneDeep(val)
+},{
+  deep: true,
+  immediate: true
+})
 </script>
 <style lang="scss" scoped>
 .api-info-wrap {

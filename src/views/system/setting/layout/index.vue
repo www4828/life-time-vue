@@ -157,7 +157,9 @@ const saveHandle = () => {
     width: calc(100%);
     height: calc(100%);
     position: relative;
-    // background-color: #fff;
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
     
     ::v-deep(.el-divider){
       width: calc(100% - 80px);

@@ -8,7 +8,7 @@
     </el-form-item>
     <el-form-item label="接口地址:" prop="apiUrl">
       <el-input v-model="data.formData.apiUrl" placeholder="接口地址" >
-        <template #prepend>/api/common</template>
+        <template #prepend>/api/common/</template>
       </el-input>
     </el-form-item>
     <el-form-item label="请求方式:" prop="apiMethod">

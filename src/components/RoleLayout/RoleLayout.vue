@@ -48,6 +48,7 @@ $leftWidth: 445px;
             padding: $padding10 $margin;
             height: calc(100% - 50px);
             width: 100%;
+            position: relative;
             // overflow-y: hidden;
             // margin: $padding;
             // padding-top: $margin;

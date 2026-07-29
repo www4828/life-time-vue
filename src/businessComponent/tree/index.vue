@@ -38,11 +38,11 @@
                 <el-link v-if="props.operate && !data[defaultProps.children] " :icon="Delete" type="danger"></el-link>
               </template>
               <template #actions="{ confirm, cancel }">
-                <el-button size="mini" @click="cancel">取消</el-button>
+                <el-button size="small" @click="cancel">取消</el-button>
                 <el-button
-                  size="mini"
+                  size="small"
                   type="danger"
-                  @confirm="confirm"
+                  @click="confirm"
                 >
                   确定
                 </el-button>
@@ -161,6 +161,8 @@ const removeChildrenIds = (data: any) => {
 }
 
 const removeNode = (node:any, data:any)=>{
+  console.log(props.treeJson);
+  
   if (props.treeJson?.type && data.id) {
     props.treeJson?.type
       .delete(data.id)
