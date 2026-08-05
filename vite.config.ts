@@ -59,6 +59,16 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           target: 'https://citygrid.pudong.gov.cn/lifetime-api/lifetime-api-hub-service/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/apiUrl/, ''),
+        },
+        '/sysUrl_test': {
+          target: 'http://8.155.10.223/lifetime-api/lifetime-manager-server',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/sysUrl_test/, ''),
+        },
+        '/apiUrl_test': {
+          target: 'http://8.155.10.223/lifetime-api/lifetime-api-hub-server',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/apiUrl_test/, ''),
         }
       },
     },
