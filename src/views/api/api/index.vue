@@ -102,38 +102,15 @@
       />
       <div
         v-else
-        style="
-          box-sizing: border-box;
-          width: 100%;
-          height: 100%;
-          overflow-y: auto;
-        "
+        class="sqlCreate"
       >
         <SqlCreate
           v-if="state.flag === 0"
-          @back="state.isTable = true"
+          @back="backHandle"
           :list="apiState.apiGroupList"
           :groupCode="apiState.groupCode"
           :apiInfo="state.apiInfo"
           :status="state.status"
-        />
-        <img
-          v-if="state.flag === 1"
-          src="./components/1.png"
-          fit="scale-down"
-          style="width: 100%"
-        />
-        <img
-          v-if="state.flag === 2"
-          src="./components/2.png"
-          fit="scale-down"
-          style="width: 100%"
-        />
-        <img
-          v-if="state.flag === 3"
-          src="./components/3.png"
-          fit="scale-down"
-          style="width: 100%"
         />
       </div>
     </template>
@@ -251,6 +228,9 @@ const submitGroup = () => {
   });
 };
 
+const backHandle = () => {
+  state.isTable = true;
+};
 const addApiGroupHandle = (row: any) => {
   state.groupForm.parentCode = row.code;
   state.groupFlag = "add";
@@ -267,7 +247,7 @@ const editApiGroupHandle = (row: any) => {
 const createSql = () => {
   state.status = "create";
   state.apiInfo = {
-    apiBaseInfo: { apiCode: snowflake.generate() },
+    apiBaseInfo: { apiCode: snowflake.generate(), authType: '签名认证' } as ApiBaseInfoModel,
   } as ApiModel;
   state.isTable = false;
   state.flag = 0;
@@ -316,5 +296,11 @@ const editSqlInfo = (row: ApiModel) => {
 
 .sh3h-search-box {
   background-color: var(--lt-tree-background-color);
+}
+.sqlCreate {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 </style>

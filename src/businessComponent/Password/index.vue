@@ -4,7 +4,7 @@
     title="修改密码"
     width="30%"
     @close="handleClose"
-    custom-class="card"
+    class="card"
     :modal="false"
     :close-on-click-modal="false"
     :show-close="false"

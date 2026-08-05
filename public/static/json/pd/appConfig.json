@@ -1,0 +1,9 @@
+{
+  "urls":{ 
+    "sysUrl": "/sysUrl",
+    "apiUrl": "/apiUrl",
+    "mediaUrl":"",
+    "SSEUrl":"http://8.155.10.223/lifetime-ai/ai"
+  },
+  "filterRouters":[""]
+}

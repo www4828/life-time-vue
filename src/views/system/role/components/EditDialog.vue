@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :model-value="props.dialogVisible" :title="props.title" width="50%" @close="handleClose" custom-class="card-mark">
+  <el-dialog :model-value="props.dialogVisible" :title="props.title" width="50%" @close="handleClose" class="card-mark">
     <div class="content">
       <div class="left">
         <div class="title">基础信息</div>

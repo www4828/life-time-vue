@@ -1,6 +1,6 @@
 <template>
   <el-dialog :model-value="props.dialogVisible" title="用户角色" width="40%" @close="handleClose" 
-    top="100px" custom-class="card-mark user-mark">
+    top="100px" class="card-mark user-mark">
     <div class="content user-content">
       <div class="left">
         <div class="title">所属部门</div>

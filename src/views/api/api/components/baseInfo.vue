@@ -33,6 +33,8 @@
         :data="props.list"
         :render-after-expand="false"
         node-key="code"
+        filterable
+        clearable
         :props="{ children: 'child', label: 'name', value: 'code' }"
       />
     </el-form-item>

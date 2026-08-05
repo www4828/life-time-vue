@@ -225,8 +225,7 @@ router.beforeEach(async (to, from, next) => {
     if (whiteList.indexOf(to.path) > -1) {
       next()
     } else if (!token) {
-      let {data} = await loadAppConfig()
-      next(data.portalPath)
+      next('/login')
       Session.clear()
       NProgress.done()
     } else {

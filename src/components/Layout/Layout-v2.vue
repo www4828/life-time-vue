@@ -58,6 +58,7 @@ $leftWidth: 350px;
   .contentWrapper {
     // margin-left: $margin ;
     flex: 1;
+    max-width: 80%;
     // @extend .color;
     .content {
       // border: 1px solid var(--lt-tree-border-color);

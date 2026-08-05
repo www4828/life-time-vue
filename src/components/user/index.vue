@@ -79,7 +79,7 @@ export default defineComponent({
           Session.clear();
           store.dispatch("routesList/setRoutesList", []);
           loadAppConfig().then((res) => {
-            router.push({ path: res.data.portalPath });
+            router.push({ path: '/login' });
           });
           nextTick(() => {
             location.reload();

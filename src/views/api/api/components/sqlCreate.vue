@@ -131,30 +131,6 @@
             ref="responseInfoRef"
             :list="state.responseParams"
           />
-          <!-- <el-drawer
-            :modal="false"
-            destroy-on-close
-            v-model="state.fiveDrawer"
-            size="45%"
-            :with-header="false"
-            direction="rtl"
-            class="response_drawer"
-          >
-            <template #default>
-              <div class="content">
-                <el-icon class="close-icon" @click="state.fiveDrawer = false">
-                  <Close />
-                </el-icon>
-                <Title title="接口结果插件配置" />
-                <img src="./data.png" fit="scale-down" style="width: 100%;" />
-              </div>
-            </template>
-            <template #footer>
-              <div style="flex: auto">
-                <el-button @click="state.fiveDrawer = false">关闭</el-button>
-              </div>
-            </template>
-          </el-drawer> -->
         </div>
       </div>
     </div>
@@ -168,17 +144,17 @@
       </div>
       <div class="btn-wrap">
 
-        <el-link
+        <el-button
           type="primary"
+          plain
           @click="sqlParse"
           style="margin-right: 10px;"
-          v-if="
-            apiState.activeName === 'third' || apiState.activeName === 'fourth'
-          "
-          >解析SQL语句</el-link
+          :loading="state.loading"
+          v-if="['third', 'fourth'].includes(apiState.activeName)"
+          >解析SQL语句</el-button
         >
         <el-button type="primary" v-if="props.status === 'create'" @click="checkSubmit()">保存</el-button>
-        <el-button type="primary" v-if="props.status === 'edit'" @click="checkSubmit()">修改</el-button>
+        <el-button type="primary" v-if="props.status === 'edit'" @click="checkSubmit()">提交</el-button>
         <el-button @click="emits('back')">返回</el-button>
       </div>
     </div>
@@ -252,7 +228,8 @@ const state = reactive({
   publish: true,
   requestParams: [] as RequestInfoModel[],
   responseParams: [] as RequestInfoModel[],
-  isPage: 0
+  isPage: 0,
+  loading: false
 });
 
 const closeDialog = () => {
@@ -338,29 +315,36 @@ const edit = () => {
   });
 };
 const sqlParse = () => {
+  state.loading = true
   apiInfoSever
     .sqlParse({
       sqlScript: apiState.apiSqlInfo.sqlScript,
       datasourceType: apiState.apiSqlInfo.dataSourceType.toLowerCase(),
     })
     .then((res) => {
+      state.loading = false;
       if(res.data.resColumns.length > 0){
-        let list = [] as RequestInfoModel[];
-        res.data.resColumns.forEach((item: any) => {
-          list.push({
+        let resColumns = res.data.reqColumns.filter((item: string) => {
+          let index = state.responseParams.findIndex((i: RequestInfoModel) => i.paramName == item);
+          return index === -1;
+        });
+        resColumns.forEach((item: string) => {
+          state.responseParams.push({
             apiCode: props.apiInfo?.apiBaseInfo.apiCode!,
-            paramName: item.colName.split(",")[0],
-            columnName: item.colName.split(",")[1],
-            paramType: item.colType,
+            paramName: item,
+            columnName: item,
+            paramType: 'String',
             paramModel: "response",
           } as RequestInfoModel);
         });
-        state.responseParams = list
       }
       if(res.data.reqColumns.length > 0){
-        let list = [] as RequestInfoModel[];
-        res.data.reqColumns.forEach((item: any) => {
-          list.push({
+        let reqColumns = res.data.reqColumns.filter((item: string) => {
+          let index = state.requestParams.findIndex((i: RequestInfoModel) => i.paramName == item);
+          return index === -1;
+        });
+        reqColumns.forEach((item: string) => {
+          state.requestParams.push({
             apiCode: props.apiInfo?.apiBaseInfo.apiCode!,
             paramName: item,
             columnName: item,
@@ -368,7 +352,6 @@ const sqlParse = () => {
             paramModel: "request",
           } as RequestInfoModel);
         });
-        state.requestParams = list
       }
     });
 };
@@ -449,6 +432,13 @@ $leftWidth: 350px;
 
   ::v-deep(.ͼ1.cm-focused) {
     outline: none;
+    
+  }
+  ::v-deep(.cm-editor) {
+    height: 100%;
+  }
+  ::v-deep(.v-codemirror){
+    height: 100%;
   }
 }
 

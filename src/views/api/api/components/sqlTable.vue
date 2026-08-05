@@ -26,6 +26,7 @@
           prop="apiBaseInfo.apiCode"
           align="center"
           label="接口编号"
+          show-overflow-tooltip
         >
         <template #default="scope">
             <el-link type="primary" v-link @click="jumpTo(scope.row.apiBaseInfo.apiCode)" >{{ scope.row.apiBaseInfo.apiCode }}</el-link>
@@ -237,7 +238,7 @@ const searchHandle = () => {
     }
   }).finally(()=>emits('changeLoading', false));
 };
-searchHandle();
+
 const editHandle = (row: ApiModel) => {
   emits("edit", row);
 };
@@ -259,11 +260,12 @@ const deleteHandle = (row: ApiModel) => {
 watch(
   () => props.groupCode,
   (newValue, oldValue) => {
-    if (newValue) {
-      searchModel.value[1].value = newValue == "1000" ? "" : newValue;
-      paginationChange({ currentPage: 1, pageSize: 10 });
-    }
+    searchModel.value[1].value = newValue == "1000" ? "" : newValue;
+    paginationChange({ currentPage: 1, pageSize: 10 });
   },
+  {
+    immediate: true,
+  }
 );
 </script>
 <style lang="scss" scoped>
