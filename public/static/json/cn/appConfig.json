@@ -1,0 +1,9 @@
+{
+  "urls":{ 
+    "sysUrl": "https://citygrid.pudong.gov.cn/lifetime-api/lifetime-manager-service/",
+    "apiUrl": "https://citygrid.pudong.gov.cn/lifetime-api/lifetime-api-hub-service/",
+    "mediaUrl":"",
+    "SSEUrl":""
+  },
+  "filterRouters":[""]
+}

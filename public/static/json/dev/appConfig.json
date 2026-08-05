@@ -6,6 +6,5 @@
     "mediaUrl":"https://12319.shucm.cn/file-service/",
     "SSEUrl":"http://8.155.10.223/lifetime-ai/ai"
   },
-  "filterRouters":[""],
-  "portalPath": "/login"
+  "filterRouters":[""]
 }

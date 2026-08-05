@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve:pd": "vite --mode pd",
-    "build:pd": "vite build --mode pd"
+    "build:pd": "vite build --mode pd",
+    "build:cn": "vite build --mode cn"
   },
   "dependencies": {
     "@codemirror/lang-sql": "^6.8.0",
