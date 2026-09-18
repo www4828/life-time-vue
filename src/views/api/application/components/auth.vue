@@ -7,6 +7,7 @@
     destroy-on-close
     :close-on-click-modal="false"
     class="card-mark"
+    top="20px"
   >
     <div class="content user-mark">
       <div class="left">
@@ -31,7 +32,7 @@
                 )
               "
               style="width: 100%"
-              height="100%"
+              height="500px"
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
             >
@@ -68,7 +69,7 @@
             <el-table
               :data="data.tableData"
               style="width: 100%"
-              height="100%"
+              height="500px"
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
             >

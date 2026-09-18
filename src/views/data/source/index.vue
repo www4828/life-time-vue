@@ -25,8 +25,6 @@
               :header-cell-style="{ 'text-align': 'center', }" :cell-style="{ 'text-align': 'center' }">
               <el-table-column prop="dataSourceName" align="center" label="数据源名称" />
               <el-table-column prop="dataSourceType" align="center" label="数据源类型" />
-              <!-- <el-table-column prop="clientCharacter" align="center" label="客户端字符集" />
-              <el-table-column prop="dataSourceCharacter" align="center" label="数据库字符集" /> -->
               <el-table-column prop="driver" align="center" label="驱动程序" />
               <el-table-column prop="dataSourceUrl" align="center" label="数据源url" />
               <el-table-column prop="modifierTime" align="center" label="最后修改时间" />

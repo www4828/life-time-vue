@@ -67,7 +67,7 @@
         </div>
        <!-- <slideVerify v-if="sliderVConf.isShowSelf" @success="emitChange('success')" @close="sliderVConf.isShowSelf = false"></slideVerify> -->
        
-        <SliderVerification :show="sliderVConf.isShowSelf" @success="emitChange('success')"></SliderVerification>
+        <SliderVerification :show="sliderVConf.isShowSelf" :imgs="imgs" @success="emitChange('success')"></SliderVerification>
         <el-button class="bottom" @click="isCanLogin" :loading="loading"
           >登录</el-button
         >

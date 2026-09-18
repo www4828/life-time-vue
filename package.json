@@ -7,6 +7,8 @@
     "build": "vite build",
     "serve:pd": "vite --mode pd",
     "build:pd": "vite build --mode pd",
+    "build:jd": "vite build --mode jd",
+    "build:pt": "vite build --mode pt",
     "build:cn": "vite build --mode cn"
   },
   "dependencies": {
